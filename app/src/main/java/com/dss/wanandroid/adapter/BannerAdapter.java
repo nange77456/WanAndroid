@@ -1,4 +1,4 @@
-package com.dss.wanandroid.banner;
+package com.dss.wanandroid.adapter;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -6,12 +6,13 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 
 import com.dss.wanandroid.R;
+import com.dss.wanandroid.entity.BannerData;
 import com.zhpan.bannerview.BaseBannerAdapter;
 
 /**
  * 首页轮播图的适配器
  */
-public class HomeAdapter extends BaseBannerAdapter<BannerData,BannerViewHolder> {
+public class BannerAdapter extends BaseBannerAdapter<BannerData,BannerViewHolder> {
 
 
     @Override

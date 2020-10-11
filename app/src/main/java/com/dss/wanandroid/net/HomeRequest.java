@@ -1,6 +1,6 @@
 package com.dss.wanandroid.net;
 
-import com.dss.wanandroid.banner.BannerData;
+import com.dss.wanandroid.entity.BannerData;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -21,7 +21,7 @@ import okhttp3.Response;
 /**
  * 首页的网络请求的封装类
  */
-public class HomeNetwork {
+public class HomeRequest {
     /**
      * 新建okHttp客户端
      */

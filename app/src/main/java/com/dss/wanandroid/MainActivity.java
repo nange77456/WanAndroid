@@ -27,9 +27,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-
-
-
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(new HomeFragment());
         fragmentList.add(new QAFragment());

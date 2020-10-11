@@ -9,4 +9,7 @@
     <color name="colorMiddle">#bf360c</color>
     <color name="colorWhite">#ffffff</color>
     <color name="colorIndicatorSelected">#FF5252</color>
+    <color name="colorTextTitle">#000000</color>
+    <color name="colorTextPlain">#323232</color>
+    <color name="colorTextPreview">#747474</color>
 </resources>

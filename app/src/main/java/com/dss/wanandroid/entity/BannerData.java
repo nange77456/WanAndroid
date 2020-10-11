@@ -1,10 +1,25 @@
-package com.dss.wanandroid.banner;
+package com.dss.wanandroid.entity;
 
+/**
+ * 轮播图数据实体类
+ */
 public class BannerData {
-    String imagePath;
-    String url;
-    String title;
-    int isVisible;
+    /**
+     * 图片url
+     */
+    private String imagePath;
+    /**
+     * 跳转url
+     */
+    private String url;
+    /**
+     * 标题
+     */
+    private String title;
+    /**
+     * 可见性
+     */
+    private int isVisible;
 
     @Override
     public String toString() {

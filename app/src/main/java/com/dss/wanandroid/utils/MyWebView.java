@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.webkit.WebView;
 
 import com.dss.wanandroid.R;
@@ -21,6 +22,7 @@ public class MyWebView extends AppCompatActivity {
 
         Intent intent = getIntent();
         String url = intent.getStringExtra("url");
+        Log.e("tag","get:"+url);
         webView.loadUrl(url);
     }
 }

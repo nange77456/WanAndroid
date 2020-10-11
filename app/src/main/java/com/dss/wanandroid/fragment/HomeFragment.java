@@ -23,10 +23,10 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.dss.wanandroid.utils.MyWebView;
 import com.dss.wanandroid.R;
-import com.dss.wanandroid.banner.BannerData;
-import com.dss.wanandroid.banner.BannerViewHolder;
-import com.dss.wanandroid.banner.HomeAdapter;
-import com.dss.wanandroid.net.HomeNetwork;
+import com.dss.wanandroid.entity.BannerData;
+import com.dss.wanandroid.adapter.BannerViewHolder;
+import com.dss.wanandroid.adapter.BannerAdapter;
+import com.dss.wanandroid.net.HomeRequest;
 import com.zhpan.bannerview.BannerViewPager;
 import com.zhpan.indicator.enums.IndicatorStyle;
 
@@ -110,16 +110,16 @@ public class HomeFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void setupViewPager(View view) {
         //创建轮播图的适配器
-        HomeAdapter adapter = new HomeAdapter();
+        BannerAdapter adapter = new BannerAdapter();
         //获取与Fragment绑定的activity
         final Activity activity = getActivity();
 
         //轮播图数据集合
         final List<BannerData> bannerDataList = new ArrayList<>();
         //创建首页网络请求的工具类
-        HomeNetwork homeNetwork = new HomeNetwork();
+        HomeRequest homeNetwork = new HomeRequest();
         //通过网络请求 异步 获取轮播图数据
-        homeNetwork.getBannerData(new HomeNetwork.Phone() {
+        homeNetwork.getBannerData(new HomeRequest.Phone() {
             @Override
             public void onPhone(final List<BannerData> list) {
                 //把传入参数list的数据全部填入bannerDataList (不能直接=)
