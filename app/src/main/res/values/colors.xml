@@ -12,4 +12,5 @@
     <color name="colorTextTitle">#000000</color>
     <color name="colorTextPlain">#323232</color>
     <color name="colorTextPreview">#747474</color>
+    <color name="colorTag">#CE747474</color>
 </resources>

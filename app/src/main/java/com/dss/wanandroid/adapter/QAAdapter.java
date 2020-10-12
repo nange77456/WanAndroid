@@ -1,5 +1,6 @@
 package com.dss.wanandroid.adapter;
 
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,6 @@ import com.dss.wanandroid.R;
 import com.dss.wanandroid.entity.QAData;
 import com.like.LikeButton;
 
-import java.security.cert.PolicyNode;
 import java.util.List;
 
 /**
@@ -36,6 +36,7 @@ public class QAAdapter extends RecyclerView.Adapter<QAAdapter.ViewHolder> {
     private Phone phone;
 
     public interface Phone{
+        //点击子项时触发的回调
         void onPhone(int position);
     }
 
@@ -61,12 +62,11 @@ public class QAAdapter extends RecyclerView.Adapter<QAAdapter.ViewHolder> {
             super(itemView);
             this.itemView = itemView;
             chapter1 = itemView.findViewById(R.id.chapter1);
-            chapter2 = itemView.findViewById(R.id.chapter2);
             time = itemView.findViewById(R.id.time);
             desc = itemView.findViewById(R.id.desc);
             author = itemView.findViewById(R.id.author);
             title = itemView.findViewById(R.id.title);
-            likeButton = itemView.findViewById(R.id.likebutton);
+            likeButton = itemView.findViewById(R.id.likeButton);
 
         }
     }
@@ -107,12 +107,14 @@ public class QAAdapter extends RecyclerView.Adapter<QAAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         QAData item = qaDataList.get(position);
-        holder.desc.setText(item.getDesc());
-        holder.chapter2.setText(item.getChapterName());
-        holder.chapter1.setText(item.getSuperChapterName());
+        holder.chapter1.setText(item.getSuperChapterName()+"/"+item.getChapterName());
         holder.author.setText(item.getAuthor());
         holder.time.setText(item.getNiceDate());
         holder.title.setText(item.getTitle());
+
+        //用Html类静态方法fromHtml处理含前端标签的文本
+        holder.desc.setText(Html.fromHtml(Html.fromHtml(item.getDesc()).toString()));
+
         //TODO likeButton是否点亮和用户有关
     }
 }

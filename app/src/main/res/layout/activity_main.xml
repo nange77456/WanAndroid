@@ -15,9 +15,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_navigation_menu"
-        app:backgroundTint="@color/colorDark"
-        app:itemIconTint="@color/colorWhite"
-        app:itemTextColor="@color/colorWhite"
+        app:backgroundTint="@color/colorWhite"
+        app:itemIconSize="26dp"
         app:labelVisibilityMode="labeled"/>
 
     <androidx.viewpager2.widget.ViewPager2

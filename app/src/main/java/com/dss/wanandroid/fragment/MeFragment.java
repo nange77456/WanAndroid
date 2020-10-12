@@ -17,8 +17,7 @@ public class MeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_me,container,false);
-        TextView title = view.findViewById(R.id.page_title);
-        title.setText(R.string.nav_me);
+
         return view;
     }
 }

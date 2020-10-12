@@ -43,16 +43,16 @@ public class MainActivity extends AppCompatActivity {
                 int itemId = item.getItemId();
                 switch (itemId){
                     case R.id.home:
-                        viewPager.setCurrentItem(0,false);
+                        viewPager.setCurrentItem(0,true);
                         break;
                     case R.id.qa:
-                        viewPager.setCurrentItem(1,false);
+                        viewPager.setCurrentItem(1,true);
                         break;
                     case R.id.category:
-                        viewPager.setCurrentItem(2,false);
+                        viewPager.setCurrentItem(2,true);
                         break;
                     case R.id.me:
-                        viewPager.setCurrentItem(3,false);
+                        viewPager.setCurrentItem(3,true);
                 }
                 return true;
             }
