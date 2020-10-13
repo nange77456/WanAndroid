@@ -50,7 +50,6 @@ public class QAAdapter extends RecyclerView.Adapter<QAAdapter.ViewHolder> {
      */
     static class ViewHolder extends RecyclerView.ViewHolder{
         TextView chapter1;
-        TextView chapter2;
         TextView time;
         TextView title;
         TextView desc;

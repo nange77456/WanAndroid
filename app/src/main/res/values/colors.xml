@@ -13,4 +13,7 @@
     <color name="colorTextPlain">#323232</color>
     <color name="colorTextPreview">#747474</color>
     <color name="colorTag">#CE747474</color>
+    <color name="colorSplitter">#22747474</color>
+    <color name="colorRed">#E53935</color>
+    <color name="colorOrange">#81FFB300</color>
 </resources>

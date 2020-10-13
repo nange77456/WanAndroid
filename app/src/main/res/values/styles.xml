@@ -7,4 +7,9 @@
         <item name="colorAccent">@color/colorLight</item>
     </style>
 
+    <style name="DoubleTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorOrange</item>
+        <item name="colorPrimaryDark">@color/colorOrange</item>
+        <item name="colorAccent">@color/colorLight</item>
+    </style>
 </resources>
