@@ -1,8 +1,10 @@
-package com.dss.wanandroid;
+package com.dss.wanandroid.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.dss.wanandroid.R;
 
 public class DoubleDoubleActivity extends AppCompatActivity {
 

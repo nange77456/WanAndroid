@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#81FFB300"
-    tools:context=".DoubleDoubleActivity">
+    tools:context=".activity.DoubleDoubleActivity">
 
     <com.liji.circleimageview.CircleImageView
         android:id="@+id/avatar"

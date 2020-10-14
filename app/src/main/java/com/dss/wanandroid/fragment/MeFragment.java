@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,11 +12,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.dss.wanandroid.DoubleDoubleActivity;
+import com.dss.wanandroid.activity.DoubleDoubleActivity;
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.adapter.MeAdapter;
 import com.dss.wanandroid.entity.MeData;
-import com.dss.wanandroid.utils.MyWebView;
 import com.liji.circleimageview.CircleImageView;
 
 import java.util.ArrayList;
