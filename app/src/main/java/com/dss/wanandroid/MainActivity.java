@@ -13,12 +13,15 @@ import com.dss.wanandroid.fragment.CategoryFragment;
 import com.dss.wanandroid.fragment.HomeFragment;
 import com.dss.wanandroid.fragment.MeFragment;
 import com.dss.wanandroid.fragment.QAFragment;
-import com.dss.wanandroid.utils.ViewPagerAdapter;
+import com.dss.wanandroid.adapter.ViewPagerAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * app主页activity
+ */
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -26,16 +29,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        //viewPager使用的4个自定义Fragment
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(new HomeFragment());
         fragmentList.add(new QAFragment());
         fragmentList.add(new CategoryFragment());
         fragmentList.add(new MeFragment());
 
+        //配置viewPager
         final ViewPager2 viewPager = findViewById(R.id.viewPager);
         viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(),getLifecycle(),fragmentList));
 
+        //底部导航栏点击后设置对应的viewPager子项
         final BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -58,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //viewPager滑动后设置对应的底部导航栏子项
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {

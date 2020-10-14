@@ -1,4 +1,4 @@
-package com.dss.wanandroid.utils;
+package com.dss.wanandroid.adapter;
 
 
 import androidx.annotation.NonNull;

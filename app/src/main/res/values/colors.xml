@@ -16,4 +16,7 @@
     <color name="colorSplitter">#22747474</color>
     <color name="colorRed">#E53935</color>
     <color name="colorOrange">#81FFB300</color>
+    <color name="colorLoginBackground">#79F1D949</color>
+    <color name="colorLoginSubmit">#1768DE</color>
+    <color name="colorLoginBackgroundGrey">#EDF4FE</color>
 </resources>

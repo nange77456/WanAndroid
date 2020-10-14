@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dss.wanandroid.activity.DoubleDoubleActivity;
 import com.dss.wanandroid.R;
+import com.dss.wanandroid.activity.EntryActivity;
 import com.dss.wanandroid.adapter.MeAdapter;
 import com.dss.wanandroid.entity.MeData;
 import com.liji.circleimageview.CircleImageView;
@@ -57,7 +58,8 @@ public class MeFragment extends Fragment {
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO
+                Intent intent = new Intent(getContext(), EntryActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -66,7 +68,7 @@ public class MeFragment extends Fragment {
         meRecycler.setAdapter(meAdapter);
         meRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        //点击事件
+        //设置项点击事件
         meAdapter.setPhone(new MeAdapter.Phone() {
             @Override
             public void onPhone(int position) {
@@ -88,6 +90,7 @@ public class MeFragment extends Fragment {
                 }
             }
         });
+
 
         return view;
     }
