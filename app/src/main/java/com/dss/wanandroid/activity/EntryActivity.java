@@ -19,6 +19,12 @@ import java.util.List;
  */
 public class EntryActivity extends AppCompatActivity {
 
+    private ViewPager2 viewPager2;
+
+    public ViewPager2 getViewPager2() {
+        return viewPager2;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,10 +37,10 @@ public class EntryActivity extends AppCompatActivity {
         entryFragmentList.add(new RegisterFragment());
 
         //配置viewPager2
-        ViewPager2 viewPager2 = findViewById(R.id.entryViewPager);
+        viewPager2 = findViewById(R.id.entryViewPager);
         viewPager2.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(),getLifecycle(),entryFragmentList));
 
-
+        //
 
     }
 }

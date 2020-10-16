@@ -76,7 +76,7 @@ public class MeAdapter extends RecyclerView.Adapter<MeAdapter.ViewHolder> {
         //from()获取LayoutInflater的一个实例
         View view = LayoutInflater.from(parent.getContext())
                 //inflate（）从xml构建view对象
-                .inflate(R.layout.me_item,parent,false);
+                .inflate(R.layout.item_me,parent,false);
         //用view对象新建viewHolder对象，作为返回值
         final ViewHolder holder = new ViewHolder(view);
 

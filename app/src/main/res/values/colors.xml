@@ -4,18 +4,27 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
 
+    <!--    主题色-->
     <color name="colorLight">#f9683a</color>
     <color name="colorDark">#870000</color>
     <color name="colorMiddle">#bf360c</color>
-    <color name="colorWhite">#ffffff</color>
     <color name="colorIndicatorSelected">#FF5252</color>
+    <!--    文字列表颜色-->
     <color name="colorTextTitle">#000000</color>
     <color name="colorTextPlain">#323232</color>
     <color name="colorTextPreview">#747474</color>
+    <color name="colorTextLight">#ffffff</color>
+    <!--    其他-->
     <color name="colorTag">#CE747474</color>
     <color name="colorSplitter">#22747474</color>
+    <color name="colorLink">#2962ff</color>
+    <!--    导航栏底色-->
+    <color name="colorNavigationBackground">#F7F7F7</color>
+    <!--    颜色-->
     <color name="colorRed">#E53935</color>
     <color name="colorOrange">#81FFB300</color>
+    <color name="colorWhite">#ffffff</color>
+    <!--    登录注册颜色-->
     <color name="colorLoginBackground">#79F1D949</color>
     <color name="colorLoginSubmit">#1768DE</color>
     <color name="colorLoginBackgroundGrey">#EDF4FE</color>

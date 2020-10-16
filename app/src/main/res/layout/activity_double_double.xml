@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#81FFB300"
+    android:background="@color/colorLoginBackgroundGrey"
     tools:context=".activity.DoubleDoubleActivity">
 
     <com.liji.circleimageview.CircleImageView
@@ -46,7 +46,6 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:text="ssdeng0@qq.com"
         app:layout_constraintBottom_toBottomOf="@+id/textView2"
         app:layout_constraintStart_toStartOf="@+id/textView4"
@@ -122,10 +121,10 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginBottom="20dp"
+        android:contentDescription="TODO"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_up"
-        android:contentDescription="TODO" />
+        app:srcCompat="@drawable/ic_up" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

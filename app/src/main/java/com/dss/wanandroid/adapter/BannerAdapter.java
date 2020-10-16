@@ -43,6 +43,6 @@ public class BannerAdapter extends BaseBannerAdapter<BannerData,BannerViewHolder
      */
     @Override
     public int getLayoutId(int viewType) {
-        return R.layout.banner_item;
+        return R.layout.item_banner;
     }
 }

@@ -76,7 +76,7 @@ public class QAAdapter extends RecyclerView.Adapter<QAAdapter.ViewHolder> {
         //from方法获取LayoutInflater的实例
         View view = LayoutInflater.from(parent.getContext())
                 //inflate方法从xml构建view
-                .inflate(R.layout.qa_item,parent,false);
+                .inflate(R.layout.item_qa,parent,false);
         final ViewHolder holder = new ViewHolder(view);
 
         //单项点击事件
