@@ -1,8 +1,12 @@
 package com.dss.wanandroid.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,10 +16,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.dss.wanandroid.activity.DoubleDoubleActivity;
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.activity.EntryActivity;
@@ -24,6 +30,7 @@ import com.dss.wanandroid.entity.MeData;
 import com.dss.wanandroid.utils.FileUtil;
 import com.liji.circleimageview.CircleImageView;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +43,6 @@ public class MeFragment extends Fragment {
      * 选头像intent请求码
      */
     public final int PICK_AVATAR_REQUEST = 2;
-    /**
-     * 与fragment绑定的activity
-     */
-    Activity activity = getActivity();
     /**
      * 登陆intent请求码
      */
@@ -57,6 +60,7 @@ public class MeFragment extends Fragment {
      */
     private CircleImageView avatar;
 
+
     /**
      * settingList初始化
      */ {
@@ -65,6 +69,7 @@ public class MeFragment extends Fragment {
         settingList.add(new MeData(R.drawable.ic_favorite, "我的收藏"));
         settingList.add(new MeData(R.drawable.ic_about, "关于作者"));
         settingList.add(new MeData(R.drawable.ic_settings, "系统设置"));
+        settingList.add(new MeData(R.drawable.ic_settings,"退出登录"));
     }
 
     /**
@@ -76,31 +81,41 @@ public class MeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_me, container, false);
-
         //获得username视图对象
         usernameView = view.findViewById(R.id.name);
-
-
         //从view获取头像视图
         avatar = view.findViewById(R.id.avatar);
 
+        //文件中读取登录状态后，设置用户名和头像
+        if (FileUtil.isLogin(getContext())) {
+            usernameView.setText(FileUtil.getUsername(getContext()));
+            //获取内部空间中的头像文件
+            File file = new File(getContext().getFilesDir(),FileUtil.AVATAR_FILE_NAME);
+            if (file.exists()) {
+                //在我的页显示头像
+                Glide.with(getActivity())
+                        .load(file)
+                        .into(avatar);
+            }
+        } else {
+            usernameView.setText("请登录");
+        }
 
+        // 点击头像时先登录后选头像
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //点击头像登录
-                if (!FileUtil.isLogin(getContext())) {
+                if(FileUtil.isLogin(getContext())){
+                    //登陆状态，就从相册选头像,SAF方法
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, PICK_AVATAR_REQUEST);
+                }else {
+                    //没登陆状态，就跳转登录页面
                     Intent intent = new Intent(getContext(), EntryActivity.class);
                     startActivityForResult(intent, LOGIN_REQUEST);
-                } else {
-                    //登陆成功后
-                    // 点击头像就从相册选头像
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_PICK);
-                    intent.setType("image/*");
-                    Log.e("tag","activity is "+activity);
-                    activity.startActivityForResult(intent,PICK_AVATAR_REQUEST);
-
                 }
             }
         });
@@ -116,7 +131,6 @@ public class MeFragment extends Fragment {
         meAdapter.setPhone(new MeAdapter.Phone() {
             @Override
             public void onPhone(int position) {
-                //MeData settingItem = settingList.get(position);
                 //发送网络请求，我的积分，我的分享，我的收藏，关于作者，系统设置
                 switch (position) {
                     case 0:
@@ -127,9 +141,11 @@ public class MeFragment extends Fragment {
                     case 2:
                         break;
                     case 3:
-                        Intent intent = new Intent(activity, DoubleDoubleActivity.class);
-                        intent.putExtra("url", "https://wanandroid.com/");
-                        startActivity(intent);
+                        jumpToAuthor();
+                        break;
+                    case 4:
+                    case 5:
+                        logout();
                         break;
                 }
             }
@@ -161,20 +177,70 @@ public class MeFragment extends Fragment {
                 break;
             //选头像返回
             case PICK_AVATAR_REQUEST:
-                // 复制一份到应用内部空间
-                try {
-//                    if(resultCode==Activity.RESULT_OK){
-                        FileUtil.fileCopy(getContext(),data.getData(),FileUtil.INNER_STORAGE,usernameView.getText().toString());
+                Log.e("tag5","选完了图片");
+                if (resultCode == Activity.RESULT_OK) {
+                    try {
+                        // 复制一份到应用内部空间
+                        FileUtil.fileCopy(getContext(), data.getData(), FileUtil.INNER_STORAGE, FileUtil.AVATAR_FILE_NAME);
+                        // 显示在我的页面
+                        Uri avatarUri = data.getData();
+                        Log.e("tag4", "avatarUri is " + avatarUri);
+                        Glide.with(getActivity())
+                                .load(avatarUri)
+                                .into(avatar);
 
-//                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-                // 显示在我的页面
-                avatar.setImageURI(data.getData());
+                break;
+
 
         }
     }
+
+
+
+    /**
+     * 退出登录
+     */
+    public void logout(){
+        //确认退出登录的提示框
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+        dialog.setMessage("确定要退出登陆吗？");
+        dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //退出登录后删除登录数据
+                Context context = getContext();
+                if(FileUtil.isLogin(context)){
+                    FileUtil.deleteLoginState(context);
+                }
+                //头像、昵称清空
+                avatar.setImageResource(R.drawable.ic_me);
+                usernameView.setText("请登录");
+            }
+        });
+        dialog.show();
+
+
+    }
+
+    /**
+     * 跳转到作者主页
+     */
+    public void jumpToAuthor(){
+        Intent intent = new Intent(getActivity(), DoubleDoubleActivity.class);
+        startActivity(intent);
+    }
+
+
 
 
 }

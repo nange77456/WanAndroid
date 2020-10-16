@@ -3,6 +3,7 @@ package com.dss.wanandroid.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +67,7 @@ public class LoginFragment extends Fragment {
                                     Intent intent = new Intent();
                                     intent.putExtra("username",username);
                                     getActivity().setResult(Activity.RESULT_OK,intent);
+//                                    Log.e("tag2",getActivity().toString());
                                     //销毁绑定的activity
                                     getActivity().finish();
                                 }else {

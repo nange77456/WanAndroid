@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class FileUtil {
+    public static final String AVATAR_FILE_NAME = "avatar";
     /**
      * 用户登录信息存储文件名
      */
@@ -53,6 +54,12 @@ public class FileUtil {
         return preferences.getBoolean("loginState",false);
     }
 
+
+    public static String getUsername(Context context){
+        SharedPreferences preferences = context.getSharedPreferences(USER_DATA,Context.MODE_PRIVATE);
+        return preferences.getString("username","请登录");
+    }
+
     /**
      * 文件复制静态方法
      * @param context
@@ -84,5 +91,24 @@ public class FileUtil {
         //关闭输入输出流
         inputStream.close();
         outputStream.close();
+    }
+
+
+    /**
+     * 退出登录后删除登陆状态
+     * @param context
+     */
+    public static void deleteLoginState(Context context){
+        //删除头像文件
+        File file = new File(context.getFilesDir(),AVATAR_FILE_NAME);
+        if(file.exists()){
+            file.delete();
+        }
+        //将登陆状态改成false
+        SharedPreferences preferences = context.getSharedPreferences(USER_DATA,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("loginState",false);
+        editor.apply();
+
     }
 }
