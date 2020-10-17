@@ -3,7 +3,6 @@ package com.dss.wanandroid.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.activity.EntryActivity;
-import com.dss.wanandroid.net.LoginRequest;
+import com.dss.wanandroid.net.MeRequest;
 import com.dss.wanandroid.utils.FileUtil;
 
 
@@ -51,8 +50,8 @@ public class LoginFragment extends Fragment {
                 final String username = ((TextView)view.findViewById(R.id.username)).getText().toString();
                 final String password = ((TextView)view.findViewById(R.id.password)).getText().toString();
                 //使用LoginRequest类发送登录的网络请求
-                LoginRequest loginRequest = new LoginRequest();
-                loginRequest.loginSubmit(username, password, new LoginRequest.Phone() {
+                MeRequest meRequest = new MeRequest();
+                meRequest.loginSubmit(username, password, new MeRequest.Phone() {
                     @Override
                     public void onPhone(final int errorCode, final String errorMsg) {
                         getActivity().runOnUiThread(new Runnable() {
@@ -67,7 +66,6 @@ public class LoginFragment extends Fragment {
                                     Intent intent = new Intent();
                                     intent.putExtra("username",username);
                                     getActivity().setResult(Activity.RESULT_OK,intent);
-//                                    Log.e("tag2",getActivity().toString());
                                     //销毁绑定的activity
                                     getActivity().finish();
                                 }else {

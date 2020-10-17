@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,15 +12,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.dss.wanandroid.activity.CreditActivity;
 import com.dss.wanandroid.activity.DoubleDoubleActivity;
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.activity.EntryActivity;
@@ -69,7 +69,7 @@ public class MeFragment extends Fragment {
         settingList.add(new MeData(R.drawable.ic_favorite, "我的收藏"));
         settingList.add(new MeData(R.drawable.ic_about, "关于作者"));
         settingList.add(new MeData(R.drawable.ic_settings, "系统设置"));
-        settingList.add(new MeData(R.drawable.ic_settings,"退出登录"));
+        settingList.add(new MeData(R.drawable.ic_logout, "退出登录"));
     }
 
     /**
@@ -90,7 +90,7 @@ public class MeFragment extends Fragment {
         if (FileUtil.isLogin(getContext())) {
             usernameView.setText(FileUtil.getUsername(getContext()));
             //获取内部空间中的头像文件
-            File file = new File(getContext().getFilesDir(),FileUtil.AVATAR_FILE_NAME);
+            File file = new File(getContext().getFilesDir(), FileUtil.AVATAR_FILE_NAME);
             if (file.exists()) {
                 //在我的页显示头像
                 Glide.with(getActivity())
@@ -105,14 +105,14 @@ public class MeFragment extends Fragment {
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(FileUtil.isLogin(getContext())){
+                if (FileUtil.isLogin(getContext())) {
                     //登陆状态，就从相册选头像,SAF方法
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
                     intent.setType("image/*");
                     startActivityForResult(intent, PICK_AVATAR_REQUEST);
-                }else {
+                } else {
                     //没登陆状态，就跳转登录页面
                     Intent intent = new Intent(getContext(), EntryActivity.class);
                     startActivityForResult(intent, LOGIN_REQUEST);
@@ -120,10 +120,8 @@ public class MeFragment extends Fragment {
             }
         });
 
-
-
         //配置设置列表RecyclerView
-        RecyclerView meRecycler = view.findViewById(R.id.meRecyclerView);
+        RecyclerView meRecycler = view.findViewById(R.id.creditList);
         meRecycler.setAdapter(meAdapter);
         meRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -131,10 +129,10 @@ public class MeFragment extends Fragment {
         meAdapter.setPhone(new MeAdapter.Phone() {
             @Override
             public void onPhone(int position) {
-                //发送网络请求，我的积分，我的分享，我的收藏，关于作者，系统设置
+                //我的积分，我的分享，我的收藏，关于作者，系统设置，退出登录
                 switch (position) {
                     case 0:
-                        //TODO
+                        jumpToCreditPage();
                         break;
                     case 1:
                         break;
@@ -177,7 +175,7 @@ public class MeFragment extends Fragment {
                 break;
             //选头像返回
             case PICK_AVATAR_REQUEST:
-                Log.e("tag5","选完了图片");
+                Log.e("tag5", "选完了图片");
                 if (resultCode == Activity.RESULT_OK) {
                     try {
                         // 复制一份到应用内部空间
@@ -199,35 +197,40 @@ public class MeFragment extends Fragment {
         }
     }
 
-
-
     /**
      * 退出登录
      */
-    public void logout(){
+    public void logout() {
         //确认退出登录的提示框
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
-        dialog.setMessage("确定要退出登陆吗？");
-        dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        dialog.setMessage("确定要退出登陆吗？")
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-            }
-        });
-        dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //退出登录后删除登录数据
-                Context context = getContext();
-                if(FileUtil.isLogin(context)){
-                    FileUtil.deleteLoginState(context);
-                }
-                //头像、昵称清空
-                avatar.setImageResource(R.drawable.ic_me);
-                usernameView.setText("请登录");
-            }
-        });
-        dialog.show();
+                    }
+                })
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!FileUtil.isLogin(getContext())) {
+                            Toast.makeText(getContext(), "您还没有登录", Toast.LENGTH_SHORT).show();
+                        } else {
+                            //退出登录需要删除登录数据
+                            Context context = getContext();
+                            if (FileUtil.isLogin(context)) {
+                                FileUtil.deleteLoginState(context);
+                            }
+                            //头像、昵称清空
+                            avatar.setImageResource(R.drawable.ic_me);
+                            usernameView.setText("请登录");
+                            //Toast提示
+                            Toast.makeText(getContext(), "退出登陆成功", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                })
+                .show();
 
 
     }
@@ -235,12 +238,18 @@ public class MeFragment extends Fragment {
     /**
      * 跳转到作者主页
      */
-    public void jumpToAuthor(){
+    public void jumpToAuthor() {
         Intent intent = new Intent(getActivity(), DoubleDoubleActivity.class);
         startActivity(intent);
     }
 
-
+    /**
+     * 跳转到积分详情页
+     */
+    public void jumpToCreditPage(){
+        Intent intent = new Intent(getActivity(), CreditActivity.class);
+        startActivity(intent);
+    }
 
 
 }

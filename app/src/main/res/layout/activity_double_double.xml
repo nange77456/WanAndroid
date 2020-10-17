@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:text="Nange77456"
+        android:text="nange77456"
         android:textColor="@color/colorTextPlain"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/avatar"

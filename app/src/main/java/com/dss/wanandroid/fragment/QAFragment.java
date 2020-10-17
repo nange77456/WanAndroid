@@ -121,8 +121,8 @@ public class QAFragment extends Fragment {
         qaRequest.getQAData(pageId, new QARequest.Phone() {
             @Override
             public void onPhone(int pageId, List<QAData> QAList) {
-                Log.e("tag","pageId = "+pageId);
-                Log.e("tag","list = "+QAList.toString());
+//                Log.e("tag","pageId = "+pageId);
+//                Log.e("tag","list = "+QAList.toString());
                 //只有下拉刷新时需要清空链表数据
                 if(needClearData){
                     qaList.clear();

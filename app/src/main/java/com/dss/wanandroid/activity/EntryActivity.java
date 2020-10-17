@@ -40,7 +40,5 @@ public class EntryActivity extends AppCompatActivity {
         viewPager2 = findViewById(R.id.entryViewPager);
         viewPager2.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(),getLifecycle(),entryFragmentList));
 
-        //
-
     }
 }

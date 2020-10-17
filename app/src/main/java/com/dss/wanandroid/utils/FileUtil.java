@@ -54,10 +54,24 @@ public class FileUtil {
         return preferences.getBoolean("loginState",false);
     }
 
-
+    /**
+     * 获取当前用户名
+     * @param context
+     * @return
+     */
     public static String getUsername(Context context){
         SharedPreferences preferences = context.getSharedPreferences(USER_DATA,Context.MODE_PRIVATE);
         return preferences.getString("username","请登录");
+    }
+
+    /**
+     * 获取用户的登陆密码
+     * @param context
+     * @return
+     */
+    public static String getPassword(Context context){
+        SharedPreferences preferences = context.getSharedPreferences(USER_DATA,Context.MODE_PRIVATE);
+        return preferences.getString("password","");
     }
 
     /**
