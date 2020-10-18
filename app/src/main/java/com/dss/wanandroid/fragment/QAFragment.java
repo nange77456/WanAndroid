@@ -80,7 +80,6 @@ public class QAFragment extends Fragment {
 
     /**
      * 设置下拉刷新，上拉加载
-     *
      * @param view fragment的View
      */
     public void setRefreshLayout(final View view) {

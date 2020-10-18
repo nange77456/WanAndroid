@@ -175,14 +175,14 @@ public class MeFragment extends Fragment {
                 break;
             //选头像返回
             case PICK_AVATAR_REQUEST:
-                Log.e("tag5", "选完了图片");
+//                Log.e("tag5", "选完了图片");
                 if (resultCode == Activity.RESULT_OK) {
                     try {
                         // 复制一份到应用内部空间
                         FileUtil.fileCopy(getContext(), data.getData(), FileUtil.INNER_STORAGE, FileUtil.AVATAR_FILE_NAME);
                         // 显示在我的页面
                         Uri avatarUri = data.getData();
-                        Log.e("tag4", "avatarUri is " + avatarUri);
+//                        Log.e("tag4", "avatarUri is " + avatarUri);
                         Glide.with(getActivity())
                                 .load(avatarUri)
                                 .into(avatar);

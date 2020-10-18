@@ -3,6 +3,7 @@ package com.dss.wanandroid.net;
 import android.util.Log;
 
 import com.dss.wanandroid.entity.CreditListData;
+import com.dss.wanandroid.entity.RankingData;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -50,7 +51,14 @@ public class MeRequest {
      * 积分记录列表的数据回调接口
      */
     public interface CreditListPhone{
-        void onPhone(int curPage,List<CreditListData> creditList);
+        void onPhone(List<CreditListData> creditList,int pageCount);
+    }
+
+    /**
+     * 积分排行版列表数据的回调接口
+     */
+    public interface RankingPhone{
+        void onPhone(List<RankingData> rankingList);
     }
 
     /**
@@ -154,7 +162,7 @@ public class MeRequest {
     }
 
     /**
-     * 获取个人积分 网络请求
+     * 获取个人积分 网络请求方法
      * @param username 用户名
      * @param password 登陆密码
      * @param phone 回调接口
@@ -203,10 +211,17 @@ public class MeRequest {
         });
     }
 
-    public void getMyCreditsList(String username, String password, final CreditListPhone phone){
+    /**
+     * 获取个人积分记录列表 网络请求方法
+     * @param username
+     * @param password
+     * @param pageId
+     * @param phone
+     */
+    public void getMyCreditsList(String username, String password, int pageId, final CreditListPhone phone){
         //构造request
         Request request = new Request.Builder()
-                .url(NetUtil.baseUrl+"//lg/coin/list/1/json")
+                .url(NetUtil.baseUrl+"//lg/coin/list/"+pageId+"/json")
                 .addHeader("Cookie","loginUserName="+username)
                 .addHeader("Cookie","loginUserPassword="+password)
                 .get()
@@ -224,15 +239,16 @@ public class MeRequest {
 
                 try {
                     JSONObject object = new JSONObject(jsonData).getJSONObject("data");
-                    int pageId = object.getInt("curPage");
+
                     JSONArray array = object.getJSONArray("datas");
+                    int pageCount = object.getInt("pageCount");
 
                     Gson gson = new Gson();
                     List<CreditListData> creditList = gson.fromJson(array.toString(),
                             new TypeToken<List<CreditListData>>(){}.getType());
 
                     if(phone!=null){
-                        phone.onPhone(pageId,creditList);
+                        phone.onPhone(creditList,pageCount);
                     }
 
                 } catch (JSONException e) {
@@ -246,8 +262,43 @@ public class MeRequest {
         });
     }
 
-    public void getCreditsRanking(){
+    /**
+     * 获取积分排行版的网络请求方法
+     * @param pageId
+     * @param phone
+     */
+    public void getCreditsRanking(int pageId, final RankingPhone phone){
+        Request request = new Request.Builder()
+                .url(NetUtil.baseUrl+"/coin/rank/"+pageId+"/json")
+                .get()
+                .build();
 
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String jsonData = response.body().string();
+
+                try {
+                    JSONObject object = new JSONObject(jsonData).getJSONObject("data");
+                    JSONArray datas = object.getJSONArray("datas");
+
+                    Gson gson = new Gson();
+                    List<RankingData> rankingList = gson.fromJson(datas.toString()
+                            ,new TypeToken<List<RankingData>>(){}.getType());
+
+                    if(phone!=null){
+                        phone.onPhone(rankingList);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 }
