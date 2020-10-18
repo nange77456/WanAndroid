@@ -1,7 +1,7 @@
 package com.dss.wanandroid.entity;
 
 /**
- * 积分排行榜 实体类
+ * 积分排行榜数据项
  */
 public class RankingData {
     /**

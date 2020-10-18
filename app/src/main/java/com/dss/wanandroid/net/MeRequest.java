@@ -236,28 +236,22 @@ public class MeRequest {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String jsonData = response.body().string();
-
                 try {
                     JSONObject object = new JSONObject(jsonData).getJSONObject("data");
-
+                    //获取需要的数据
                     JSONArray array = object.getJSONArray("datas");
                     int pageCount = object.getInt("pageCount");
-
+                    //gson解析json数组
                     Gson gson = new Gson();
                     List<CreditListData> creditList = gson.fromJson(array.toString(),
                             new TypeToken<List<CreditListData>>(){}.getType());
-
+                    //调用回调方法返回数据列表
                     if(phone!=null){
                         phone.onPhone(creditList,pageCount);
                     }
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-
-
-
             }
         });
     }
@@ -268,11 +262,12 @@ public class MeRequest {
      * @param phone
      */
     public void getCreditsRanking(int pageId, final RankingPhone phone){
+        //构造请求
         Request request = new Request.Builder()
                 .url(NetUtil.baseUrl+"/coin/rank/"+pageId+"/json")
                 .get()
                 .build();
-
+        //异步发送请求
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -282,15 +277,15 @@ public class MeRequest {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String jsonData = response.body().string();
-
                 try {
                     JSONObject object = new JSONObject(jsonData).getJSONObject("data");
+                    //获得需要的数据
                     JSONArray datas = object.getJSONArray("datas");
-
+                    //用gson解析json数组
                     Gson gson = new Gson();
                     List<RankingData> rankingList = gson.fromJson(datas.toString()
                             ,new TypeToken<List<RankingData>>(){}.getType());
-
+                    //调用回调方法返回数据列表
                     if(phone!=null){
                         phone.onPhone(rankingList);
                     }

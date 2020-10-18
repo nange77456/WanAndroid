@@ -24,6 +24,9 @@ public class RankingAdapter extends RecyclerView.Adapter<RankingAdapter.ViewHold
         this.rankingList = rankingList;
     }
 
+    /**
+     * 子项视图ViewHolder
+     */
     static class ViewHolder extends RecyclerView.ViewHolder{
         TextView rankingView;
         TextView nameView;

@@ -53,10 +53,13 @@
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view3">
+        app:layout_constraintTop_toBottomOf="@+id/view3"
+        app:srlEnableOverScrollDrag="true"
+        app:srlEnableRefresh="false">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/creditList"

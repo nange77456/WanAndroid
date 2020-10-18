@@ -93,7 +93,6 @@ public class CreditActivity extends AppCompatActivity {
                     //请求不到数据就显示“没有更多数据”给用户，并且不再请求，最后一页
                     refreshLayout.finishLoadMoreWithNoMoreData();
                 }
-                Log.e("tag","credit list pageId is "+pageId);
             }
         });
 
@@ -106,6 +105,7 @@ public class CreditActivity extends AppCompatActivity {
         rankingView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //注：已排除的bug，匿名内部类的this不是我要的this
                 Intent intent = new Intent(creditActivity,RankingActivity.class);
                 startActivity(intent);
             }
@@ -156,6 +156,7 @@ public class CreditActivity extends AppCompatActivity {
                 pageId, new MeRequest.CreditListPhone() {
             @Override
             public void onPhone(List<CreditListData> creditListDataList, int pageCountNum) {
+                //获取积分列表总页数，在上拉刷新时使用，判断是否最后一页
                 pageCount = pageCountNum;
                 //将网络请求访问到的数据接在creditList后面，并通知adapter更新数据
                 creditList.addAll(creditListDataList);

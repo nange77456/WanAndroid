@@ -35,7 +35,7 @@ public class RankingActivity extends AppCompatActivity {
     /**
      * 网络请求的当前页码
      */
-    private int pageId = 1;         //TODO 我觉得有问题
+    private int pageId = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +55,9 @@ public class RankingActivity extends AppCompatActivity {
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                //2s内结束上拉刷新操作
                 refreshLayout.finishLoadMore(2000);
+                //将数据追加到排行表list后面，并通知adapter更新页面，pageId+1
                 setRankingList(++pageId);
             }
         });
@@ -68,7 +70,7 @@ public class RankingActivity extends AppCompatActivity {
     }
 
     /**
-     * 调用网络请求方法给rankingList赋值
+     * 调用网络请求方法获得排行榜数据，保存在rankingList后面
      * @param pageId
      */
     public void setRankingList(int pageId){
@@ -76,10 +78,12 @@ public class RankingActivity extends AppCompatActivity {
         meRequest.getCreditsRanking(pageId, new MeRequest.RankingPhone() {
             @Override
             public void onPhone(List<RankingData> rankingDataList) {
+                //更新rankingList
                 rankingList.addAll(rankingDataList);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        //页面更新
                         adapter.notifyDataSetChanged();
                     }
                 });

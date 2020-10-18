@@ -129,7 +129,7 @@ public class MeFragment extends Fragment {
         meAdapter.setPhone(new MeAdapter.Phone() {
             @Override
             public void onPhone(int position) {
-                //我的积分，我的分享，我的收藏，关于作者，系统设置，退出登录
+                //0我的积分，1我的分享，2我的收藏，3关于作者，4系统设置，5退出登录
                 switch (position) {
                     case 0:
                         jumpToCreditPage();
@@ -175,14 +175,12 @@ public class MeFragment extends Fragment {
                 break;
             //选头像返回
             case PICK_AVATAR_REQUEST:
-//                Log.e("tag5", "选完了图片");
                 if (resultCode == Activity.RESULT_OK) {
                     try {
                         // 复制一份到应用内部空间
                         FileUtil.fileCopy(getContext(), data.getData(), FileUtil.INNER_STORAGE, FileUtil.AVATAR_FILE_NAME);
                         // 显示在我的页面
                         Uri avatarUri = data.getData();
-//                        Log.e("tag4", "avatarUri is " + avatarUri);
                         Glide.with(getActivity())
                                 .load(avatarUri)
                                 .into(avatar);
