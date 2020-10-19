@@ -36,6 +36,10 @@ public class RankingActivity extends AppCompatActivity {
      * 网络请求的当前页码
      */
     private int pageId = 1;
+    /**
+     * 刷新加载布局
+     */
+    private SmartRefreshLayout refreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,17 +50,19 @@ public class RankingActivity extends AppCompatActivity {
         TextView pageTitle = findViewById(R.id.page_title);
         pageTitle.setText(R.string.nav_credit_ranking);
 
+        //设置上拉刷新
+        refreshLayout = findViewById(R.id.refreshLayout);
+
         //TODO 网络请求慢，白屏很久像bug
         //rankingList初始化
         setRankingList(1);
 
-        //设置上拉刷新
-        SmartRefreshLayout refreshLayout = findViewById(R.id.refreshLayout);
+
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 //2s内结束上拉刷新操作
-                refreshLayout.finishLoadMore(2000);
+//                refreshLayout.finishLoadMore(2000);
                 //将数据追加到排行表list后面，并通知adapter更新页面，pageId+1
                 setRankingList(++pageId);
             }
@@ -87,6 +93,8 @@ public class RankingActivity extends AppCompatActivity {
                         adapter.notifyDataSetChanged();
                     }
                 });
+                //网络请求结束时，上拉加载也结束
+                refreshLayout.finishLoadMore();
             }
         });
     }

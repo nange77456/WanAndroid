@@ -25,6 +25,7 @@ import com.dss.wanandroid.activity.CreditActivity;
 import com.dss.wanandroid.activity.DoubleDoubleActivity;
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.activity.EntryActivity;
+import com.dss.wanandroid.activity.FavoriteActivity;
 import com.dss.wanandroid.adapter.MeAdapter;
 import com.dss.wanandroid.entity.MeData;
 import com.dss.wanandroid.utils.FileUtil;
@@ -137,6 +138,7 @@ public class MeFragment extends Fragment {
                     case 1:
                         break;
                     case 2:
+                        jumpToFavoritePage();
                         break;
                     case 3:
                         jumpToAuthor();
@@ -246,6 +248,14 @@ public class MeFragment extends Fragment {
      */
     public void jumpToCreditPage(){
         Intent intent = new Intent(getActivity(), CreditActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * 跳转到收藏文章列表页
+     */
+    public void jumpToFavoritePage(){
+        Intent intent = new Intent(getActivity(), FavoriteActivity.class);
         startActivity(intent);
     }
 

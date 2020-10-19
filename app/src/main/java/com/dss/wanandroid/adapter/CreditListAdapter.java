@@ -55,8 +55,10 @@ public class CreditListAdapter extends RecyclerView.Adapter<CreditListAdapter.Vi
         CreditListData creditRecord = creditList.get(position);
         //拆分字符串
         String desc = creditRecord.getDesc();
-        String record = desc.substring(20,22)+desc.substring(25,27)+desc.substring(28);
         String time = desc.substring(0,19);
+        String reason = creditRecord.getReason();
+        String record = reason+desc.split(",")[1].trim().replace("：","");
+
         //将数据填充到xml
         holder.creditView.setText("+"+creditRecord.getCoinCount());
         holder.timeView.setText(time);

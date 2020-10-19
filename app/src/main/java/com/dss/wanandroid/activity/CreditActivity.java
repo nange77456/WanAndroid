@@ -1,17 +1,21 @@
 package com.dss.wanandroid.activity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.adapter.CreditListAdapter;
@@ -51,35 +55,43 @@ public class CreditActivity extends AppCompatActivity {
      */
     private int pageId = 1;
     /**
-     * 本类实例，用于匿名类
-     */
-    private CreditActivity creditActivity = this;
-    /**
      * 积分列表总页数
      */
     private int pageCount = -1;
+
+    /**
+     * 刷新加载布局
+     */
+    private RefreshLayout refreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_credit_activity);
 
-        //从xml获得积分总数视图
-        creditView = findViewById(R.id.credits);
-        //从xml获得排行榜入口图标
-        ImageView rankingView = findViewById(R.id.ranking);
+        //设置自定义toolbar
+        Toolbar toolbar = findViewById(R.id.toolbarPlus);
+        setSupportActionBar(toolbar);
         //从xml获得toolbar的标题文字
         TextView pageTitle = findViewById(R.id.page_title);
         pageTitle.setText(R.string.nav_credit);
 
+//        ActionBar actionBar = getSupportActionBar();
+//        if(actionBar!=null){
+//            actionBar.setDisplayShowTitleEnabled(false);
+//        }
+
+        //从xml获得积分总数视图
+        creditView = findViewById(R.id.credits);
+
         //设置creditView数字
         setCreditNumber();
-
+        //上拉加载的布局
+        refreshLayout = findViewById(R.id.refreshLayout);
         //设置积分记录列表第一页
         setCreditList(1);
 
-        //上拉加载的布局
-        RefreshLayout refreshLayout = findViewById(R.id.refreshLayout);
+
         //上拉加载的回调函数
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
@@ -87,7 +99,7 @@ public class CreditActivity extends AppCompatActivity {
                 if(pageId!=pageCount){
                     //上拉加载的时候，网络请求的url中的curPage+1
                     pageId++;
-                    refreshLayout.finishLoadMore(2000);
+//                    refreshLayout.finishLoadMore(2000);
                     setCreditList(pageId);
                 }else{
                     //请求不到数据就显示“没有更多数据”给用户，并且不再请求，最后一页
@@ -101,15 +113,7 @@ public class CreditActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(creditListAdapter);
 
-        //排行榜入口视图的点击事件，跳转排行榜页面
-        rankingView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //注：已排除的bug，匿名内部类的this不是我要的this
-                Intent intent = new Intent(creditActivity,RankingActivity.class);
-                startActivity(intent);
-            }
-        });
+
 
     }
 
@@ -166,8 +170,30 @@ public class CreditActivity extends AppCompatActivity {
                         creditListAdapter.notifyDataSetChanged();
                     }
                 });
+                //网络请求结束时调用停止上拉加载的方法
+                refreshLayout.finishLoadMore();
             }
         });
+
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu,menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.plusFunction:
+                //排行榜入口视图的点击事件，跳转排行榜页面
+                //注：已排除的bug，匿名内部类的this不是我要的this
+                Intent intent = new Intent(CreditActivity.this,RankingActivity.class);
+                startActivity(intent);
+                break;
+        }
+        return true;
+    }
 }

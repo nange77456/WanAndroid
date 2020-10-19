@@ -40,6 +40,10 @@ public class QAFragment extends Fragment {
      * qa适配器
      */
     final private QAAdapter qaAdapter = new QAAdapter(qaList);
+    /**
+     * 刷新加载布局
+     */
+    private RefreshLayout refreshLayout;
 
     @Nullable
     @Override
@@ -84,13 +88,12 @@ public class QAFragment extends Fragment {
      */
     public void setRefreshLayout(final View view) {
         //从fragmentView获得刷新布局对象
-        RefreshLayout refreshLayout = view.findViewById(R.id.refreshLayout);
+        refreshLayout = view.findViewById(R.id.refreshLayout);
         //在下拉刷新时调用此方法
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
-                //Log.e("tag", "在刷新");
 
                 //下拉刷新的时候重新访问第1页的问答数据
                 pageId = 1;
@@ -101,8 +104,7 @@ public class QAFragment extends Fragment {
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(RefreshLayout refreshlayout) {
-                refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
-                //Log.e("tag", "在加载");
+//                refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
 
                 //上拉加载的时候访问下一页数据
                 pageId++;
@@ -120,15 +122,12 @@ public class QAFragment extends Fragment {
         qaRequest.getQAData(pageId, new QARequest.Phone() {
             @Override
             public void onPhone(int pageId, List<QAData> QAList) {
-//                Log.e("tag","pageId = "+pageId);
-//                Log.e("tag","list = "+QAList.toString());
                 //只有下拉刷新时需要清空链表数据
                 if(needClearData){
                     qaList.clear();
                 }
                 //给qaList填入网络请求得到的数据
                 qaList.addAll(QAList);
-
                 //改变ui在主线程
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -137,6 +136,8 @@ public class QAFragment extends Fragment {
                         qaAdapter.notifyDataSetChanged();
                     }
                 });
+                //网络请求结束时也结束上拉加载
+                refreshLayout.finishLoadMore();
             }
         });
 

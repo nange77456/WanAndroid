@@ -12,6 +12,10 @@ public class CreditListData {
      * 积分数字
      */
     int coinCount;
+    /**
+     * 原因
+     */
+    String reason;
 
     public String getDesc() {
         return desc;
@@ -27,5 +31,13 @@ public class CreditListData {
 
     public void setCoinCount(int coinCount) {
         this.coinCount = coinCount;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 }
