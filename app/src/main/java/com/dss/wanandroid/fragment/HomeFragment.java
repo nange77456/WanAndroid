@@ -69,7 +69,7 @@ public class HomeFragment extends Fragment {
         title.setText(R.string.nav_home);
 
         //从view对象获得toolbar对象
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.include);
         //获取与Fragment绑定的activity对象
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         //把toolbar设置为actionbar（默认有的）

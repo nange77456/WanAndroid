@@ -26,6 +26,7 @@ import com.dss.wanandroid.activity.DoubleDoubleActivity;
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.activity.EntryActivity;
 import com.dss.wanandroid.activity.FavoriteActivity;
+import com.dss.wanandroid.activity.ShareActivity;
 import com.dss.wanandroid.adapter.MeAdapter;
 import com.dss.wanandroid.entity.MeData;
 import com.dss.wanandroid.utils.FileUtil;
@@ -88,8 +89,8 @@ public class MeFragment extends Fragment {
         avatar = view.findViewById(R.id.avatar);
 
         //文件中读取登录状态后，设置用户名和头像
-        if (FileUtil.isLogin(getContext())) {
-            usernameView.setText(FileUtil.getUsername(getContext()));
+        if (FileUtil.isLogin()) {
+            usernameView.setText(FileUtil.getUsername());
             //获取内部空间中的头像文件
             File file = new File(getContext().getFilesDir(), FileUtil.AVATAR_FILE_NAME);
             if (file.exists()) {
@@ -106,7 +107,7 @@ public class MeFragment extends Fragment {
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (FileUtil.isLogin(getContext())) {
+                if (FileUtil.isLogin()) {
                     //登陆状态，就从相册选头像,SAF方法
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
@@ -136,6 +137,7 @@ public class MeFragment extends Fragment {
                         jumpToCreditPage();
                         break;
                     case 1:
+                        jumpToSharePage();
                         break;
                     case 2:
                         jumpToFavoritePage();
@@ -180,7 +182,7 @@ public class MeFragment extends Fragment {
                 if (resultCode == Activity.RESULT_OK) {
                     try {
                         // 复制一份到应用内部空间
-                        FileUtil.fileCopy(getContext(), data.getData(), FileUtil.INNER_STORAGE, FileUtil.AVATAR_FILE_NAME);
+                        FileUtil.fileCopy(data.getData(), FileUtil.INNER_STORAGE, FileUtil.AVATAR_FILE_NAME);
                         // 显示在我的页面
                         Uri avatarUri = data.getData();
                         Glide.with(getActivity())
@@ -213,13 +215,13 @@ public class MeFragment extends Fragment {
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (!FileUtil.isLogin(getContext())) {
+                        if (!FileUtil.isLogin()) {
                             Toast.makeText(getContext(), "您还没有登录", Toast.LENGTH_SHORT).show();
                         } else {
                             //退出登录需要删除登录数据
                             Context context = getContext();
-                            if (FileUtil.isLogin(context)) {
-                                FileUtil.deleteLoginState(context);
+                            if (FileUtil.isLogin()) {
+                                FileUtil.deleteLoginState();
                             }
                             //头像、昵称清空
                             avatar.setImageResource(R.drawable.ic_me);
@@ -255,7 +257,23 @@ public class MeFragment extends Fragment {
      * 跳转到收藏文章列表页
      */
     public void jumpToFavoritePage(){
+        if(!FileUtil.isLogin()){
+            Toast.makeText(getContext(), "还没有登陆，无法查看", Toast.LENGTH_SHORT).show();
+            return;
+        }
         Intent intent = new Intent(getActivity(), FavoriteActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * 跳转到我的分享页面
+     */
+    public void jumpToSharePage(){
+        if(!FileUtil.isLogin()){
+            Toast.makeText(getContext(), "还没有登陆，无法查看", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Intent intent = new Intent(getActivity(), ShareActivity.class);
         startActivity(intent);
     }
 

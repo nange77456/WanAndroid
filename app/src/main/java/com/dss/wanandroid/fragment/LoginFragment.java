@@ -61,7 +61,7 @@ public class LoginFragment extends Fragment {
                                     //提示登陆成功
                                     Toast.makeText(getContext(), "登陆成功", Toast.LENGTH_SHORT).show();
                                     //调用FileUtil的静态方法缓存username和password
-                                    FileUtil.saveUserData(username,password,getContext());
+                                    FileUtil.saveUserData(username,password);
                                     //返回我的页面，显示用户名
                                     Intent intent = new Intent();
                                     intent.putExtra("username",username);

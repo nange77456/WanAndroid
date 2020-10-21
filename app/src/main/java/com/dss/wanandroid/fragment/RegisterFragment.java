@@ -59,7 +59,7 @@ public class RegisterFragment extends Fragment {
                                 if(errorCode==0){
                                     Toast.makeText(getContext(), "注册成功！", Toast.LENGTH_SHORT).show();
                                     //保存用户注册信息
-                                    FileUtil.saveUserData(username,password,getContext());
+                                    FileUtil.saveUserData(username,password);
                                     //注册工程后跳回我的页
                                     Intent intent = new Intent();
                                     intent.putExtra("username",username);

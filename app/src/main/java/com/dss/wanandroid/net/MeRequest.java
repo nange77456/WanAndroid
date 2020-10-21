@@ -1,8 +1,8 @@
 package com.dss.wanandroid.net;
 
-import android.util.Log;
-
-import com.dss.wanandroid.entity.CreditListData;
+import com.dss.wanandroid.entity.CreditData;
+import com.dss.wanandroid.entity.FavoriteData;
+import com.dss.wanandroid.entity.QAData;
 import com.dss.wanandroid.entity.RankingData;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -34,6 +34,12 @@ public class MeRequest {
     private OkHttpClient client = new OkHttpClient();
 
     /**
+     * 没有参数的回调方法，表示网络请求结束
+     */
+    public interface NoParamPhone{
+        void onPhone();
+    }
+    /**
      * 网络请求成功返回数据后的回调方法,login & register
      */
     public interface Phone{
@@ -47,11 +53,12 @@ public class MeRequest {
         void onPhone(int credits);
     }
 
+    //TODO 下面三个Phone可以用泛型合并
     /**
      * 积分记录列表的数据回调接口
      */
     public interface CreditListPhone{
-        void onPhone(List<CreditListData> creditList,int pageCount);
+        void onPhone(List<CreditData> creditList, int pageCount);
     }
 
     /**
@@ -59,6 +66,14 @@ public class MeRequest {
      */
     public interface RankingPhone{
         void onPhone(List<RankingData> rankingList);
+    }
+
+    /**
+     * 写一个通用的传列表数据的回调接口
+     * @param <T> List的泛型实现
+     */
+    public interface ListPhone<T>{
+        void onPhone(List<T> list, int pageCount);
     }
 
     /**
@@ -235,6 +250,7 @@ public class MeRequest {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                //注：onResponse里面的都是在新线程执行，如果改变ui（onPhone）就要调用runOnUiThread
                 String jsonData = response.body().string();
                 try {
                     JSONObject object = new JSONObject(jsonData).getJSONObject("data");
@@ -243,8 +259,8 @@ public class MeRequest {
                     int pageCount = object.getInt("pageCount");
                     //gson解析json数组
                     Gson gson = new Gson();
-                    List<CreditListData> creditList = gson.fromJson(array.toString(),
-                            new TypeToken<List<CreditListData>>(){}.getType());
+                    List<CreditData> creditList = gson.fromJson(array.toString(),
+                            new TypeToken<List<CreditData>>(){}.getType());
                     //调用回调方法返回数据列表
                     if(phone!=null){
                         phone.onPhone(creditList,pageCount);
@@ -295,5 +311,144 @@ public class MeRequest {
             }
         });
     }
+
+    /**
+     * 获得收藏列表的网络请求
+     * @param username
+     * @param password
+     * @param pageId
+     * @param phone
+     */
+    public void getFavoriteList(String username, String password, final int pageId, final ListPhone<FavoriteData> phone){
+        //构造get请求
+        Request request = new Request.Builder()
+                .url(NetUtil.baseUrl+"/lg/collect/list/"+pageId+"/json")
+                .addHeader("Cookie","loginUserName="+username)
+                .addHeader("Cookie","loginUserPassword="+password)
+                .get()
+                .build();
+        //异步发送请求
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                //获取json字符串
+                String json = response.body().string();
+
+                try {
+                    //获取json格式数据
+                    JSONObject object = new JSONObject(json).getJSONObject("data");
+                    JSONArray datas = object.getJSONArray("datas");
+                    int pageCount = object.getInt("pageCount");
+                    //gson解析json得到list类型数据
+                    Gson gson = new Gson();
+                    List<FavoriteData> favoriteDataList = gson.fromJson(datas.toString(),
+                            new TypeToken<List<FavoriteData>>(){}.getType());
+                    //用列表的回调接口传递数据
+                    if(phone!=null){
+                        phone.onPhone(favoriteDataList,pageCount);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * 在我的收藏列表里取消收藏的网络请求
+     * @param username
+     * @param password
+     * @param id
+     * @param originId
+     * @param phone
+     */
+    public void cancelFavoriteItem(String username, final String password, int id, int originId, final NoParamPhone phone){
+        //构造请求体
+        RequestBody body = new FormBody.Builder()
+                .add("originId",""+originId)
+                .build();
+        //构造请求
+        Request request = new Request.Builder()
+                .url(NetUtil.baseUrl+"/lg/uncollect/"+id+"/json")
+                .addHeader("Cookie","loginUserName="+username)
+                .addHeader("Cookie","loginUserPassword="+password)
+                .post(body)
+                .build();
+        //异步发送请求
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if(phone!=null){
+                    phone.onPhone();
+                }
+            }
+        });
+
+    }
+
+//    public void addFavoriteItem(String name, String password)
+
+//    public void get
+
+    /**
+     * 请求分享列表数据
+     * @param pageId 页码
+     */
+    public void getShareData(String username,String password,int pageId, final ListPhone<QAData> phone){
+        //构造get请求
+        final Request request = new Request.Builder()
+                .url(NetUtil.baseUrl+"/user/lg/private_articles/"+pageId+"/json")
+                .addHeader("Cookie","loginUserName="+username)
+                .addHeader("Cookie","loginUserPassword="+password)
+                .get()
+                .build();
+        //异步发送网络请求
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                //获取返回的json字符串
+                String jsonData = response.body().string();
+                try {
+                    //用json字符串创建json对象
+                    JSONObject jsonObject = new JSONObject(jsonData).getJSONObject("data").getJSONObject("shareArticles");
+                    //获取页码和本页QA数据的json数组
+                    int pageId = jsonObject.getInt("pageCount");
+                    JSONArray datas = jsonObject.getJSONArray("datas");
+
+                    //用gson解析json数组，返回问答列表的集合
+                    Gson gson = new Gson();
+                    List<QAData> QAList = gson.fromJson(datas.toString(),new TypeToken<List<QAData>>(){}.getType());
+
+                    if(phone!=null){
+                        //调用QAData的回调方法
+                        phone.onPhone(QAList,pageId);
+
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
+
 
 }

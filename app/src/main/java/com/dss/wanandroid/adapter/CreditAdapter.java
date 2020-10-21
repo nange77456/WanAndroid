@@ -9,16 +9,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dss.wanandroid.R;
-import com.dss.wanandroid.entity.CreditListData;
+import com.dss.wanandroid.entity.CreditData;
 
 import java.util.List;
 
-public class CreditListAdapter extends RecyclerView.Adapter<CreditListAdapter.ViewHolder> {
+public class CreditAdapter extends RecyclerView.Adapter<CreditAdapter.ViewHolder> {
     /**
      * 积分记录列表
      */
-    List<CreditListData> creditList;
-    public CreditListAdapter(List<CreditListData> creditList) {
+    List<CreditData> creditList;
+    public CreditAdapter(List<CreditData> creditList) {
         this.creditList = creditList;
     }
 
@@ -52,7 +52,7 @@ public class CreditListAdapter extends RecyclerView.Adapter<CreditListAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         //获得这一项数据
-        CreditListData creditRecord = creditList.get(position);
+        CreditData creditRecord = creditList.get(position);
         //拆分字符串
         String desc = creditRecord.getDesc();
         String time = desc.substring(0,19);

@@ -1,15 +1,15 @@
 package com.dss.wanandroid.entity;
 
 /**
- * 问答列表数据实体类
+ * 收藏文章列表
  */
-public class QAData {
+public class FavoriteData {
     /**
      * 作者
      */
     private String author;
     /**
-     * 分类子标签
+     * 分类标签
      */
     private String chapterName;
     /**
@@ -21,23 +21,27 @@ public class QAData {
      */
     private String niceDate;
     /**
-     * 分类父标签
-     */
-    private String superChapterName;
-    /**
      * 文章标题
      */
     private String title;
 
     /**
      * 描述
+     * @return
      */
     private String desc;
-
     /**
-     * 红心的状态
+     * id
      */
-    private transient boolean likeState;
+    private int id;
+    /**
+     * 收藏前原本的id
+     */
+    private int originId;
+    /**
+     * 是否收藏
+     */
+    private transient boolean likeState = true;
 
 
     public String getAuthor() {
@@ -72,14 +76,6 @@ public class QAData {
         this.niceDate = niceDate;
     }
 
-    public String getSuperChapterName() {
-        return superChapterName;
-    }
-
-    public void setSuperChapterName(String superChapterName) {
-        this.superChapterName = superChapterName;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -94,6 +90,23 @@ public class QAData {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getOriginId() {
+
+        return originId!=0 ? originId : -1;
+    }
+
+    public void setOriginId(int originId) {
+        this.originId = originId;
     }
 
     public boolean isLikeState() {

@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.dss.wanandroid.R;
@@ -48,7 +47,7 @@ public class RankingActivity extends AppCompatActivity {
 
         //获得toolbar标题
         TextView pageTitle = findViewById(R.id.page_title);
-        pageTitle.setText(R.string.nav_credit_ranking);
+        pageTitle.setText(R.string.page_credit_ranking);
 
         //设置上拉刷新
         refreshLayout = findViewById(R.id.refreshLayout);

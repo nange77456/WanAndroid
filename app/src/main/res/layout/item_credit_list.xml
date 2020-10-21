@@ -12,7 +12,7 @@
         android:layout_marginEnd="36dp"
         android:text="TextView"
         android:textColor="@color/colorDark"
-        android:textSize="@dimen/recordTitle"
+        android:textSize="@dimen/recordTitleSize"
         app:layout_constraintBottom_toBottomOf="@+id/time"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/record" />
@@ -39,7 +39,7 @@
         android:layout_marginTop="10dp"
         android:text="TextView"
         android:textColor="@color/colorTextPreview"
-        android:textSize="@dimen/recordTitle"
+        android:textSize="@dimen/recordTitleSize"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,6 +9,9 @@ import android.webkit.WebView;
 
 import com.dss.wanandroid.R;
 
+/**
+ * 网页视图，是一个activity，页面中只有一个WebView控件
+ */
 public class MyWebView extends AppCompatActivity {
 
     @Override

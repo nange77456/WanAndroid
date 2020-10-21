@@ -5,5 +5,7 @@
     <dimen name="dp_2">2dp</dimen>
     <dimen name="dp_1">1dp</dimen>
     <dimen name="buttonTextSize">16sp</dimen>
-    <dimen name="recordTitle">16sp</dimen>
+    <dimen name="recordTitleSize">16sp</dimen>
+    <dimen name="menuIconSize">24dp</dimen>
+    <dimen name="toolbarHeight">40dp</dimen>
 </resources>

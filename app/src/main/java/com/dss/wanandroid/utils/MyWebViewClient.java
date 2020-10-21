@@ -8,6 +8,9 @@ import android.webkit.WebViewClient;
 
 import androidx.annotation.RequiresApi;
 
+/**
+ * WebViewClient的继承类，为了实现拦截非http、https的网络请求
+ */
 public class MyWebViewClient extends WebViewClient {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override

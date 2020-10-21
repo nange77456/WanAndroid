@@ -9,24 +9,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dss.wanandroid.R;
-import com.dss.wanandroid.adapter.CreditListAdapter;
-import com.dss.wanandroid.entity.CreditListData;
+import com.dss.wanandroid.adapter.CreditAdapter;
+import com.dss.wanandroid.entity.CreditData;
 import com.dss.wanandroid.net.MeRequest;
 import com.dss.wanandroid.utils.FileUtil;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,11 +36,11 @@ public class CreditActivity extends AppCompatActivity {
     /**
      * 个人积分记录列表
      */
-    private List<CreditListData> creditList = new LinkedList<>();
+    private List<CreditData> creditList = new LinkedList<>();
     /**
      * 个人积分记录列表的适配器
      */
-    private CreditListAdapter creditListAdapter = new CreditListAdapter(creditList);
+    private CreditAdapter creditListAdapter = new CreditAdapter(creditList);
     /**
      * 网络请求类
      */
@@ -67,19 +62,19 @@ public class CreditActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_credit_activity);
+        setContentView(R.layout.activity_credit);
 
         //设置自定义toolbar
         Toolbar toolbar = findViewById(R.id.toolbarPlus);
         setSupportActionBar(toolbar);
         //从xml获得toolbar的标题文字
         TextView pageTitle = findViewById(R.id.page_title);
-        pageTitle.setText(R.string.nav_credit);
-
-//        ActionBar actionBar = getSupportActionBar();
-//        if(actionBar!=null){
-//            actionBar.setDisplayShowTitleEnabled(false);
-//        }
+        pageTitle.setText(R.string.page_credit);
+        //隐藏原来的ActionBar
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar!=null){
+            actionBar.setDisplayShowTitleEnabled(false);
+        }
 
         //从xml获得积分总数视图
         creditView = findViewById(R.id.credits);
@@ -123,12 +118,12 @@ public class CreditActivity extends AppCompatActivity {
      */
     public void setCreditNumber(){
         //如果没登陆就不发网络请求，isLogin返回false，但是getUsername和getPassword有返回值
-        if(!FileUtil.isLogin(this)){
+        if(!FileUtil.isLogin()){
             creditView.setText("未登录");
             return;
         }
         //调用MeRequest类中的获取积分方法，发送网络请求
-        meRequest.getMyCredits(FileUtil.getUsername(this), FileUtil.getPassword(this), new MeRequest.CreditPhone() {
+        meRequest.getMyCredits(FileUtil.getUsername(), FileUtil.getPassword(), new MeRequest.CreditPhone() {
             @Override
             public void onPhone(final int credits) {
                 runOnUiThread(new Runnable() {
@@ -152,14 +147,14 @@ public class CreditActivity extends AppCompatActivity {
      * @param pageId
      */
     public void setCreditList(int pageId){
-        if(!FileUtil.isLogin(this)){
+        if(!FileUtil.isLogin()){
             return;
         }
         //调用网络请求方法请求积分记录列表的数据
-        meRequest.getMyCreditsList(FileUtil.getUsername(this), FileUtil.getPassword(this),
+        meRequest.getMyCreditsList(FileUtil.getUsername(), FileUtil.getPassword(),
                 pageId, new MeRequest.CreditListPhone() {
             @Override
-            public void onPhone(List<CreditListData> creditListDataList, int pageCountNum) {
+            public void onPhone(List<CreditData> creditListDataList, int pageCountNum) {
                 //获取积分列表总页数，在上拉刷新时使用，判断是否最后一页
                 pageCount = pageCountNum;
                 //将网络请求访问到的数据接在creditList后面，并通知adapter更新数据
@@ -179,6 +174,7 @@ public class CreditActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        //设置toolbar的menu，里面只有一个ranking图标
         getMenuInflater().inflate(R.menu.toolbar_menu,menu);
         return true;
     }
@@ -186,6 +182,7 @@ public class CreditActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //ranking图标的点击事件
         switch(item.getItemId()){
             case R.id.plusFunction:
                 //排行榜入口视图的点击事件，跳转排行榜页面

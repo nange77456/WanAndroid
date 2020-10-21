@@ -7,7 +7,7 @@
     tools:context=".activity.CreditActivity">
 
     <include
-        android:id="@+id/include3"
+        android:id="@+id/toolbarPlus"
         layout="@layout/toolbar_plus"
         android:layout_width="0dp"
         android:layout_height="40dp"
@@ -23,7 +23,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include3" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbarPlus" />
 
     <TextView
         android:id="@+id/credits"
@@ -36,17 +36,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/view3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/view3"
-        app:layout_constraintTop_toBottomOf="@+id/include3" />
-
-    <ImageView
-        android:id="@+id/ranking"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        app:layout_constraintEnd_toEndOf="@+id/view3"
-        app:layout_constraintTop_toTopOf="@+id/view3"
-        app:srcCompat="@drawable/ic_ranking" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbarPlus" />
 
 
     <com.scwang.smart.refresh.layout.SmartRefreshLayout

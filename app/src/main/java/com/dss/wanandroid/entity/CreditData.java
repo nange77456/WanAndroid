@@ -3,7 +3,7 @@ package com.dss.wanandroid.entity;
 /**
  * 个人积分记录 类
  */
-public class CreditListData {
+public class CreditData {
     /**
      * 记录
      */

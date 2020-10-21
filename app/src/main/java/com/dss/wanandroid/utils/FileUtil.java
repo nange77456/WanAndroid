@@ -1,12 +1,10 @@
 package com.dss.wanandroid.utils;
 
-import android.app.Activity;
-import android.content.Context;
+import com.dss.wanandroid.MyApplication;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,9 +30,9 @@ public class FileUtil {
      * @param username
      * @param password
      */
-    public static void saveUserData(String username, String password, Context context){
+    public static void saveUserData(String username, String password ){
         //新建存储键值对的本地文件
-        SharedPreferences preferences = context.getSharedPreferences(USER_DATA,Context.MODE_PRIVATE);
+        SharedPreferences preferences = MyApplication.context.getSharedPreferences(USER_DATA, MyApplication.context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
 
         //写入用户登录数据
@@ -46,51 +44,47 @@ public class FileUtil {
 
     /**
      * 从文件读取登录状态
-     * @param context
      * @return
      */
-    public static boolean isLogin(Context context){
-        SharedPreferences preferences = context.getSharedPreferences(USER_DATA,Context.MODE_PRIVATE);
+    public static boolean isLogin(){
+        SharedPreferences preferences = MyApplication.context.getSharedPreferences(USER_DATA, MyApplication.context.MODE_PRIVATE);
         return preferences.getBoolean("loginState",false);
     }
 
     /**
      * 获取当前用户名
-     * @param context
      * @return
      */
-    public static String getUsername(Context context){
-        SharedPreferences preferences = context.getSharedPreferences(USER_DATA,Context.MODE_PRIVATE);
+    public static String getUsername(){
+        SharedPreferences preferences = MyApplication.context.getSharedPreferences(USER_DATA, MyApplication.context.MODE_PRIVATE);
         return preferences.getString("username","请登录");
     }
 
     /**
      * 获取用户的登陆密码
-     * @param context
      * @return
      */
-    public static String getPassword(Context context){
-        SharedPreferences preferences = context.getSharedPreferences(USER_DATA,Context.MODE_PRIVATE);
+    public static String getPassword(){
+        SharedPreferences preferences = MyApplication.context.getSharedPreferences(USER_DATA, MyApplication.context.MODE_PRIVATE);
         return preferences.getString("password","");
     }
 
     /**
      * 文件复制静态方法
-     * @param context
      * @param uri 文件的uri标识
      * @param storageType 存储位置指定内部或外部
      * @param fileName 文件名
      * @throws IOException
      */
-    public static void fileCopy(Context context, Uri uri, int storageType, String fileName) throws IOException {
+    public static void fileCopy(Uri uri, int storageType, String fileName) throws IOException {
         //打开输入流
-        InputStream inputStream = context.getContentResolver().openInputStream(uri);
+        InputStream inputStream = MyApplication.context.getContentResolver().openInputStream(uri);
         //指定存储位置
         File file;
         if(storageType==EXTERNAL_STORAGE){
-            file = new File(context.getExternalFilesDir(null),fileName);
+            file = new File(MyApplication.context.getExternalFilesDir(null),fileName);
         }else{
-            file = new File(context.getFilesDir(),fileName);
+            file = new File(MyApplication.context.getFilesDir(),fileName);
         }
         //打开输出流
         OutputStream outputStream = new FileOutputStream(file);
@@ -110,16 +104,15 @@ public class FileUtil {
 
     /**
      * 退出登录后删除登陆状态
-     * @param context
      */
-    public static void deleteLoginState(Context context){
+    public static void deleteLoginState(){
         //删除头像文件
-        File file = new File(context.getFilesDir(),AVATAR_FILE_NAME);
+        File file = new File(MyApplication.context.getFilesDir(),AVATAR_FILE_NAME);
         if(file.exists()){
             file.delete();
         }
         //将登陆状态改成false
-        SharedPreferences preferences = context.getSharedPreferences(USER_DATA,Context.MODE_PRIVATE);
+        SharedPreferences preferences = MyApplication.context.getSharedPreferences(USER_DATA, MyApplication.context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean("loginState",false);
         editor.apply();
