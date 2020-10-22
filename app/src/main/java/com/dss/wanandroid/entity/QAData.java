@@ -38,6 +38,10 @@ public class QAData {
      * 红心的状态
      */
     private transient boolean likeState;
+    /**
+     * 分享文章的id
+     */
+    private int id;
 
 
     public String getAuthor() {
@@ -102,5 +106,13 @@ public class QAData {
 
     public void setLikeState(boolean likeState) {
         this.likeState = likeState;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

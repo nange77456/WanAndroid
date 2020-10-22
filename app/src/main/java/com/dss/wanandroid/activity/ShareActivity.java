@@ -2,10 +2,12 @@ package com.dss.wanandroid.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -80,6 +82,41 @@ public class ShareActivity extends AppCompatActivity {
                startActivity(intent);
            }
        });
+       //分享的文章单项 长按删除
+       qaAdapter.setLongClickPhone(new QAAdapter.Phone() {
+           @Override
+           public void onPhone(final int position) {
+               AlertDialog dialog = new AlertDialog.Builder(ShareActivity.this)
+                       .setMessage("是否删除此分享？")
+                       .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialog, int which) {
+
+                           }
+                       })
+                       .setPositiveButton("删除", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialog, int which) {
+                                MeRequest meRequest = new MeRequest();
+                                QAData data = qaList.get(position);
+                                meRequest.cancelShareItem(FileUtil.getUsername(),FileUtil.getPassword(),data.getId(), new MeRequest.NoParamPhone() {
+                                    @Override
+                                    public void onPhone() {
+                                        //网络请求结束，从recycler视图删除
+                                        qaList.remove(position);
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                qaAdapter.notifyItemRemoved(position);
+                                            }
+                                        });
+                                    }
+                                });
+                           }
+                       })
+                       .show();
+           }
+       });
 
     }
 
@@ -91,16 +128,16 @@ public class ShareActivity extends AppCompatActivity {
         //从fragmentView获得刷新布局对象
         refreshLayout = findViewById(R.id.refreshLayout);
         //在下拉刷新时调用此方法
-        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh(RefreshLayout refreshlayout) {
-                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
-
-                //下拉刷新的时候重新访问第1页的问答数据
-                pageId = 1;
-                setQAListView(true,pageId);
-            }
-        });
+//        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+//            @Override
+//            public void onRefresh(RefreshLayout refreshlayout) {
+//                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+//
+//                //下拉刷新的时候重新访问第1页的问答数据
+//                pageId = 1;
+//                setQAListView(true,pageId);
+//            }
+//        });
         //在上拉加载时调用此方法
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override

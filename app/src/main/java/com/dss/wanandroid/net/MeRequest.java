@@ -450,5 +450,36 @@ public class MeRequest {
         });
     }
 
+    /**
+     * 请求删除分享的文章
+     * @param username
+     * @param password
+     * @param shareId
+     * @param phone
+     */
+    public void cancelShareItem(String username,String password,int shareId, final NoParamPhone phone){
+
+        final Request request = new Request.Builder()
+                .url(NetUtil.baseUrl+"/lg/user_article/delete/"+shareId+"/json")
+                .addHeader("Cookie","loginUserName="+username)
+                .addHeader("Cookie","loginUserPassword="+password)
+                .post(new FormBody.Builder().build())
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if(phone!=null){
+                    phone.onPhone();
+                }
+            }
+        });
+    }
+
 
 }

@@ -35,6 +35,7 @@ public class QAAdapter extends RecyclerView.Adapter<QAAdapter.ViewHolder> {
 
 
     private Phone phone;
+    private Phone longClickPhone;
 
     public interface Phone{
         //点击子项时触发的回调
@@ -44,6 +45,7 @@ public class QAAdapter extends RecyclerView.Adapter<QAAdapter.ViewHolder> {
     public void setPhone(Phone phone) {
         this.phone = phone;
     }
+    public void setLongClickPhone(Phone phone){this.longClickPhone = phone;}
 
     /**
      * RecyclerView.ViewHolder的子类
@@ -87,6 +89,16 @@ public class QAAdapter extends RecyclerView.Adapter<QAAdapter.ViewHolder> {
                     //当点击子项的时候会触发该方法
                     phone.onPhone(holder.getAdapterPosition());
                 }
+            }
+        });
+        //单项长按点击事件，用于“我的分享”删除分享文章
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(longClickPhone!=null){
+                    longClickPhone.onPhone(holder.getAdapterPosition());
+                }
+                return true;
             }
         });
 
