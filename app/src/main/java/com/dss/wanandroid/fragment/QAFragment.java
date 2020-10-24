@@ -2,11 +2,9 @@ package com.dss.wanandroid.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -51,7 +49,7 @@ public class QAFragment extends Fragment {
         //从xml构建fragmentView
         View view = inflater.inflate(R.layout.fragment_qa, container, false);
         //设置toolbar的标题
-        TextView title = view.findViewById(R.id.page_title);
+        TextView title = view.findViewById(R.id.pageTitle);
         title.setText(R.string.nav_qa);
 
         //设置下拉刷新，上拉加载

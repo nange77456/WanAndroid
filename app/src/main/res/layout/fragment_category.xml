@@ -26,7 +26,7 @@
         app:tabIndicatorFullWidth="true"
         app:tabSelectedTextColor="@color/colorTextLight"
         app:tabTextAppearance="@style/TabTextTheme"
-        app:tabTextColor="#D6AA9B">
+        app:tabTextColor="@color/colorTabText">
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/systemTab"
@@ -46,10 +46,11 @@
         android:id="@+id/viewPager"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabLayout" >
+        app:layout_constraintTop_toBottomOf="@+id/tabLayout">
 
     </androidx.viewpager2.widget.ViewPager2>
 </androidx.constraintlayout.widget.ConstraintLayout>

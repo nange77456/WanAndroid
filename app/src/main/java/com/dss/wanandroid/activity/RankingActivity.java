@@ -46,7 +46,7 @@ public class RankingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ranking);
 
         //获得toolbar标题
-        TextView pageTitle = findViewById(R.id.page_title);
+        TextView pageTitle = findViewById(R.id.pageTitle);
         pageTitle.setText(R.string.page_credit_ranking);
 
         //设置上拉刷新

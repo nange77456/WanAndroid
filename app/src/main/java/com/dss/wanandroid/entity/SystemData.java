@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * 体系页的数据类
  */
-public class CategoryData {
+public class SystemData {
     /**
      * 体系分类标签
      */

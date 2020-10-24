@@ -16,4 +16,7 @@
     <style name="TabTextTheme">
         <item name="android:textSize">18sp</item>
     </style>
+    <style name="ChipTheme">
+        <item name="android:textSize">12sp</item>
+    </style>
 </resources>

@@ -1,5 +1,6 @@
 package com.dss.wanandroid.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,16 +10,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dss.wanandroid.R;
-import com.dss.wanandroid.entity.CategoryData;
+import com.dss.wanandroid.entity.SystemData;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.List;
 
-public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
-    List<CategoryData> categoryList;
+public class SystemAdapter extends RecyclerView.Adapter<SystemAdapter.ViewHolder> {
+    List<SystemData> categoryList;
 
-    public CategoryAdapter(List<CategoryData> categoryList) {
+    public SystemAdapter(List<SystemData> categoryList) {
         this.categoryList = categoryList;
     }
 
@@ -38,24 +39,32 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Log.e("tag","onCreateViewHolder被执行");
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_system,parent,false);
+                .inflate(R.layout.item_category,parent,false);
         ViewHolder holder = new ViewHolder(view);
+
         return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        CategoryData data = categoryList.get(position);
+        Log.e("tag",position+"号位置被onBindViewHolder执行");
+        SystemData data = categoryList.get(position);
         holder.category.setText(data.getName());
+        List<SystemData.Child> children = data.getChildren();
+        //子标签动态生成前先清除这个holder之前有的数据，否则子标签会越来越多
+        holder.chipGroup.removeAllViews();
         //子标签动态生成
-        List<CategoryData.Child> children = data.getChildren();
-        for(CategoryData.Child child : children){
+        for(SystemData.Child child : children){
             Chip chip = new Chip(holder.view.getContext());
             chip.setText(child.getName());
-            //TODO Chip太大了
+            chip.setTextAppearance(R.style.ChipTheme);
+            chip.setChipBackgroundColorResource(R.color.colorChipBackground);
             holder.chipGroup.addView(chip);
         }
+
+
 
     }
 

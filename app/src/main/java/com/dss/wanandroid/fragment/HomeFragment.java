@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -65,7 +64,7 @@ public class HomeFragment extends Fragment {
         //把xml文件加载成一个view对象
         View view = inflater.inflate(R.layout.fragment_home,container,false);
 
-        TextView title = view.findViewById(R.id.page_title);
+        TextView title = view.findViewById(R.id.pageTitle);
         title.setText(R.string.nav_home);
 
         //从view对象获得toolbar对象

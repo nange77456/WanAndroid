@@ -68,7 +68,7 @@ public class CreditActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbarPlus);
         setSupportActionBar(toolbar);
         //从xml获得toolbar的标题文字
-        TextView pageTitle = findViewById(R.id.page_title);
+        TextView pageTitle = findViewById(R.id.pageTitle);
         pageTitle.setText(R.string.page_credit);
         //隐藏原来的ActionBar
         ActionBar actionBar = getSupportActionBar();

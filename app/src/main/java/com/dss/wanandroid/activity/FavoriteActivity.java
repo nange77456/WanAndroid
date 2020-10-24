@@ -51,7 +51,7 @@ public class FavoriteActivity extends AppCompatActivity {
 
         //设置toolbar
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        TextView pageTitle = findViewById(R.id.page_title);
+        TextView pageTitle = findViewById(R.id.pageTitle);
         pageTitle.setText(R.string.page_favorite);
 
         //设置收藏列表

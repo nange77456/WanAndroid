@@ -1,7 +1,5 @@
 package com.dss.wanandroid.activity;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,21 +8,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.adapter.QAAdapter;
 import com.dss.wanandroid.entity.QAData;
 import com.dss.wanandroid.net.MeRequest;
-import com.dss.wanandroid.net.QARequest;
 import com.dss.wanandroid.utils.FileUtil;
 import com.dss.wanandroid.utils.MyWebView;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
-import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +47,7 @@ public class ShareActivity extends AppCompatActivity {
         setContentView(R.layout.activity_share);
 
        //设置toolbar的标题
-       TextView title = findViewById(R.id.page_title);
+       TextView title = findViewById(R.id.pageTitle);
        title.setText(R.string.page_share);
 
        //设置下拉刷新，上拉加载

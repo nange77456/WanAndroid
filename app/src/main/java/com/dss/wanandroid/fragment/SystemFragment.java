@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dss.wanandroid.R;
-import com.dss.wanandroid.adapter.CategoryAdapter;
-import com.dss.wanandroid.entity.CategoryData;
+import com.dss.wanandroid.adapter.SystemAdapter;
+import com.dss.wanandroid.entity.SystemData;
 import com.dss.wanandroid.net.CategoryRequest;
 
 import java.util.ArrayList;
@@ -26,12 +26,12 @@ public class SystemFragment extends Fragment {
     /**
      * 数据列表
      */
-    private List<CategoryData> systemDataList = new ArrayList<>();
+    private List<SystemData> systemDataList = new ArrayList<>();
 
     /**
      * RecyclerView视图的适配器
      */
-    private CategoryAdapter adapter = new CategoryAdapter(systemDataList);
+    private SystemAdapter adapter = new SystemAdapter(systemDataList);
 
     @Nullable
     @Override
@@ -52,9 +52,9 @@ public class SystemFragment extends Fragment {
      */
     public void setSystemDataList() {
         CategoryRequest request = new CategoryRequest();
-        request.getSystemDataList(new CategoryRequest.Phone() {
+        request.getSystemDataList(new CategoryRequest.Phone<SystemData>() {
             @Override
-            public void onPhone(List<CategoryData> list) {
+            public void onPhone(List<SystemData> list) {
                 systemDataList.addAll(list);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override

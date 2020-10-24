@@ -1,6 +1,7 @@
 package com.dss.wanandroid.net;
 
-import com.dss.wanandroid.entity.CategoryData;
+import com.dss.wanandroid.entity.GuideData;
+import com.dss.wanandroid.entity.SystemData;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -30,15 +31,15 @@ public class CategoryRequest {
     /**
      * 网络请求结束的回调方法
      */
-    public interface Phone{
-        void onPhone(List<CategoryData> list);
+    public interface Phone<T>{
+        void onPhone(List<T> list);
     }
 
     /**
      * 请求体系页的系统标签数据
      * @param phone 请求结束的回调接口
      */
-    public void getSystemDataList(final Phone phone){
+    public void getSystemDataList(final Phone<SystemData> phone){
         //构造get请求
         Request request = new Request.Builder()
                 .url(NetUtil.baseUrl+"/tree/json")
@@ -59,7 +60,7 @@ public class CategoryRequest {
                     //获取需要的json数组
                     JSONArray array = new JSONObject(data).getJSONArray("data");
                     //gson解析json数组
-                    List<CategoryData> categoryList = new Gson().fromJson(array.toString(),new TypeToken<List<CategoryData>>(){}.getType());
+                    List<SystemData> categoryList = new Gson().fromJson(array.toString(),new TypeToken<List<SystemData>>(){}.getType());
                     //用回调接口传递数据
                     if(phone!=null){
                         phone.onPhone(categoryList);
@@ -69,6 +70,41 @@ public class CategoryRequest {
                 }
             }
         });
+    }
+
+    /**
+     * 请求体系页的导航标签数据
+     * @param phone 请求结束的回调接口
+     */
+    public void getGuideDataList(final Phone<GuideData> phone){
+        //构造请求
+        Request request = new Request.Builder()
+                .url(NetUtil.baseUrl+"/navi/json")
+                .get()
+                .build();
+        //异步发送请求
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String jsonData = response.body().string();
+                try {
+                    JSONArray array = new JSONObject(jsonData).getJSONArray("data");
+                    //gson解析json数组
+                    List<GuideData> list = new Gson().fromJson(array.toString(),new TypeToken<List<GuideData>>(){}.getType());
+                    if(phone!=null){
+                        phone.onPhone(list);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 
 
