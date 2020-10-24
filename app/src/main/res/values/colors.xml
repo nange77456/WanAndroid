@@ -18,6 +18,7 @@
     <color name="colorTag">#B0747474</color>
     <color name="colorSplitter">#22747474</color>
     <color name="colorLink">#2962ff</color>
+    <color name="colorTransparent">#00000000</color>
     <!--    导航栏底色-->
     <color name="colorNavigationBackground">#F7F7F7</color>
     <!--    颜色-->

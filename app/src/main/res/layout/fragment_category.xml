@@ -5,11 +5,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        layout="@layout/toolbar"
+    <View
+        android:id="@+id/view4"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="@dimen/toolbarHeight"
+        android:background="@color/colorDark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/toolbarHeight"
+        android:background="@color/colorDark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tabIndicatorColor="@color/colorTransparent"
+        app:tabIndicatorFullWidth="true"
+        app:tabSelectedTextColor="@color/colorTextLight"
+        app:tabTextAppearance="@style/TabTextTheme"
+        app:tabTextColor="#D6AA9B">
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/systemTab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="体系" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/guideTab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="导航" />
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabLayout" >
+
+    </androidx.viewpager2.widget.ViewPager2>
 </androidx.constraintlayout.widget.ConstraintLayout>

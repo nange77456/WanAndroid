@@ -12,4 +12,8 @@
         <item name="colorPrimaryDark">@color/colorOrange</item>
         <item name="colorAccent">@color/colorLight</item>
     </style>
+
+    <style name="TabTextTheme">
+        <item name="android:textSize">18sp</item>
+    </style>
 </resources>
