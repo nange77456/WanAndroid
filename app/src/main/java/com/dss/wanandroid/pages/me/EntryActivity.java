@@ -1,4 +1,4 @@
-package com.dss.wanandroid.activity;
+package com.dss.wanandroid.pages.me;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -8,8 +8,8 @@ import android.os.Bundle;
 
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.adapter.ViewPagerAdapter;
-import com.dss.wanandroid.fragment.LoginFragment;
-import com.dss.wanandroid.fragment.RegisterFragment;
+import com.dss.wanandroid.pages.me.LoginFragment;
+import com.dss.wanandroid.pages.me.RegisterFragment;
 
 import java.util.ArrayList;
 import java.util.List;

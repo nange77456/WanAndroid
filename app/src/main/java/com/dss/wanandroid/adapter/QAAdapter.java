@@ -56,7 +56,7 @@ public class QAAdapter extends RecyclerView.Adapter<QAAdapter.ViewHolder> {
         TextView time;
         TextView title;
         TextView desc;
-        TextView author;
+        TextView authorOrShareUser;
         LikeButton likeButton;
         View itemView;
 
@@ -66,7 +66,7 @@ public class QAAdapter extends RecyclerView.Adapter<QAAdapter.ViewHolder> {
             chapter = itemView.findViewById(R.id.chapter1);
             time = itemView.findViewById(R.id.time);
             desc = itemView.findViewById(R.id.desc);
-            author = itemView.findViewById(R.id.author);
+            authorOrShareUser = itemView.findViewById(R.id.authorOrShareUser);
             title = itemView.findViewById(R.id.title);
             likeButton = itemView.findViewById(R.id.likeButton);
 
@@ -134,12 +134,12 @@ public class QAAdapter extends RecyclerView.Adapter<QAAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         QAData item = qaDataList.get(position);
         holder.chapter.setText(item.getSuperChapterName()+"/"+item.getChapterName());
-        holder.author.setText(item.getAuthor());
+        holder.authorOrShareUser.setText(item.getAuthor());
         holder.time.setText(item.getNiceDate());
         holder.title.setText(item.getTitle());
 
         //用Html类静态方法fromHtml处理含前端标签的文本
-        holder.desc.setText(Html.fromHtml(Html.fromHtml(item.getDesc()).toString()));
+        holder.desc.setText(item.getDesc());
 
         //设置红心是否点亮
         holder.likeButton.setLiked(item.isLikeState());

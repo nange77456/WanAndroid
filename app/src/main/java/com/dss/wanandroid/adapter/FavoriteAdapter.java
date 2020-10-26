@@ -76,7 +76,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
             time = itemView.findViewById(R.id.time);
             title = itemView.findViewById(R.id.title);
             desc = itemView.findViewById(R.id.desc);
-            author = itemView.findViewById(R.id.author);
+            author = itemView.findViewById(R.id.authorOrShareUser);
             likeButton = itemView.findViewById(R.id.likeButton);
             view = itemView;
         }
@@ -121,7 +121,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
         holder.time.setText(favoriteData.getNiceDate());
         holder.chapter.setText(favoriteData.getChapterName());
         holder.title.setText(favoriteData.getTitle());
-        holder.desc.setText(Html.fromHtml(Html.fromHtml(favoriteData.getDesc()).toString()));
+        holder.desc.setText(favoriteData.getDesc());
         holder.likeButton.setLiked(favoriteData.isLikeState());
     }
 

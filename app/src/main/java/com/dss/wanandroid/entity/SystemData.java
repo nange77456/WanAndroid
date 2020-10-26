@@ -1,11 +1,14 @@
 package com.dss.wanandroid.entity;
 
+import android.text.Html;
+
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * 体系页的数据类
  */
-public class SystemData {
+public class SystemData implements Serializable {
     /**
      * 体系分类标签
      */
@@ -19,20 +22,35 @@ public class SystemData {
     /**
      * 内部类，子标签
      */
-    public static class Child{
+    public static class Child implements Serializable{
+        /**
+         * 子标签名
+         */
         String name;
+        /**
+         * 子标签分类id，用于查询知识体系下的文章
+         */
+        int id;
 
         public String getName() {
-            return name;
+            return Html.fromHtml(name).toString();
         }
 
         public void setName(String name) {
             this.name = name;
         }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
     }
 
     public String getName() {
-        return name;
+        return Html.fromHtml(name).toString();
     }
 
     public void setName(String name) {

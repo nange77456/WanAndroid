@@ -1,16 +1,13 @@
-package com.dss.wanandroid.fragment;
+package com.dss.wanandroid.pages.category;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.dss.wanandroid.R;
@@ -41,10 +38,10 @@ public class CategoryFragment extends Fragment {
             public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
                 switch (position){
                     case 0:
-                        tab.setText("体系");
+                        tab.setText(R.string.tab_category1);
                         break;
                     case 1:
-                        tab.setText("导航");
+                        tab.setText(R.string.tab_category2);
                         break;
                 }
             }

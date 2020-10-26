@@ -1,4 +1,4 @@
-package com.dss.wanandroid.activity;
+package com.dss.wanandroid.pages.me;
 
 import androidx.appcompat.app.AppCompatActivity;
 

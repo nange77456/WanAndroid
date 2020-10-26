@@ -1,6 +1,7 @@
 package com.dss.wanandroid.net;
 
 import com.dss.wanandroid.entity.QAData;
+import com.dss.wanandroid.utils.TwoParamsPhone;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -24,15 +25,13 @@ public class QARequest {
      */
     private OkHttpClient client = new OkHttpClient();
 
-    public interface Phone{
-        void onPhone(int pageId, List<QAData> QAList);
-    }
 
     /**
      * 请求问答列表数据
      * @param pageId 页码
+     * @param phone 网络请求结束的回调接口
      */
-    public void getQAData(int pageId, final Phone phone){
+    public void getQAData(int pageId, final TwoParamsPhone<Integer,List<QAData>> phone){
         //构造get请求
         final Request request = new Request.Builder()
                 .url(NetUtil.baseUrl+"/wenda/list/"+pageId+"/json")

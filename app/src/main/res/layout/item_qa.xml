@@ -37,8 +37,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/badge"
+        android:ellipsize="end"
+        android:maxEms="8"
+        android:maxLines="1"
         android:paddingLeft="3dp"
         android:paddingRight="3dp"
         android:text="分类一/分类二"
@@ -52,28 +55,27 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
-        android:layout_marginBottom="15dp"
         android:ellipsize="end"
         android:maxLines="3"
         android:text="描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述"
         android:textColor="@color/colorTextPreview"
         android:textSize="13sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/likeButton"
+        app:layout_constraintEnd_toStartOf="@id/likeButton"
         app:layout_constraintStart_toStartOf="@+id/title"
         app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <TextView
-        android:id="@+id/author"
+        android:id="@+id/authorOrShareUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="15dp"
         android:text="作者"
         android:textColor="@color/colorTag"
         android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@+id/chapter1"
-        app:layout_constraintStart_toEndOf="@+id/chapter1"
-        app:layout_constraintTop_toTopOf="@+id/chapter1" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/desc"
+        app:layout_constraintTop_toBottomOf="@+id/desc" />
 
     <com.like.LikeButton
         android:id="@+id/likeButton"
@@ -84,7 +86,7 @@
         app:icon_size="25dp"
 
         app:icon_type="heart"
-        app:layout_constraintBottom_toBottomOf="@+id/desc"
+        app:layout_constraintBottom_toBottomOf="@+id/authorOrShareUser"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/desc"
         app:like_drawable="@drawable/ic_like_fill"

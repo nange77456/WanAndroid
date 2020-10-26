@@ -1,4 +1,4 @@
-package com.dss.wanandroid;
+package com.dss.wanandroid.pages;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,13 +9,12 @@ import android.view.MenuItem;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.widget.ViewPager2;
 
-import com.dss.wanandroid.fragment.CategoryFragment;
-import com.dss.wanandroid.fragment.HomeFragment;
-import com.dss.wanandroid.fragment.MeFragment;
-import com.dss.wanandroid.fragment.QAFragment;
-import com.dss.wanandroid.adapter.ViewPagerAdapter;
+import com.dss.wanandroid.R;
+import com.dss.wanandroid.pages.category.CategoryFragment;
+import com.dss.wanandroid.pages.home.HomeFragment;
+import com.dss.wanandroid.pages.me.MeFragment;
+import com.dss.wanandroid.pages.qa.QAFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -75,27 +74,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-        //viewPager滑动后设置对应的底部导航栏子项
-        /*viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                switch(position){
-                    case 0:
-                        bottomNavigationView.setSelectedItemId(R.id.home);
-                        break;
-                    case 1:
-                        bottomNavigationView.setSelectedItemId(R.id.qa);
-                        break;
-                    case 2:
-                        bottomNavigationView.setSelectedItemId(R.id.category);
-                        break;
-                    case 3:
-                        bottomNavigationView.setSelectedItemId(R.id.me);
-                        break;
-                }
-            }
-        });*/
 
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

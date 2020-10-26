@@ -4,6 +4,9 @@ import com.dss.wanandroid.entity.CreditData;
 import com.dss.wanandroid.entity.FavoriteData;
 import com.dss.wanandroid.entity.QAData;
 import com.dss.wanandroid.entity.RankingData;
+import com.dss.wanandroid.utils.NoParamPhone;
+import com.dss.wanandroid.utils.OneParamPhone;
+import com.dss.wanandroid.utils.TwoParamsPhone;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -34,55 +37,12 @@ public class MeRequest {
     private OkHttpClient client = new OkHttpClient();
 
     /**
-     * 没有参数的回调方法，表示网络请求结束
-     */
-    public interface NoParamPhone{
-        void onPhone();
-    }
-    /**
-     * 网络请求成功返回数据后的回调方法,login & register
-     */
-    public interface Phone{
-        void onPhone(int errorCode, String errorMsg);
-    }
-
-    /**
-     * 积分请求的数据回调接口
-     */
-    public interface CreditPhone{
-        void onPhone(int credits);
-    }
-
-    //TODO 下面三个Phone可以用泛型合并
-    /**
-     * 积分记录列表的数据回调接口
-     */
-    public interface CreditListPhone{
-        void onPhone(List<CreditData> creditList, int pageCount);
-    }
-
-    /**
-     * 积分排行版列表数据的回调接口
-     */
-    public interface RankingPhone{
-        void onPhone(List<RankingData> rankingList);
-    }
-
-    /**
-     * 写一个通用的传列表数据的回调接口
-     * @param <T> List的泛型实现
-     */
-    public interface ListPhone<T>{
-        void onPhone(List<T> list, int pageCount);
-    }
-
-    /**
      * 登录的网络请求
      * @param userName 用户输入的用户名
      * @param password 用户输入的密码
-     * @param phone 回调接口
+     * @param phone 网络请求成功返回数据后的回调接口,login & register
      */
-    public void loginSubmit(String userName, String password, final Phone phone){
+    public void loginSubmit(String userName, String password, final TwoParamsPhone<Integer,String> phone){
         //构造请求体，Form格式
         RequestBody body = new FormBody.Builder()
                 .add("username",userName)
@@ -132,7 +92,7 @@ public class MeRequest {
      * @param password2 用户再次输入的密码
      * @param phone 回调接口
      */
-    public void registerSubmit(String username,String password1,String password2,final Phone phone){
+    public void registerSubmit(String username,String password1,String password2,final TwoParamsPhone<Integer,String> phone){
         //构造请求体
         RequestBody body = new FormBody.Builder()
                 .add("username",username)
@@ -180,9 +140,9 @@ public class MeRequest {
      * 获取个人积分 网络请求方法
      * @param username 用户名
      * @param password 登陆密码
-     * @param phone 回调接口
+     * @param phone 积分请求的数据回调接口
      */
-    public void getMyCredits(String username, String password, final CreditPhone phone){
+    public void getMyCredits(String username, String password, final OneParamPhone<Integer> phone){
         //构造请求
         Request request = new Request.Builder()
                 .url(NetUtil.baseUrl+"/lg/coin/userinfo/json")
@@ -231,9 +191,9 @@ public class MeRequest {
      * @param username
      * @param password
      * @param pageId
-     * @param phone
+     * @param phone 积分记录列表的数据回调接口
      */
-    public void getMyCreditsList(String username, String password, int pageId, final CreditListPhone phone){
+    public void getMyCreditsList(String username, String password, int pageId, final TwoParamsPhone<List<CreditData>,Integer> phone){
         //构造request
         Request request = new Request.Builder()
                 .url(NetUtil.baseUrl+"//lg/coin/list/"+pageId+"/json")
@@ -275,9 +235,9 @@ public class MeRequest {
     /**
      * 获取积分排行版的网络请求方法
      * @param pageId
-     * @param phone
+     * @param phone 积分排行版列表数据的回调接口
      */
-    public void getCreditsRanking(int pageId, final RankingPhone phone){
+    public void getCreditsRanking(int pageId, final OneParamPhone<List<RankingData>> phone){
         //构造请求
         Request request = new Request.Builder()
                 .url(NetUtil.baseUrl+"/coin/rank/"+pageId+"/json")
@@ -319,7 +279,7 @@ public class MeRequest {
      * @param pageId
      * @param phone
      */
-    public void getFavoriteList(String username, String password, final int pageId, final ListPhone<FavoriteData> phone){
+    public void getFavoriteList(String username, String password, final int pageId,final TwoParamsPhone<List<FavoriteData>,Integer> phone){
         //构造get请求
         Request request = new Request.Builder()
                 .url(NetUtil.baseUrl+"/lg/collect/list/"+pageId+"/json")
@@ -366,7 +326,7 @@ public class MeRequest {
      * @param password
      * @param id
      * @param originId
-     * @param phone
+     * @param phone 没有参数的回调方法，表示网络请求结束
      */
     public void cancelFavoriteItem(String username, final String password, int id, int originId, final NoParamPhone phone){
         //构造请求体
@@ -397,15 +357,12 @@ public class MeRequest {
 
     }
 
-//    public void addFavoriteItem(String name, String password)
-
-//    public void get
 
     /**
      * 请求分享列表数据
      * @param pageId 页码
      */
-    public void getShareData(String username,String password,int pageId, final ListPhone<QAData> phone){
+    public void getShareData(String username,String password,int pageId, final TwoParamsPhone<List<QAData>,Integer> phone){
         //构造get请求
         final Request request = new Request.Builder()
                 .url(NetUtil.baseUrl+"/user/lg/private_articles/"+pageId+"/json")

@@ -1,4 +1,4 @@
-package com.dss.wanandroid.activity;
+package com.dss.wanandroid.pages.me;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +16,8 @@ import com.dss.wanandroid.entity.FavoriteData;
 import com.dss.wanandroid.net.MeRequest;
 import com.dss.wanandroid.utils.FileUtil;
 import com.dss.wanandroid.utils.MyWebView;
+import com.dss.wanandroid.utils.NoParamPhone;
+import com.dss.wanandroid.utils.TwoParamsPhone;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 
@@ -67,10 +69,10 @@ public class FavoriteActivity extends AppCompatActivity {
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                if(pageId!=pageCount){
+                if (pageId != pageCount) {
                     //不是最后一页，就继续请求
                     setFavoriteList(++pageId);
-                }else{
+                } else {
                     //最后一页之后不再请求
                     refreshLayout.finishLoadMoreWithNoMoreData();
                 }
@@ -83,7 +85,7 @@ public class FavoriteActivity extends AppCompatActivity {
             @Override
             public void onPhone(int position) {
                 Intent intent = new Intent(FavoriteActivity.this, MyWebView.class);
-                intent.putExtra("url",favoriteList.get(position).getLink());
+                intent.putExtra("url", favoriteList.get(position).getLink());
                 startActivity(intent);
             }
         });
@@ -101,60 +103,62 @@ public class FavoriteActivity extends AppCompatActivity {
                 FavoriteData data = favoriteList.get(position);
                 int id = data.getId();
                 int originId = data.getOriginId();
-                cancelFavorite(id,originId,position);
+                cancelFavorite(id, originId, position);
             }
         });
     }
 
     /**
      * 调用网络请求方法拉取数据
+     *
      * @param curPage
      */
-    public void setFavoriteList(int curPage){
+    public void setFavoriteList(int curPage) {
 //        if(!FileUtil.isLogin(this)){
 //            return;
 //        }
         MeRequest meRequest = new MeRequest();
-        meRequest.getFavoriteList(FileUtil.getUsername(),FileUtil.getPassword(),
-                curPage,new MeRequest.ListPhone<FavoriteData>() {
-            @Override
-            public void onPhone(List<FavoriteData> list,int pageCount) {
-                //收藏列表后面添加访问到的数据
-                favoriteList.addAll(list);
-                //获得总页数，用于判断是否需要继续请求
-                FavoriteActivity.this.pageCount = pageCount;
-                runOnUiThread(new Runnable() {
+        meRequest.getFavoriteList(FileUtil.getUsername(), FileUtil.getPassword(),
+                curPage, new TwoParamsPhone<List<FavoriteData>, Integer>() {
                     @Override
-                    public void run() {
-                        //用adapter通知recyclerView的数据集发生了改变
-                        adapter.notifyDataSetChanged();
+                    public void onPhone(List<FavoriteData> list, Integer pageCount) {
+                        //收藏列表后面添加访问到的数据
+                        favoriteList.addAll(list);
+                        //获得总页数，用于判断是否需要继续请求
+                        FavoriteActivity.this.pageCount = pageCount;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //用adapter通知recyclerView的数据集发生了改变
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+                        //网络请求结束，上拉刷新动画也结束
+                        refreshLayout.finishLoadMore();
                     }
                 });
-                //网络请求结束，上拉刷新动画也结束
-                refreshLayout.finishLoadMore();
-            }
-        });
     }
 
 
-    public void cancelFavorite(int id, int originId, final int position){
+    public void cancelFavorite(int id, int originId, final int position) {
         MeRequest meRequest = new MeRequest();
-        meRequest.cancelFavoriteItem(FileUtil.getUsername(), FileUtil.getPassword(), id, originId, new MeRequest.NoParamPhone() {
-            @Override
-            public void onPhone() {
-                //取消收藏网络请求结束
-                favoriteList.remove(position);
-                runOnUiThread(new Runnable() {
+        meRequest.cancelFavoriteItem(FileUtil.getUsername(), FileUtil.getPassword(), id, originId
+                , new NoParamPhone() {
                     @Override
-                    public void run() {
-                        adapter.notifyItemRemoved(position);
+                    public void onPhone() {
+                        //取消收藏网络请求结束
+                        favoriteList.remove(position);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                adapter.notifyItemRemoved(position);
+                            }
+                        });
                     }
                 });
-            }
-        });
     }
 
-    public void setFavorite(){
+    public void setFavorite() {
 
     }
 

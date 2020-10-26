@@ -1,4 +1,4 @@
-package com.dss.wanandroid.fragment;
+package com.dss.wanandroid.pages.home;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -27,6 +27,7 @@ import com.dss.wanandroid.entity.BannerData;
 import com.dss.wanandroid.adapter.BannerViewHolder;
 import com.dss.wanandroid.adapter.BannerAdapter;
 import com.dss.wanandroid.net.HomeRequest;
+import com.dss.wanandroid.utils.OneParamPhone;
 import com.zhpan.bannerview.BannerViewPager;
 import com.zhpan.indicator.enums.IndicatorStyle;
 
@@ -119,7 +120,7 @@ public class HomeFragment extends Fragment {
         //创建首页网络请求的工具类
         HomeRequest homeNetwork = new HomeRequest();
         //通过网络请求 异步 获取轮播图数据
-        homeNetwork.getBannerData(new HomeRequest.Phone() {
+        homeNetwork.getBannerData(new OneParamPhone<List<BannerData>>() {
             @Override
             public void onPhone(final List<BannerData> list) {
                 //把传入参数list的数据全部填入bannerDataList (不能直接=)

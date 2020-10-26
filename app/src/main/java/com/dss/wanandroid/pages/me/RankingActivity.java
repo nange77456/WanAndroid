@@ -1,4 +1,4 @@
-package com.dss.wanandroid.activity;
+package com.dss.wanandroid.pages.me;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +12,7 @@ import com.dss.wanandroid.R;
 import com.dss.wanandroid.adapter.RankingAdapter;
 import com.dss.wanandroid.entity.RankingData;
 import com.dss.wanandroid.net.MeRequest;
+import com.dss.wanandroid.utils.OneParamPhone;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
@@ -80,7 +81,7 @@ public class RankingActivity extends AppCompatActivity {
      */
     public void setRankingList(int pageId){
         MeRequest meRequest = new MeRequest();
-        meRequest.getCreditsRanking(pageId, new MeRequest.RankingPhone() {
+        meRequest.getCreditsRanking(pageId, new OneParamPhone<List<RankingData>>() {
             @Override
             public void onPhone(List<RankingData> rankingDataList) {
                 //更新rankingList

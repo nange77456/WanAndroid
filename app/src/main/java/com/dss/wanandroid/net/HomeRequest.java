@@ -1,6 +1,7 @@
 package com.dss.wanandroid.net;
 
 import com.dss.wanandroid.entity.BannerData;
+import com.dss.wanandroid.utils.OneParamPhone;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -27,22 +28,12 @@ public class HomeRequest {
      */
     OkHttpClient client = new OkHttpClient();
 
-    /**
-     * BannerData具体数据的回调接口
-     */
-    public interface Phone{
-        /**
-         * 当获取到轮播图数据时会调用此方法
-         * @param list  轮播图数据列表
-         */
-        void onPhone(List<BannerData> list);
-    }
 
     /**
      * 通过网络请求获取轮播图数据方法 异步！
-     * @param phone 当网络请求完成时调用此对象的onPhone方法
+     * @param phone BannerData具体数据的回调接口
      */
-    public void getBannerData(final Phone phone){
+    public void getBannerData(final OneParamPhone<List<BannerData>> phone){
         //构造get请求
         Request request = new Request.Builder()
                 .url(NetUtil.baseUrl+"/banner/json")

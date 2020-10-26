@@ -1,7 +1,8 @@
-package com.dss.wanandroid.fragment;
+package com.dss.wanandroid.pages.me;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +17,9 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.dss.wanandroid.R;
-import com.dss.wanandroid.activity.EntryActivity;
 import com.dss.wanandroid.net.MeRequest;
 import com.dss.wanandroid.utils.FileUtil;
+import com.dss.wanandroid.utils.TwoParamsPhone;
 
 
 public class RegisterFragment extends Fragment {
@@ -50,9 +51,9 @@ public class RegisterFragment extends Fragment {
                 String rePassword = ((TextView)view.findViewById(R.id.repassword)).getText().toString();
                 //通过LoginRequest类发送注册的网络请求
                 MeRequest meRequest = new MeRequest();
-                meRequest.registerSubmit(username, password, rePassword, new MeRequest.Phone() {
+                meRequest.registerSubmit(username, password, rePassword, new TwoParamsPhone<Integer, String>() {
                     @Override
-                    public void onPhone(final int errorCode, final String errorMsg) {
+                    public void onPhone(final Integer errorCode, final String errorMsg) {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

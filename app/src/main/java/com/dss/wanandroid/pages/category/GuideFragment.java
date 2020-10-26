@@ -1,4 +1,4 @@
-package com.dss.wanandroid.fragment;
+package com.dss.wanandroid.pages.category;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +18,7 @@ import com.dss.wanandroid.adapter.SystemAdapter;
 import com.dss.wanandroid.entity.GuideData;
 import com.dss.wanandroid.net.CategoryRequest;
 import com.dss.wanandroid.utils.MyWebView;
+import com.dss.wanandroid.utils.OneParamPhone;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +67,7 @@ public class GuideFragment extends Fragment {
      */
     public void setGuideList(){
         CategoryRequest request = new CategoryRequest();
-        request.getGuideDataList(new CategoryRequest.Phone<GuideData>() {
+        request.getGuideDataList(new OneParamPhone<List<GuideData>>() {
             @Override
             public void onPhone(List<GuideData> list) {
                 guideList.addAll(list);

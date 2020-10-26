@@ -1,4 +1,4 @@
-package com.dss.wanandroid.activity;
+package com.dss.wanandroid.pages.me;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -18,6 +18,8 @@ import com.dss.wanandroid.adapter.CreditAdapter;
 import com.dss.wanandroid.entity.CreditData;
 import com.dss.wanandroid.net.MeRequest;
 import com.dss.wanandroid.utils.FileUtil;
+import com.dss.wanandroid.utils.OneParamPhone;
+import com.dss.wanandroid.utils.TwoParamsPhone;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 
@@ -72,7 +74,7 @@ public class CreditActivity extends AppCompatActivity {
         pageTitle.setText(R.string.page_credit);
         //隐藏原来的ActionBar
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar!=null){
+        if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
         }
 
@@ -91,12 +93,12 @@ public class CreditActivity extends AppCompatActivity {
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                if(pageId!=pageCount){
+                if (pageId != pageCount) {
                     //上拉加载的时候，网络请求的url中的curPage+1
                     pageId++;
 //                    refreshLayout.finishLoadMore(2000);
                     setCreditList(pageId);
-                }else{
+                } else {
                     //请求不到数据就显示“没有更多数据”给用户，并且不再请求，最后一页
                     refreshLayout.finishLoadMoreWithNoMoreData();
                 }
@@ -109,30 +111,29 @@ public class CreditActivity extends AppCompatActivity {
         recyclerView.setAdapter(creditListAdapter);
 
 
-
     }
 
 
     /**
      * 调用网络请求方法，设置积分
      */
-    public void setCreditNumber(){
+    public void setCreditNumber() {
         //如果没登陆就不发网络请求，isLogin返回false，但是getUsername和getPassword有返回值
-        if(!FileUtil.isLogin()){
+        if (!FileUtil.isLogin()) {
             creditView.setText("未登录");
             return;
         }
         //调用MeRequest类中的获取积分方法，发送网络请求
-        meRequest.getMyCredits(FileUtil.getUsername(), FileUtil.getPassword(), new MeRequest.CreditPhone() {
+        meRequest.getMyCredits(FileUtil.getUsername(), FileUtil.getPassword(), new OneParamPhone<Integer>() {
             @Override
-            public void onPhone(final int credits) {
+            public void onPhone(final Integer credits) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(credits!=MeRequest.ERROR_CREDITS){
+                        if (credits != MeRequest.ERROR_CREDITS) {
                             //注：setText不要直接传入int值
-                            creditView.setText(""+credits);
-                        }else{
+                            creditView.setText("" + credits);
+                        } else {
                             creditView.setText("未登录2-我觉得不会出现");
                         }
                     }
@@ -144,38 +145,39 @@ public class CreditActivity extends AppCompatActivity {
 
     /**
      * 设置creditList，按pageId发送网络请求
+     *
      * @param pageId
      */
-    public void setCreditList(int pageId){
-        if(!FileUtil.isLogin()){
+    public void setCreditList(int pageId) {
+        if (!FileUtil.isLogin()) {
             return;
         }
         //调用网络请求方法请求积分记录列表的数据
         meRequest.getMyCreditsList(FileUtil.getUsername(), FileUtil.getPassword(),
-                pageId, new MeRequest.CreditListPhone() {
-            @Override
-            public void onPhone(List<CreditData> creditListDataList, int pageCountNum) {
-                //获取积分列表总页数，在上拉刷新时使用，判断是否最后一页
-                pageCount = pageCountNum;
-                //将网络请求访问到的数据接在creditList后面，并通知adapter更新数据
-                creditList.addAll(creditListDataList);
-                runOnUiThread(new Runnable() {
+                pageId, new TwoParamsPhone<List<CreditData>, Integer>() {
                     @Override
-                    public void run() {
-                        creditListAdapter.notifyDataSetChanged();
+                    public void onPhone(List<CreditData> creditListDataList, Integer pageCountNum) {
+                        //获取积分列表总页数，在上拉刷新时使用，判断是否最后一页
+                        pageCount = pageCountNum;
+                        //将网络请求访问到的数据接在creditList后面，并通知adapter更新数据
+                        creditList.addAll(creditListDataList);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                creditListAdapter.notifyDataSetChanged();
+                            }
+                        });
+                        //网络请求结束时调用停止上拉加载的方法
+                        refreshLayout.finishLoadMore();
                     }
                 });
-                //网络请求结束时调用停止上拉加载的方法
-                refreshLayout.finishLoadMore();
-            }
-        });
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //设置toolbar的menu，里面只有一个ranking图标
-        getMenuInflater().inflate(R.menu.toolbar_menu,menu);
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         return true;
     }
 
@@ -183,11 +185,11 @@ public class CreditActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         //ranking图标的点击事件
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.plusFunction:
                 //排行榜入口视图的点击事件，跳转排行榜页面
                 //注：已排除的bug，匿名内部类的this不是我要的this
-                Intent intent = new Intent(CreditActivity.this,RankingActivity.class);
+                Intent intent = new Intent(CreditActivity.this, RankingActivity.class);
                 startActivity(intent);
                 break;
         }

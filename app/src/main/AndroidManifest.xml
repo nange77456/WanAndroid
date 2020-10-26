@@ -13,17 +13,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.SystemActivity"></activity>
-        <activity android:name=".activity.ShareActivity" />
-        <activity android:name=".activity.FavoriteActivity" />
-        <activity android:name=".activity.RankingActivity" />
-        <activity android:name=".activity.CreditActivity" />
+        <activity android:name=".pages.category.SystemArticleActivity"></activity>
+        <activity android:name=".pages.me.ShareActivity" />
+        <activity android:name=".pages.me.FavoriteActivity" />
+        <activity android:name=".pages.me.RankingActivity" />
+        <activity android:name=".pages.me.CreditActivity" />
         <activity
-            android:name=".activity.EntryActivity"
+            android:name=".pages.me.EntryActivity"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".activity.DoubleDoubleActivity" />
+        <activity android:name=".pages.me.DoubleDoubleActivity" />
         <activity android:name=".utils.MyWebView" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".pages.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

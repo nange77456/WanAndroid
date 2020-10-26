@@ -1,5 +1,7 @@
 package com.dss.wanandroid.entity;
 
+import android.text.Html;
+
 /**
  * 问答列表数据实体类
  */
@@ -8,6 +10,10 @@ public class QAData {
      * 作者
      */
     private String author;
+    /**
+     * 分享人
+     */
+    private String shareUser;
     /**
      * 分类子标签
      */
@@ -53,7 +59,7 @@ public class QAData {
     }
 
     public String getChapterName() {
-        return chapterName;
+        return Html.fromHtml(chapterName).toString();
     }
 
     public void setChapterName(String chapterName) {
@@ -77,7 +83,7 @@ public class QAData {
     }
 
     public String getSuperChapterName() {
-        return superChapterName;
+        return Html.fromHtml(superChapterName).toString();
     }
 
     public void setSuperChapterName(String superChapterName) {
@@ -93,7 +99,7 @@ public class QAData {
     }
 
     public String getDesc() {
-        return desc;
+        return Html.fromHtml(Html.fromHtml(desc).toString()).toString();
     }
 
     public void setDesc(String desc) {
@@ -114,5 +120,13 @@ public class QAData {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getShareUser() {
+        return shareUser;
+    }
+
+    public void setShareUser(String shareUser) {
+        this.shareUser = shareUser;
     }
 }

@@ -1,7 +1,10 @@
 package com.dss.wanandroid.net;
 
 import com.dss.wanandroid.entity.GuideData;
+import com.dss.wanandroid.entity.QAData;
 import com.dss.wanandroid.entity.SystemData;
+import com.dss.wanandroid.utils.OneParamPhone;
+import com.dss.wanandroid.utils.TwoParamsPhone;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -29,17 +32,10 @@ public class CategoryRequest {
     OkHttpClient client = new OkHttpClient();
 
     /**
-     * 网络请求结束的回调方法
-     */
-    public interface Phone<T>{
-        void onPhone(List<T> list);
-    }
-
-    /**
      * 请求体系页的系统标签数据
      * @param phone 请求结束的回调接口
      */
-    public void getSystemDataList(final Phone<SystemData> phone){
+    public void getSystemDataList(final OneParamPhone<List<SystemData>> phone){
         //构造get请求
         Request request = new Request.Builder()
                 .url(NetUtil.baseUrl+"/tree/json")
@@ -76,7 +72,7 @@ public class CategoryRequest {
      * 请求体系页的导航标签数据
      * @param phone 请求结束的回调接口
      */
-    public void getGuideDataList(final Phone<GuideData> phone){
+    public void getGuideDataList(final OneParamPhone<List<GuideData>> phone){
         //构造请求
         Request request = new Request.Builder()
                 .url(NetUtil.baseUrl+"/navi/json")
@@ -106,6 +102,48 @@ public class CategoryRequest {
         });
 
     }
+
+    /**
+     * 请求体系页下的文章列表
+     * @param pageId
+     * @param cid
+     * @param phone
+     */
+    public void getArticlesOfSystem(int pageId, int cid, final TwoParamsPhone<Integer, List<QAData>> phone){
+        Request request = new Request.Builder()
+                .url(NetUtil.baseUrl+"/article/list/"+pageId+"/json?cid="+cid)
+                .get()
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String jsonData = response.body().string();
+
+                try {
+                    JSONObject data = new JSONObject(jsonData).getJSONObject("data");
+                    int pageCount = data.getInt("pageCount");
+                    JSONArray datas = data.getJSONArray("datas");
+                    List<QAData> list = new Gson().fromJson(datas.toString()
+                            ,new TypeToken<List<QAData>>(){}.getType());
+                    //用两个参数的回调接口回调数据
+                    if(phone!=null){
+                        phone.onPhone(pageCount,list);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+
 
 
 }

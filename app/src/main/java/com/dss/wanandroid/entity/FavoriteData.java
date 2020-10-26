@@ -1,5 +1,7 @@
 package com.dss.wanandroid.entity;
 
+import android.text.Html;
+
 /**
  * 收藏文章列表
  */
@@ -85,7 +87,7 @@ public class FavoriteData {
     }
 
     public String getDesc() {
-        return desc;
+        return Html.fromHtml(Html.fromHtml(desc).toString()).toString();
     }
 
     public void setDesc(String desc) {

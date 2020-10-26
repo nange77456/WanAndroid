@@ -8,4 +8,6 @@ public class NetUtil {
      * 请求的域名
      */
     public static String baseUrl = "https://www.wanandroid.com";
+
+
 }

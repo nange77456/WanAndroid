@@ -1,4 +1,4 @@
-package com.dss.wanandroid.fragment;
+package com.dss.wanandroid.pages.me;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.dss.wanandroid.activity.CreditActivity;
-import com.dss.wanandroid.activity.DoubleDoubleActivity;
 import com.dss.wanandroid.R;
-import com.dss.wanandroid.activity.EntryActivity;
-import com.dss.wanandroid.activity.FavoriteActivity;
-import com.dss.wanandroid.activity.ShareActivity;
 import com.dss.wanandroid.adapter.MeAdapter;
 import com.dss.wanandroid.entity.MeData;
 import com.dss.wanandroid.utils.FileUtil;

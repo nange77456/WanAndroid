@@ -8,4 +8,6 @@
     <string name="page_credit">我的积分</string>
     <string name="page_favorite">我的收藏</string>
     <string name="page_share">我的分享</string>
+    <string name="tab_category1">体系</string>
+    <string name="tab_category2">导航</string>
 </resources>
