@@ -24,6 +24,5 @@ public class BannerViewHolder extends BaseViewHolder<BannerData> {
                 .placeholder(R.mipmap.ic_launcher)
                 .into(imageView);
 
-
     }
 }

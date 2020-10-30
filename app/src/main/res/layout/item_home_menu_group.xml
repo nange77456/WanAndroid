@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.dss.wanandroid.custom.view.CircleView
+        android:id="@+id/circleView3"
+        android:layout_width="@dimen/homeMenuButtonSize"
+        android:layout_height="@dimen/homeMenuButtonSize"
+        android:clickable="true"
+        app:color="@color/colorHomeMenuButton3"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintStart_toStartOf="@+id/guideline3"
+        app:layout_constraintTop_toTopOf="@+id/circleView2" />
+
+    <com.dss.wanandroid.custom.view.CircleView
+        android:id="@+id/circleView4"
+        android:layout_width="@dimen/homeMenuButtonSize"
+        android:layout_height="@dimen/homeMenuButtonSize"
+        android:clickable="true"
+        app:color="@color/colorHomeMenuButton4"
+        app:layout_constraintEnd_toStartOf="@+id/guideline4"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintTop_toTopOf="@+id/circleView3" />
+
+    <com.dss.wanandroid.custom.view.CircleView
+        android:id="@+id/circleView1"
+        android:layout_width="@dimen/homeMenuButtonSize"
+        android:layout_height="@dimen/homeMenuButtonSize"
+        android:layout_marginTop="20dp"
+        app:color="@color/colorHomeMenuButton1"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.dss.wanandroid.custom.view.CircleView
+        android:id="@+id/circleView2"
+        android:layout_width="@dimen/homeMenuButtonSize"
+        android:layout_height="@dimen/homeMenuButtonSize"
+        android:clickable="true"
+        app:color="@color/colorHomeMenuButton2"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="@+id/circleView1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.125" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.375" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.625" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.875" />
+
+    <TextView
+        android:id="@+id/menu1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/home_menu1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/circleView1"
+        app:layout_constraintStart_toStartOf="@+id/circleView1"
+        app:layout_constraintTop_toBottomOf="@+id/circleView1" />
+
+    <TextView
+        android:id="@+id/menu2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/home_menu2"
+        app:layout_constraintEnd_toEndOf="@+id/circleView2"
+        app:layout_constraintStart_toStartOf="@+id/circleView2"
+        app:layout_constraintTop_toBottomOf="@+id/circleView2" />
+
+    <TextView
+        android:id="@+id/menu3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/home_menu2"
+        app:layout_constraintEnd_toEndOf="@+id/circleView3"
+        app:layout_constraintStart_toStartOf="@+id/circleView3"
+        app:layout_constraintTop_toBottomOf="@+id/circleView3" />
+
+    <TextView
+        android:id="@+id/menu4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/home_menu4"
+        app:layout_constraintEnd_toEndOf="@+id/circleView4"
+        app:layout_constraintStart_toStartOf="@+id/circleView4"
+        app:layout_constraintTop_toBottomOf="@+id/circleView4" />
+
+    <TextView
+        android:id="@+id/abbr1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/home_menu_abbr1"
+        android:textColor="@color/colorHomeMenuText"
+        android:textSize="@dimen/homeMenuButtonTextSize"
+        app:layout_constraintBottom_toBottomOf="@+id/circleView1"
+        app:layout_constraintEnd_toEndOf="@+id/circleView1"
+        app:layout_constraintStart_toStartOf="@+id/circleView1"
+        app:layout_constraintTop_toTopOf="@+id/circleView1" />
+
+    <TextView
+        android:id="@+id/abbr2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/home_menu_abbr2"
+        android:textColor="@color/colorHomeMenuText"
+        android:textSize="@dimen/homeMenuButtonTextSize"
+        app:layout_constraintBottom_toBottomOf="@+id/circleView2"
+        app:layout_constraintEnd_toEndOf="@+id/circleView2"
+        app:layout_constraintStart_toStartOf="@+id/circleView2"
+        app:layout_constraintTop_toTopOf="@+id/circleView2" />
+
+    <TextView
+        android:id="@+id/abbr3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/home_menu_abbr3"
+        android:textColor="@color/colorHomeMenuText"
+        android:textSize="@dimen/homeMenuButtonTextSize"
+        app:layout_constraintBottom_toBottomOf="@+id/circleView3"
+        app:layout_constraintEnd_toEndOf="@+id/circleView3"
+        app:layout_constraintStart_toStartOf="@+id/circleView3"
+        app:layout_constraintTop_toTopOf="@+id/circleView3" />
+
+    <TextView
+        android:id="@+id/abbr4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/home_menu_abbr4"
+        android:textColor="@color/colorHomeMenuText"
+        android:textSize="@dimen/homeMenuButtonTextSize"
+        app:layout_constraintBottom_toBottomOf="@+id/circleView4"
+        app:layout_constraintEnd_toEndOf="@+id/circleView4"
+        app:layout_constraintStart_toStartOf="@+id/circleView4"
+        app:layout_constraintTop_toTopOf="@+id/circleView4" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,5 @@
 package com.dss.wanandroid.adapter;
 
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,7 +86,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //从xml构建view和ViewHolder
                View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_qa,parent,false);
+                .inflate(R.layout.item_article,parent,false);
         final ViewHolder holder = new ViewHolder(view);
         //单项点击事件
         view.setOnClickListener(new View.OnClickListener() {

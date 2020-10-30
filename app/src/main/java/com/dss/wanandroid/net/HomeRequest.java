@@ -1,5 +1,8 @@
 package com.dss.wanandroid.net;
 
+import android.util.Log;
+
+import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.entity.BannerData;
 import com.dss.wanandroid.utils.OneParamPhone;
 import com.google.gson.Gson;
@@ -82,6 +85,72 @@ public class HomeRequest {
                     e.printStackTrace();
                 }
 
+            }
+        });
+    }
+
+    /**
+     * 网络请求获取首页置顶文章列表
+     * @param phone
+     */
+    public void getArticleDataTop(final OneParamPhone<List<ArticleData>> phone){
+        Request request = new Request.Builder()
+                .url(NetUtil.baseUrl+"/article/top/json")
+                .get()
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String jsonData = response.body().string();
+                try {
+                    JSONArray data = new JSONObject(jsonData).getJSONArray("data");
+                    List<ArticleData> list = new Gson().fromJson(data.toString(),new TypeToken<List<ArticleData>>(){}.getType());
+                    if(phone!=null){
+//                        Log.e("tag","置顶文章在哪里"+list.size());
+                        phone.onPhone(list);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * 网络请求获取首页文章列表
+     * @param phone
+     * @param pageId
+     */
+    public void getArticleData(final OneParamPhone<List<ArticleData>> phone,int pageId){
+        Request request = new Request.Builder()
+                .url(NetUtil.baseUrl+"/article/list/"+pageId+"/json")
+                .get()
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String jsonData = response.body().string();
+                try {
+                    JSONArray data = new JSONObject(jsonData).getJSONObject("data").getJSONArray("datas");
+                    List<ArticleData> list = new Gson().fromJson(data.toString(),new TypeToken<List<ArticleData>>(){}.getType());
+                    if(phone!=null){
+//                        Log.e("tag","首页文章在哪里"+list.size());
+                        phone.onPhone(list);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

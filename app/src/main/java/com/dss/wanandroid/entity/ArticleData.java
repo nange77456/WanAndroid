@@ -5,7 +5,7 @@ import android.text.Html;
 /**
  * 问答列表数据实体类
  */
-public class QAData {
+public class ArticleData {
     /**
      * 作者
      */

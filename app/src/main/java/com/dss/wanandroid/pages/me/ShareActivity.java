@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.adapter.QAAdapter;
-import com.dss.wanandroid.entity.QAData;
+import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.net.MeRequest;
 import com.dss.wanandroid.utils.FileUtil;
 import com.dss.wanandroid.utils.MyWebView;
@@ -32,7 +32,7 @@ public class ShareActivity extends AppCompatActivity {
     /**
      * qa数据集合
      */
-    final private List<QAData> qaList = new ArrayList<>();
+    final private List<ArticleData> qaList = new ArrayList<>();
     /**
      * qa适配器
      */
@@ -70,7 +70,7 @@ public class ShareActivity extends AppCompatActivity {
         qaAdapter.setPhone(new QAAdapter.Phone() {
             @Override
             public void onPhone(int position) {
-                QAData qaData = qaList.get(position);
+                ArticleData qaData = qaList.get(position);
                 String url = qaData.getLink();
                 Intent intent = new Intent(ShareActivity.this, MyWebView.class);
                 intent.putExtra("url", url);
@@ -93,7 +93,7 @@ public class ShareActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 MeRequest meRequest = new MeRequest();
-                                QAData data = qaList.get(position);
+                                ArticleData data = qaList.get(position);
                                 meRequest.cancelShareItem(FileUtil.getUsername(), FileUtil.getPassword(), data.getId()
                                         , new NoParamPhone() {
                                             @Override
@@ -155,9 +155,9 @@ public class ShareActivity extends AppCompatActivity {
         //标记：不一样2
         MeRequest meRequest = new MeRequest();
         meRequest.getShareData(FileUtil.getUsername(), FileUtil.getPassword(), pageId
-                , new TwoParamsPhone<List<QAData>, Integer>() {
+                , new TwoParamsPhone<List<ArticleData>, Integer>() {
                     @Override
-                    public void onPhone(List<QAData> list, Integer pageCount) {
+                    public void onPhone(List<ArticleData> list, Integer pageCount) {
 
                         //给qaList填入网络请求得到的数据
                         qaList.addAll(list);

@@ -32,7 +32,6 @@ public class BannerAdapter extends BaseBannerAdapter<BannerData,BannerViewHolder
         //用itemView来构造ViewHolder
         final BannerViewHolder holder = new BannerViewHolder(itemView);
 
-
         return holder;
     }
 

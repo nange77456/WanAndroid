@@ -4,10 +4,22 @@
     <string name="nav_qa">问答</string>
     <string name="nav_category">体系</string>
     <string name="nav_me">我的</string>
+
     <string name="page_credit_ranking">积分排行榜</string>
     <string name="page_credit">我的积分</string>
     <string name="page_favorite">我的收藏</string>
     <string name="page_share">我的分享</string>
+
     <string name="tab_category1">体系</string>
     <string name="tab_category2">导航</string>
+
+    <string name="home_menu_abbr1">广</string>
+    <string name="home_menu_abbr2">项</string>
+    <string name="home_menu_abbr3">公</string>
+    <string name="home_menu_abbr4">分</string>
+    <string name="home_menu1">广场</string>
+    <string name="home_menu2">项目</string>
+    <string name="home_menu3">公众号</string>
+    <string name="home_menu4">分享</string>
+
 </resources>

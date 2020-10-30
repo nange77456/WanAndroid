@@ -1,16 +1,14 @@
 package com.dss.wanandroid.adapter;
 
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dss.wanandroid.R;
-import com.dss.wanandroid.entity.QAData;
+import com.dss.wanandroid.entity.ArticleData;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
@@ -19,17 +17,17 @@ import java.util.List;
 /**
  * 问答页的adapter
  */
-public class QAAdapter extends RecyclerView.Adapter<QAAdapter.ViewHolder> {
+public class QAAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
     /**
      * 问答列表数据
      */
-    private List<QAData> qaDataList;
+    private List<ArticleData> qaDataList;
 
     /**
      * 构造问答适配器时需传入问答数据
      * @param list
      */
-    public QAAdapter(List<QAData> list){
+    public QAAdapter(List<ArticleData> list){
         qaDataList = list;
     }
 
@@ -47,40 +45,15 @@ public class QAAdapter extends RecyclerView.Adapter<QAAdapter.ViewHolder> {
     }
     public void setLongClickPhone(Phone phone){this.longClickPhone = phone;}
 
-    /**
-     * RecyclerView.ViewHolder的子类
-     * 代表子项
-     */
-    static class ViewHolder extends RecyclerView.ViewHolder{
-        TextView chapter;
-        TextView time;
-        TextView title;
-        TextView desc;
-        TextView authorOrShareUser;
-        LikeButton likeButton;
-        View itemView;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            this.itemView = itemView;
-            chapter = itemView.findViewById(R.id.chapter1);
-            time = itemView.findViewById(R.id.time);
-            desc = itemView.findViewById(R.id.desc);
-            authorOrShareUser = itemView.findViewById(R.id.authorOrShareUser);
-            title = itemView.findViewById(R.id.title);
-            likeButton = itemView.findViewById(R.id.likeButton);
-
-        }
-    }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
+    public ArticleViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         //from方法获取LayoutInflater的实例
         View view = LayoutInflater.from(parent.getContext())
                 //inflate方法从xml构建view
-                .inflate(R.layout.item_qa,parent,false);
-        final ViewHolder holder = new ViewHolder(view);
+                .inflate(R.layout.item_article,parent,false);
+        final ArticleViewHolder holder = new ArticleViewHolder(view);
         //单项点击事件
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,8 +104,8 @@ public class QAAdapter extends RecyclerView.Adapter<QAAdapter.ViewHolder> {
      * @param position
      */
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        QAData item = qaDataList.get(position);
+    public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
+        ArticleData item = qaDataList.get(position);
         holder.chapter.setText(item.getSuperChapterName()+"/"+item.getChapterName());
         holder.authorOrShareUser.setText(item.getAuthor());
         holder.time.setText(item.getNiceDate());

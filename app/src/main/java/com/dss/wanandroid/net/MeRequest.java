@@ -2,7 +2,7 @@ package com.dss.wanandroid.net;
 
 import com.dss.wanandroid.entity.CreditData;
 import com.dss.wanandroid.entity.FavoriteData;
-import com.dss.wanandroid.entity.QAData;
+import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.entity.RankingData;
 import com.dss.wanandroid.utils.NoParamPhone;
 import com.dss.wanandroid.utils.OneParamPhone;
@@ -362,7 +362,7 @@ public class MeRequest {
      * 请求分享列表数据
      * @param pageId 页码
      */
-    public void getShareData(String username,String password,int pageId, final TwoParamsPhone<List<QAData>,Integer> phone){
+    public void getShareData(String username,String password,int pageId, final TwoParamsPhone<List<ArticleData>,Integer> phone){
         //构造get请求
         final Request request = new Request.Builder()
                 .url(NetUtil.baseUrl+"/user/lg/private_articles/"+pageId+"/json")
@@ -390,7 +390,7 @@ public class MeRequest {
 
                     //用gson解析json数组，返回问答列表的集合
                     Gson gson = new Gson();
-                    List<QAData> QAList = gson.fromJson(datas.toString(),new TypeToken<List<QAData>>(){}.getType());
+                    List<ArticleData> QAList = gson.fromJson(datas.toString(),new TypeToken<List<ArticleData>>(){}.getType());
 
                     if(phone!=null){
                         //调用QAData的回调方法

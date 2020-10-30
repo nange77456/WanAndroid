@@ -1,6 +1,5 @@
 package com.dss.wanandroid.adapter;
 
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,13 +8,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dss.wanandroid.R;
-import com.dss.wanandroid.entity.QAData;
+import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.utils.OneParamPhone;
 
 import java.util.List;
 
-public class SystemArticleAdapter extends RecyclerView.Adapter<QAAdapter.ViewHolder> {
-    private List<QAData> list;
+public class SystemArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
+    private List<ArticleData> list;
 
     /**
      * 点击单项后跳转使用的回调方法
@@ -26,16 +25,16 @@ public class SystemArticleAdapter extends RecyclerView.Adapter<QAAdapter.ViewHol
         this.phone = phone;
     }
 
-    public SystemArticleAdapter(List<QAData> list) {
+    public SystemArticleAdapter(List<ArticleData> list) {
         this.list = list;
     }
 
     @NonNull
     @Override
-    public QAAdapter.ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
+    public ArticleViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_qa,parent,false);
-        final QAAdapter.ViewHolder holder = new QAAdapter.ViewHolder(view);
+                .inflate(R.layout.item_article,parent,false);
+        final ArticleViewHolder holder = new ArticleViewHolder(view);
         //点击单项跳转到webView
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,8 +48,8 @@ public class SystemArticleAdapter extends RecyclerView.Adapter<QAAdapter.ViewHol
     }
 
     @Override
-    public void onBindViewHolder(@NonNull QAAdapter.ViewHolder holder, int position) {
-        QAData data = list.get(position);
+    public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
+        ArticleData data = list.get(position);
         holder.title.setText(data.getTitle());
         holder.time.setText(data.getNiceDate());
         holder.desc.setText(data.getDesc());

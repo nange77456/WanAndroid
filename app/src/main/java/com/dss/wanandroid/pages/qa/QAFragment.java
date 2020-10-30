@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.adapter.QAAdapter;
-import com.dss.wanandroid.entity.QAData;
+import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.net.QARequest;
 import com.dss.wanandroid.utils.MyWebView;
 import com.dss.wanandroid.utils.TwoParamsPhone;
@@ -34,7 +34,7 @@ public class QAFragment extends Fragment {
     /**
      * qa数据集合
      */
-    final private List<QAData> qaList = new ArrayList<>();
+    final private List<ArticleData> qaList = new ArrayList<>();
     /**
      * qa适配器
      */
@@ -70,7 +70,7 @@ public class QAFragment extends Fragment {
         qaAdapter.setPhone(new QAAdapter.Phone() {
             @Override
             public void onPhone(int position) {
-                QAData qaData = qaList.get(position);
+                ArticleData qaData = qaList.get(position);
                 String url = qaData.getLink();
                 Intent intent = new Intent(getActivity(), MyWebView.class);
                 intent.putExtra("url",url);
@@ -118,9 +118,9 @@ public class QAFragment extends Fragment {
     public void setQAList(final boolean needClearData, int pageId) {
         //发送网络请求，返回qaList
         QARequest qaRequest = new QARequest();
-        qaRequest.getQAData(pageId, new TwoParamsPhone<Integer, List<QAData>>() {
+        qaRequest.getQAData(pageId, new TwoParamsPhone<Integer, List<ArticleData>>() {
             @Override
-            public void onPhone(Integer pageId, List<QAData> QAList) {
+            public void onPhone(Integer pageId, List<ArticleData> QAList) {
                 //只有下拉刷新时需要清空链表数据
                 if(needClearData){
                     qaList.clear();

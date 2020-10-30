@@ -19,8 +19,13 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.dss.wanandroid.adapter.HomeAdapter;
+import com.dss.wanandroid.entity.ArticleData;
+import com.dss.wanandroid.entity.GuideData;
 import com.dss.wanandroid.utils.MyWebView;
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.entity.BannerData;
@@ -28,10 +33,13 @@ import com.dss.wanandroid.adapter.BannerViewHolder;
 import com.dss.wanandroid.adapter.BannerAdapter;
 import com.dss.wanandroid.net.HomeRequest;
 import com.dss.wanandroid.utils.OneParamPhone;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.zhpan.bannerview.BannerViewPager;
 import com.zhpan.indicator.enums.IndicatorStyle;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -39,17 +47,31 @@ import java.util.List;
  */
 public class HomeFragment extends Fragment {
     /**
+     * 首页文章列表
+     */
+    private List<ArticleData> articleDataList = new LinkedList<>();
+
+    /**
+     * 首页轮播图
+     */
+    private List<BannerData> bannerDataList = new ArrayList<>();
+    /**
+     * 首页总列表的适配器
+     */
+    HomeAdapter adapter;
+    /**
      * 轮播图对象
      */
     private BannerViewPager<BannerData, BannerViewHolder> mViewPager;
+    /**
+     * 文章列表请求参数之一，页码
+     */
+    private int pageId = 0;
+    /**
+     * 刷新布局
+     */
+    private RefreshLayout refreshLayout;
 
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //设置这一页的menu有效（Fragment）
-        setHasOptionsMenu(true);
-    }
 
     /**
      * 创建fragment视图
@@ -61,30 +83,66 @@ public class HomeFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //把xml文件加载成一个view对象
         View view = inflater.inflate(R.layout.fragment_home,container,false);
-
         TextView title = view.findViewById(R.id.pageTitle);
-        title.setText(R.string.nav_home);
-
-        //从view对象获得toolbar对象
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.include);
+        RecyclerView recyclerView = view.findViewById(R.id.homeRecycler);
+
+        //设置自定义toolbar
+        title.setText(R.string.nav_home);
         //获取与Fragment绑定的activity对象
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         //把toolbar设置为actionbar（默认有的）
         activity.setSupportActionBar(toolbar);
-
         //隐藏actionbar的标题：WanAndroid
         ActionBar actionBar = activity.getSupportActionBar();
         if(actionBar!=null){
             actionBar.setDisplayShowTitleEnabled(false);
         }
 
-        //配置轮播图
-        setupViewPager(view);
+        // AppCompatActivity作用：给adapter-->给bannerViewPager-->获得生命周期
+        // 注：要onCreateView加载布局之后才能getActivity（），所以activity和adapter在这里赋值
+        adapter = new HomeAdapter(articleDataList,bannerDataList, activity);
+
+        //设置文章列表第一页数据
+        setArticleDataList(0);
+        //设置轮播图数据
+        setBannerDataList();
+        //设置首页RecyclerView
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
+
+        //设置刷新加载布局
+        refreshLayout = view.findViewById(R.id.refreshLayout);
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                setArticleDataList(++pageId);
+            }
+        });
+
+        //文章列表点击事件
+        adapter.setArticlePositionPhone(new OneParamPhone<Integer>() {
+            @Override
+            public void onPhone(Integer position) {
+                ArticleData article = articleDataList.get(position-1-1);
+                Intent intent = new Intent(getContext(),MyWebView.class);
+                intent.putExtra("url",article.getLink());
+                startActivity(intent);
+            }
+        });
 
         return view;
+    }
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //设置这一页的menu有效（Fragment）
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -103,20 +161,43 @@ public class HomeFragment extends Fragment {
         return true;
     }
 
+    /**
+     * 调用网络请求方法请求首页文章数据并通知adapter改变
+     * @param pageId
+     */
+    public void setArticleDataList(final int pageId){
+        final HomeRequest request = new HomeRequest();
+        request.getArticleDataTop(new OneParamPhone<List<ArticleData>>() {
+            @Override
+            public void onPhone(List<ArticleData> articleDataTop) {
+                for(ArticleData data:articleDataTop){
+                    data.setSuperChapterName("置顶/"+data.getChapterName());
+                }
+                articleDataList.addAll(articleDataTop);
+
+                request.getArticleData(new OneParamPhone<List<ArticleData>>() {
+                    @Override
+                    public void onPhone(List<ArticleData> articleData) {
+                        articleDataList.addAll(articleData);
+                    }
+                },pageId);
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+
+                refreshLayout.finishLoadMore();
+            }
+        });
+    }
 
     /**
-     * 配置轮播图
-     * @param view fragment视图
+     * 网络请求设置bannerDataList并通知adapter改变
      */
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void setupViewPager(View view) {
-        //创建轮播图的适配器
-        BannerAdapter adapter = new BannerAdapter();
-        //获取与Fragment绑定的activity
-        final Activity activity = getActivity();
-
-        //轮播图数据集合
-        final List<BannerData> bannerDataList = new ArrayList<>();
+    public void setBannerDataList(){
         //创建首页网络请求的工具类
         HomeRequest homeNetwork = new HomeRequest();
         //通过网络请求 异步 获取轮播图数据
@@ -125,52 +206,16 @@ public class HomeFragment extends Fragment {
             public void onPhone(final List<BannerData> list) {
                 //把传入参数list的数据全部填入bannerDataList (不能直接=)
                 bannerDataList.addAll(list);
-                activity.runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        adapter.setBannerDataListChanged(true);
+                        adapter.notifyItemChanged(0);
                         //给轮播图对象刷新数据
-                        mViewPager.refreshData(list);
-
+                        //mViewPager.refreshData(list);
                     }
                 });
-
             }
         });
-
-
-        //从fragment视图获取轮播图视图
-        mViewPager = view.findViewById(R.id.banner_view);
-        //配置轮播图
-        mViewPager
-                .setAutoPlay(true)
-                //滚动动画花费时间
-                .setScrollDuration(800)
-                .setLifecycleRegistry(getLifecycle())
-                .setIndicatorStyle(IndicatorStyle.ROUND_RECT)
-                .setIndicatorSliderGap(getResources().getDimensionPixelOffset(R.dimen.dp_4))
-                .setIndicatorSliderWidth(getResources().getDimensionPixelOffset(R.dimen.dp_4), getResources().getDimensionPixelOffset(R.dimen.dp_10))
-                .setIndicatorSliderColor(activity.getColor(R.color.colorWhite), activity.getColor(R.color.colorIndicatorSelected))
-                .setOrientation(ViewPager2.ORIENTATION_HORIZONTAL)
-                //设置自动滚动间隔时间
-                .setInterval(4000)
-                .setAdapter(adapter)
-                //点击轮播图
-                .setOnPageClickListener(new BannerViewPager.OnPageClickListener() {
-                    /**
-                     * 子项被点击时执行此方法
-                     * @param position 被点击的轮播图子项的位置
-                     */
-                    @Override
-                    public void onPageClick(int position) {
-                        Intent intent = new Intent(activity, MyWebView.class);
-                        //给intent绑定数据
-                        intent.putExtra("url",bannerDataList.get(position).getUrl());
-                        //执行跳转
-                        startActivity(intent);
-                    }
-                })
-                .create();
-
-
     }
 }

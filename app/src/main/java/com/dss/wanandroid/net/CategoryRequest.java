@@ -1,7 +1,7 @@
 package com.dss.wanandroid.net;
 
 import com.dss.wanandroid.entity.GuideData;
-import com.dss.wanandroid.entity.QAData;
+import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.entity.SystemData;
 import com.dss.wanandroid.utils.OneParamPhone;
 import com.dss.wanandroid.utils.TwoParamsPhone;
@@ -109,7 +109,7 @@ public class CategoryRequest {
      * @param cid
      * @param phone
      */
-    public void getArticlesOfSystem(int pageId, int cid, final TwoParamsPhone<Integer, List<QAData>> phone){
+    public void getArticlesOfSystem(int pageId, int cid, final TwoParamsPhone<Integer, List<ArticleData>> phone){
         Request request = new Request.Builder()
                 .url(NetUtil.baseUrl+"/article/list/"+pageId+"/json?cid="+cid)
                 .get()
@@ -129,8 +129,8 @@ public class CategoryRequest {
                     JSONObject data = new JSONObject(jsonData).getJSONObject("data");
                     int pageCount = data.getInt("pageCount");
                     JSONArray datas = data.getJSONArray("datas");
-                    List<QAData> list = new Gson().fromJson(datas.toString()
-                            ,new TypeToken<List<QAData>>(){}.getType());
+                    List<ArticleData> list = new Gson().fromJson(datas.toString()
+                            ,new TypeToken<List<ArticleData>>(){}.getType());
                     //用两个参数的回调接口回调数据
                     if(phone!=null){
                         phone.onPhone(pageCount,list);

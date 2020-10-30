@@ -2,7 +2,6 @@ package com.dss.wanandroid.pages.category;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.adapter.SystemArticleAdapter;
-import com.dss.wanandroid.entity.QAData;
+import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.net.CategoryRequest;
 import com.dss.wanandroid.utils.MyWebView;
 import com.dss.wanandroid.utils.OneParamPhone;
@@ -31,7 +30,7 @@ public class SystemArticleFragment extends Fragment {
     /**
      * 小标签对应文章列表
      */
-    private List<QAData> list = new LinkedList<>();
+    private List<ArticleData> list = new LinkedList<>();
 
     /**
      * 列表视图的适配器
@@ -109,9 +108,9 @@ public class SystemArticleFragment extends Fragment {
      */
     public void setSystemArticlesList(int pageId,final boolean needClearData){
         CategoryRequest request = new CategoryRequest();
-        request.getArticlesOfSystem(pageId, childId, new TwoParamsPhone<Integer, List<QAData>>() {
+        request.getArticlesOfSystem(pageId, childId, new TwoParamsPhone<Integer, List<ArticleData>>() {
             @Override
-            public void onPhone(Integer integer, List<QAData> systemArticleDataList) {
+            public void onPhone(Integer integer, List<ArticleData> systemArticleDataList) {
                 //刷新的时候需要清除数据
                 if(needClearData){
                     list.clear();

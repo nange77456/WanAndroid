@@ -24,6 +24,12 @@
     <color name="colorLoginBackground">#79F1D949</color>
     <color name="colorLoginSubmit">#1768DE</color>
     <color name="colorLoginBackgroundGrey">#EDF4FE</color>
+    <!--    4个 home menu button 颜色-->
+    <color name="colorHomeMenuButton1">#FF6666</color>
+    <color name="colorHomeMenuButton2">#FFCC41</color>
+    <color name="colorHomeMenuButton3">#99CC66</color>
+    <color name="colorHomeMenuButton4">#FB8790</color>
+    <color name="colorHomeMenuText">#ffffff</color>
     <!--    其他-->
     <color name="colorTag">#B0747474</color>
     <color name="colorSplitter">#22747474</color>

@@ -33,6 +33,7 @@
             android:id="@+id/shareRecycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:overScrollMode="never"
             tools:layout_editor_absoluteX="1dp"
             tools:layout_editor_absoluteY="41dp" />
 
