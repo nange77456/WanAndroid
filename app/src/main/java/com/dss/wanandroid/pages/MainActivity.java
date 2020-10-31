@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
 
         //配置viewPager
         final ViewPager viewPager = findViewById(R.id.viewPager);
+        //！！左右各保存3页，解决页面销毁重建数据重新加载的问题
+        viewPager.setOffscreenPageLimit(3);
         viewPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager(),FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             @NonNull
             @Override

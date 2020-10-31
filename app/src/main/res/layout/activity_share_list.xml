@@ -4,16 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".pages.me.RankingActivity">
+    tools:context=".pages.me.ShareListActivity">
 
     <include
         android:id="@+id/toolbar"
         layout="@layout/toolbar_plus"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="@dimen/toolbarHeight"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.scwang.smart.refresh.layout.SmartRefreshLayout
         android:id="@+id/refreshLayout"
@@ -21,23 +22,24 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="1.0"
         app:srlEnableOverScrollDrag="true"
         app:srlEnableRefresh="false">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rankingList"
+            android:id="@+id/shareRecycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:overScrollMode="never" />
+            android:overScrollMode="never"
+            tools:layout_editor_absoluteX="1dp"
+            tools:layout_editor_absoluteY="41dp" />
 
         <com.scwang.smart.refresh.footer.ClassicsFooter
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        </com.scwang.smart.refresh.footer.ClassicsFooter>
+            android:layout_height="wrap_content" />
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

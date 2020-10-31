@@ -57,12 +57,10 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
      * 给轮播图视图绑定数据需要的参数activity
      */
     AppCompatActivity appCompatActivity;
-
-    public HomeAdapter(List<ArticleData> articleDataList, List<BannerData> bannerDataList, AppCompatActivity appCompatActivity) {
-        this.articleDataList = articleDataList;
-        this.bannerDataList = bannerDataList;
-        this.appCompatActivity = appCompatActivity;
-    }
+    /**
+     * 点击四个按钮的回调方法
+     */
+    OneParamPhone<Integer> menuGroupPhone;
 
     /**
      * 文章列表点击后掉用回调接口传递url
@@ -73,8 +71,18 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.articlePositionPhone = articlePositionPhone;
     }
 
+    public void setMenuGroupPhone(OneParamPhone<Integer> menuGroupPhone) {
+        this.menuGroupPhone = menuGroupPhone;
+    }
+
     public void setBannerDataListChanged(boolean bannerDataListChanged) {
         isBannerDataListChanged = bannerDataListChanged;
+    }
+
+    public HomeAdapter(List<ArticleData> articleDataList, List<BannerData> bannerDataList, AppCompatActivity appCompatActivity) {
+        this.articleDataList = articleDataList;
+        this.bannerDataList = bannerDataList;
+        this.appCompatActivity = appCompatActivity;
     }
 
     /**
@@ -167,8 +175,34 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case CIRCLE_MENU_TYPE:
                 view = layoutInflater.inflate(R.layout.item_home_menu_group,parent,false);
                 holder = new MenuViewHolder(view);
+                //四个按钮点击后回调
+                ((MenuViewHolder)holder).circleView1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        menuGroupPhone.onPhone(1);
+                    }
+                });
+                ((MenuViewHolder)holder).circleView2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        menuGroupPhone.onPhone(2);
+                    }
+                });
+                ((MenuViewHolder)holder).circleView3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        menuGroupPhone.onPhone(3);
+                    }
+                });
+                ((MenuViewHolder)holder).circleView4.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        menuGroupPhone.onPhone(4);
+                    }
+                });
                 break;
             case ARTICLE_TYPE:
+                //用已有的单个文章视图
                 view = layoutInflater.inflate(R.layout.item_article,parent,false);
                 holder = new ArticleViewHolder(view);
                 view.setOnClickListener(new View.OnClickListener() {

@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.dss.wanandroid.R;
@@ -73,10 +74,19 @@ public class CreditActivity extends AppCompatActivity {
         TextView pageTitle = findViewById(R.id.pageTitle);
         pageTitle.setText(R.string.page_credit);
         //隐藏原来的ActionBar
+        //TODO 为什么这里需要隐藏原来的action bar /// 因为setSupportActionBar(toolbar)之后就要setDisplayShowTitleEnabled(false)
+        //TODO 为什么toolbar不用拉上约束
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
         }
+        //toolbar返回按钮点击事件
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         //从xml获得积分总数视图
         creditView = findViewById(R.id.credits);
@@ -93,14 +103,13 @@ public class CreditActivity extends AppCompatActivity {
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                if (pageId != pageCount) {
-                    //上拉加载的时候，网络请求的url中的curPage+1
-                    pageId++;
-//                    refreshLayout.finishLoadMore(2000);
-                    setCreditList(pageId);
-                } else {
+                pageId++;
+                if (pageId > pageCount) {
                     //请求不到数据就显示“没有更多数据”给用户，并且不再请求，最后一页
                     refreshLayout.finishLoadMoreWithNoMoreData();
+                } else {
+                    //上拉加载的时候，网络请求的url中的curPage+1
+                    setCreditList(pageId);
                 }
             }
         });

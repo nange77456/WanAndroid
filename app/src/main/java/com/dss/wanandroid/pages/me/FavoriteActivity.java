@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import com.dss.wanandroid.R;
@@ -52,9 +53,17 @@ public class FavoriteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_favorite);
 
         //设置toolbar
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        Toolbar toolbar = findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+        //TODO !! 竟然不setsupportactionbar就可以不隐藏toolbar！
         TextView pageTitle = findViewById(R.id.pageTitle);
         pageTitle.setText(R.string.page_favorite);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         //设置收藏列表
         RecyclerView recyclerView = findViewById(R.id.favoriteRecycler);

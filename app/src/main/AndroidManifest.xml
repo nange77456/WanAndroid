@@ -13,8 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".pages.category.SystemArticleActivity"></activity>
-        <activity android:name=".pages.me.ShareActivity" />
+        <activity android:name=".pages.home.ShareActivity"></activity>
+        <activity android:name=".pages.category.SystemArticleActivity" />
+        <activity android:name=".pages.me.ShareListActivity" />
         <activity android:name=".pages.me.FavoriteActivity" />
         <activity android:name=".pages.me.RankingActivity" />
         <activity android:name=".pages.me.CreditActivity" />

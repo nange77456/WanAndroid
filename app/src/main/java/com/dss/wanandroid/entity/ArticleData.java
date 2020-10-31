@@ -49,6 +49,7 @@ public class ArticleData {
      */
     private int id;
 
+    //用Html.fromHtml()方法去除文字里面的前端字符如 &mdsn
 
     public String getAuthor() {
         return author;
@@ -91,7 +92,7 @@ public class ArticleData {
     }
 
     public String getTitle() {
-        return title;
+        return Html.fromHtml(title).toString();
     }
 
     public void setTitle(String title) {

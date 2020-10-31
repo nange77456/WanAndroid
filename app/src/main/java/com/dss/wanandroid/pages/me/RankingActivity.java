@@ -2,10 +2,12 @@ package com.dss.wanandroid.pages.me;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import com.dss.wanandroid.R;
@@ -49,6 +51,13 @@ public class RankingActivity extends AppCompatActivity {
         //获得toolbar标题
         TextView pageTitle = findViewById(R.id.pageTitle);
         pageTitle.setText(R.string.page_credit_ranking);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         //设置上拉刷新
         refreshLayout = findViewById(R.id.refreshLayout);

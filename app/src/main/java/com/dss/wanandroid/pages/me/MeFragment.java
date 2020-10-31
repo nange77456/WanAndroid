@@ -267,7 +267,7 @@ public class MeFragment extends Fragment {
             Toast.makeText(getContext(), "还没有登陆，无法查看", Toast.LENGTH_SHORT).show();
             return;
         }
-        Intent intent = new Intent(getActivity(), ShareActivity.class);
+        Intent intent = new Intent(getActivity(), ShareListActivity.class);
         startActivity(intent);
     }
 

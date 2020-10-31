@@ -8,7 +8,7 @@
     <string name="page_credit_ranking">积分排行榜</string>
     <string name="page_credit">我的积分</string>
     <string name="page_favorite">我的收藏</string>
-    <string name="page_share">我的分享</string>
+    <string name="page_share_list">我的分享</string>
 
     <string name="tab_category1">体系</string>
     <string name="tab_category2">导航</string>
@@ -21,5 +21,8 @@
     <string name="home_menu2">项目</string>
     <string name="home_menu3">公众号</string>
     <string name="home_menu4">分享</string>
+    <string name="share_article_link">文章链接</string>
+    <string name="share_article_title">文章标题</string>
+    <string name="page_share">分享文章</string>
 
 </resources>

@@ -4,42 +4,86 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".pages.me.ShareActivity">
+    android:background="@color/colorLoginBackgroundGrey"
+    tools:context=".pages.home.ShareActivity">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/shareSubmit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="分享"
+        android:textSize="@dimen/buttonTextSize"
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView12"
+        app:layout_constraintEnd_toEndOf="@+id/textField2"
+        app:layout_constraintStart_toStartOf="@+id/textField2"
+        app:layout_constraintTop_toBottomOf="@+id/textField2" />
 
     <include
-        android:id="@+id/include3"
-        layout="@layout/toolbar"
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_plus"
         android:layout_width="0dp"
         android:layout_height="@dimen/toolbarHeight"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.scwang.smart.refresh.layout.SmartRefreshLayout
-        android:id="@+id/refreshLayout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textField"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:hint="@string/share_article_title"
+        app:endIconMode="clear_text"
+        app:helperText="不超过100个字"
+        app:helperTextEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include3"
-        app:layout_constraintVertical_bias="1.0"
-        app:srlEnableOverScrollDrag="true"
-        app:srlEnableRefresh="false">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/shareRecycler"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:overScrollMode="never"
-            tools:layout_editor_absoluteX="1dp"
-            tools:layout_editor_absoluteY="41dp" />
-
-        <com.scwang.smart.refresh.footer.ClassicsFooter
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/articleTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textField2"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="20dp"
+        android:hint="@string/share_article_link"
+        app:endIconMode="clear_text"
+        app:helperText="https://wanandroid.com/blog/show/2"
+        app:helperTextEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textField">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/articleLink"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:lineSpacingExtra="6sp"
+        android:text="1. 只要是任何好文都可以分享哈，并不一定要是原创！投递的文章会进入广场 tab; \n 2. CSDN，掘金，简书等官方博客站点会直接通过，不需要审核; \n 3. 其他个人站点会进入审核阶段，不要投递任何无效链接，测试的请尽快删除，否则可能会对你的账号产生一定影响; \n 4. 目前处于测试阶段，如果你发现500等错误，可以向我提交日志，让我们一起使网站变得更好。\n 5. 由于本站只有我一个人开发与维护，会尽力保证24小时内审核，当然有可能哪天太累，会延期，请保持佛系..."
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/shareSubmit"
+        app:layout_constraintStart_toStartOf="@+id/shareSubmit" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

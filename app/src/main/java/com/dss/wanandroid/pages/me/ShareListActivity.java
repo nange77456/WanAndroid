@@ -2,12 +2,14 @@ package com.dss.wanandroid.pages.me;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import com.dss.wanandroid.R;
@@ -24,11 +26,15 @@ import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShareActivity extends AppCompatActivity {
+public class ShareListActivity extends AppCompatActivity {
     /**
      * 问答网络请求url中的页码
      */
     private int pageId = 1;
+    /**
+     * 网络请求页面总数
+     */
+    private int pageNum = -1;
     /**
      * qa数据集合
      */
@@ -46,11 +52,19 @@ public class ShareActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_share);
+        setContentView(R.layout.activity_share_list);
 
         //设置toolbar的标题
         TextView title = findViewById(R.id.pageTitle);
-        title.setText(R.string.page_share);
+        title.setText(R.string.page_share_list);
+        //设置toolbar返回按钮点击事件
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         //设置下拉刷新，上拉加载
         setRefreshLayout();
@@ -72,7 +86,7 @@ public class ShareActivity extends AppCompatActivity {
             public void onPhone(int position) {
                 ArticleData qaData = qaList.get(position);
                 String url = qaData.getLink();
-                Intent intent = new Intent(ShareActivity.this, MyWebView.class);
+                Intent intent = new Intent(ShareListActivity.this, MyWebView.class);
                 intent.putExtra("url", url);
                 startActivity(intent);
             }
@@ -81,7 +95,7 @@ public class ShareActivity extends AppCompatActivity {
         qaAdapter.setLongClickPhone(new QAAdapter.Phone() {
             @Override
             public void onPhone(final int position) {
-                AlertDialog dialog = new AlertDialog.Builder(ShareActivity.this)
+                AlertDialog dialog = new AlertDialog.Builder(ShareListActivity.this)
                         .setMessage("是否删除此分享？")
                         .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                             @Override
@@ -123,26 +137,17 @@ public class ShareActivity extends AppCompatActivity {
     public void setRefreshLayout() {
         //从fragmentView获得刷新布局对象
         refreshLayout = findViewById(R.id.refreshLayout);
-        //在下拉刷新时调用此方法
-//        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
-//            @Override
-//            public void onRefresh(RefreshLayout refreshlayout) {
-//                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
-//
-//                //下拉刷新的时候重新访问第1页的问答数据
-//                pageId = 1;
-//                setQAListView(true,pageId);
-//            }
-//        });
         //在上拉加载时调用此方法
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(RefreshLayout refreshlayout) {
-//                refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
-
-                //上拉加载的时候访问下一页数据
                 pageId++;
-                setQAListView(false, pageId);
+                if(pageId > pageNum){
+                    refreshlayout.finishLoadMoreWithNoMoreData();
+                }else{
+                    //上拉加载的时候访问下一页数据
+                    setQAListView(false, pageId);
+                }
             }
         });
     }
@@ -152,13 +157,12 @@ public class ShareActivity extends AppCompatActivity {
      */
     public void setQAListView(final boolean needClearData, int pageId) {
         //发送网络请求，返回qaList
-        //标记：不一样2
         MeRequest meRequest = new MeRequest();
         meRequest.getShareData(FileUtil.getUsername(), FileUtil.getPassword(), pageId
                 , new TwoParamsPhone<List<ArticleData>, Integer>() {
                     @Override
                     public void onPhone(List<ArticleData> list, Integer pageCount) {
-
+                        pageNum = pageCount;
                         //给qaList填入网络请求得到的数据
                         qaList.addAll(list);
                         //改变ui在主线程

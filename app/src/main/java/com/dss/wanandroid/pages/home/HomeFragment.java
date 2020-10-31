@@ -26,6 +26,8 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.dss.wanandroid.adapter.HomeAdapter;
 import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.entity.GuideData;
+import com.dss.wanandroid.pages.me.EntryActivity;
+import com.dss.wanandroid.utils.FileUtil;
 import com.dss.wanandroid.utils.MyWebView;
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.entity.BannerData;
@@ -38,6 +40,7 @@ import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.zhpan.bannerview.BannerViewPager;
 import com.zhpan.indicator.enums.IndicatorStyle;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,6 +49,7 @@ import java.util.List;
  * 首页页面
  */
 public class HomeFragment extends Fragment {
+    final int LOGIN_REQUEST = 1;
     /**
      * 首页文章列表
      */
@@ -134,6 +138,28 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        //按钮组点击事件
+        adapter.setMenuGroupPhone(new OneParamPhone<Integer>() {
+            @Override
+            public void onPhone(Integer menuIndex) {
+                //1广场，2项目，3公众号，4分享
+                switch (menuIndex){
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                        if(!FileUtil.isLogin()){
+                            Intent intent = new Intent(getContext(), EntryActivity.class);
+                            startActivityForResult(intent,LOGIN_REQUEST);
+                        }else{
+                            Intent intent = new Intent(getContext(),ShareActivity.class);
+                            startActivity(intent);
+                        }
+
+                }
+            }
+        });
+
         return view;
     }
 
@@ -173,6 +199,7 @@ public class HomeFragment extends Fragment {
                 for(ArticleData data:articleDataTop){
                     data.setSuperChapterName("置顶/"+data.getChapterName());
                 }
+                //TODO 重复加载问题
                 articleDataList.addAll(articleDataTop);
 
                 request.getArticleData(new OneParamPhone<List<ArticleData>>() {
@@ -205,6 +232,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onPhone(final List<BannerData> list) {
                 //把传入参数list的数据全部填入bannerDataList (不能直接=)
+                bannerDataList.clear();
                 bannerDataList.addAll(list);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -217,5 +245,17 @@ public class HomeFragment extends Fragment {
                 });
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        switch (requestCode){
+            case LOGIN_REQUEST:
+                //从登录页返回，成功登录则跳转分享页
+                if(FileUtil.isLogin()){
+                    Intent intent = new Intent(getContext(),ShareActivity.class);
+                    startActivity(intent);
+                }
+        }
     }
 }

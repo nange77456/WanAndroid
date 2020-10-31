@@ -81,6 +81,7 @@ public class SystemFragment extends Fragment {
             @Override
             public void onPhone(List<SystemData> list) {
                 systemDataList.addAll(list);
+//                if(getActivity()!=null)
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
