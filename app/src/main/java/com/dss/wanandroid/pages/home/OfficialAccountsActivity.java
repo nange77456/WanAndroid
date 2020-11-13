@@ -38,6 +38,7 @@ public class OfficialAccountsActivity extends AppCompatActivity {
      * 小标签布局
      */
     private TabLayout tabLayout;
+    private ViewPager2 viewPager2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +48,7 @@ public class OfficialAccountsActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.plusToolbar);
         TextView pageTitle = findViewById(R.id.pageTitle);
         tabLayout = findViewById(R.id.tabLayout);
-        final ViewPager2 viewPager2 = findViewById(R.id.viewPager);
+        viewPager2 = findViewById(R.id.viewPager);
 
         //设置toolbar的返回按钮点击事件
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -61,18 +62,6 @@ public class OfficialAccountsActivity extends AppCompatActivity {
 
         //请求公众号标签数据
         setTabsOfOfficialAccounts();
-
-        //给ViewPager2设置适配器
-        viewPager2.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(),getLifecycle(),fragmentList));
-        //设置TabLayout和ViewPager2的对应关系
-        new TabLayoutMediator(tabLayout, viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
-            @Override
-            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                tab.setText(accountsGroup.get(position).getName());
-            }
-        }).attach();      //attach不能少
-
-
 
     }
 
@@ -98,9 +87,25 @@ public class OfficialAccountsActivity extends AppCompatActivity {
                         }
                     });
                     //新建fragment，网络请求&显示列表视图
-                    fragmentList.add(new SystemArticlesOfTabFragment(child.getId()));
+                    fragmentList.add(new SystemArticlesOfTabFragment(child.getId(),false));
 
                 }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //给ViewPager2设置适配器
+                        viewPager2.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(),getLifecycle(),fragmentList));
+                        //设置TabLayout和ViewPager2的对应关系
+                        new TabLayoutMediator(tabLayout, viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
+                            @Override
+                            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
+                                tab.setText(accountsGroup.get(position).getName());
+                            }
+                        }).attach();      //attach不能少
+
+                    }
+                });
+
             }
         });
 

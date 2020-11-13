@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -41,6 +42,7 @@ public class ProjectsActivity extends AppCompatActivity {
      * 所有标签，网络请求处拿，tabLayout和viewPager2建立联系时用
      */
     private List<TabData> projectsTabList;
+    private ViewPagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +66,8 @@ public class ProjectsActivity extends AppCompatActivity {
 
         //设置viewPager数据（viewPager里面放的是fragment list）
         ViewPager2 viewPager2 = findViewById(R.id.viewPager);
-        viewPager2.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(),getLifecycle(),fragmentList));
+        adapter = new ViewPagerAdapter(getSupportFragmentManager(),getLifecycle(),fragmentList);
+        viewPager2.setAdapter(adapter);
 
         //建立TabLayout和ViewPager2的对应关系
         new TabLayoutMediator(tabLayout, viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
@@ -95,8 +98,14 @@ public class ProjectsActivity extends AppCompatActivity {
                         }
                     });
                     //新建一个和Tab对应的Fragment，初始化时完成发送网络请求拉取对应标签编号下的文章列表
-                    fragmentList.add(new SystemArticlesOfTabFragment(data.getId()));
+                    fragmentList.add(new SystemArticlesOfTabFragment(data.getId(),true));
                 }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
             }
         });
     }

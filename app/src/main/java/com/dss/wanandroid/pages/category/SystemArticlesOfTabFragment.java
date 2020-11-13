@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dss.wanandroid.R;
+import com.dss.wanandroid.adapter.ProjectAdapter;
 import com.dss.wanandroid.adapter.SystemArticleAdapter;
 import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.net.CategoryRequest;
@@ -31,6 +32,11 @@ import java.util.List;
  */
 public class SystemArticlesOfTabFragment extends Fragment {
     /**
+     * true: 有图，新建Projects列表
+     * false: 无图，新建公众号列表
+     */
+    private boolean hasPic;
+    /**
      * 小标签对应文章列表
      */
     private List<ArticleData> list = new LinkedList<>();
@@ -38,7 +44,7 @@ public class SystemArticlesOfTabFragment extends Fragment {
     /**
      * 列表视图的适配器
      */
-    private SystemArticleAdapter adapter = new SystemArticleAdapter(list);
+    private RecyclerView.Adapter adapter;
 
     /**
      * 网络请求需要的参数，子标签的id
@@ -60,9 +66,16 @@ public class SystemArticlesOfTabFragment extends Fragment {
     /**
      * 构造fragment时传入网络请求需要的参数，子标签id
      * @param childId
+     * @param hasPic true表示有图，用首页-项目页的adapter
      */
-    public SystemArticlesOfTabFragment(int childId){
+    public SystemArticlesOfTabFragment(int childId,boolean hasPic){
         this.childId = childId;
+        this.hasPic = hasPic;
+        if(hasPic){
+            adapter = new ProjectAdapter(list);
+        }else {
+            adapter = new SystemArticleAdapter(list);
+        }
     }
 
 
@@ -100,15 +113,29 @@ public class SystemArticlesOfTabFragment extends Fragment {
             }
         });
 
-        //设置单项点击事件
-        adapter.setPhone(new OneParamPhone<Integer>() {
-            @Override
-            public void onPhone(Integer position) {
-                Intent intent = new Intent(getContext(), MyWebView.class);
-                intent.putExtra("url",list.get(position).getLink());
-                startActivity(intent);
-            }
-        });
+
+        if(hasPic){
+            ((ProjectAdapter)adapter).setPositionPhone(new OneParamPhone<Integer>() {
+                @Override
+                public void onPhone(Integer position) {
+                    Intent intent = new Intent(getContext(), MyWebView.class);
+                    intent.putExtra("url",list.get(position).getLink());
+                    startActivity(intent);
+                }
+            });
+        }else{
+            //设置单项点击事件
+            ((SystemArticleAdapter)adapter).setPhone(new OneParamPhone<Integer>() {
+                @Override
+                public void onPhone(Integer position) {
+                    Intent intent = new Intent(getContext(), MyWebView.class);
+                    intent.putExtra("url",list.get(position).getLink());
+                    startActivity(intent);
+                }
+            });
+        }
+
+
 
 
         return view;

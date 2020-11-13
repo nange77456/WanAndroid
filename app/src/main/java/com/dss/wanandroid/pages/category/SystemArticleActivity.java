@@ -23,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 体系页，大标签对应的所有小标签和标签下的文章页，tabLayout+ViewPager2实现前端
+ * 体系页，大标签对应的所有小标签和标签下的文章页，tabLayout+ViewPager2实现
  */
 public class SystemArticleActivity extends AppCompatActivity {
     /**
@@ -68,7 +68,7 @@ public class SystemArticleActivity extends AppCompatActivity {
             //新建Tab子项
             tabLayout.addTab(tabLayout.newTab().setText(name));
             //新建fragment，网络请求&显示列表视图
-            fragmentList.add(new SystemArticlesOfTabFragment(child.getId()));
+            fragmentList.add(new SystemArticlesOfTabFragment(child.getId(),false));
 
         }
 

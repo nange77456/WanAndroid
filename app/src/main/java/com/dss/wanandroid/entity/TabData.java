@@ -11,11 +11,11 @@ public class TabData implements Serializable {
     /**
      * 子标签名
      */
-    String name;
+    private String name;
     /**
      * 子标签分类id，用于查询知识体系下的文章
      */
-    int id;
+    private int id;
 
     public String getName() {
         return Html.fromHtml(name).toString();
