@@ -145,8 +145,15 @@ public class HomeFragment extends Fragment {
                 //1广场，2项目，3公众号，4分享
                 switch (menuIndex){
                     case 1:
+                        Intent squareIntent = new Intent(getContext(),SquareActivity.class);
+                        startActivity(squareIntent);
+                        break;
                     case 2:
+                        break;
                     case 3:
+                        Intent officialAccountsIntent = new Intent(getContext(),OfficialAccountsActivity.class);
+                        startActivity(officialAccountsIntent);
+                        break;
                     case 4:
                         if(!FileUtil.isLogin()){
                             Intent intent = new Intent(getContext(), EntryActivity.class);
@@ -155,6 +162,7 @@ public class HomeFragment extends Fragment {
                             Intent intent = new Intent(getContext(),ShareActivity.class);
                             startActivity(intent);
                         }
+                        break;
 
                 }
             }
@@ -253,6 +261,7 @@ public class HomeFragment extends Fragment {
             case LOGIN_REQUEST:
                 //从登录页返回，成功登录则跳转分享页
                 if(FileUtil.isLogin()){
+                    //TODO 写什么呢  不是intent  我没学  好 哭
                     Intent intent = new Intent(getContext(),ShareActivity.class);
                     startActivity(intent);
                 }

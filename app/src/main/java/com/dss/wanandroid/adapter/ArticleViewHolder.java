@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dss.wanandroid.R;
 import com.like.LikeButton;
+import com.sackcentury.shinebuttonlib.ShineAnimator;
+import com.sackcentury.shinebuttonlib.ShineButton;
+
 /**
  * RecyclerView.ViewHolder的子类，表示一篇文章
  * 代表子项
@@ -18,7 +21,7 @@ public class ArticleViewHolder extends RecyclerView.ViewHolder{
     TextView title;
     TextView desc;
     TextView authorOrShareUser;
-    LikeButton likeButton;
+    ShineButton likeButton;
     View itemView;
 
     public ArticleViewHolder(@NonNull View itemView) {

@@ -21,6 +21,9 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * 体系页
+ */
 public class SystemArticleActivity extends AppCompatActivity {
     /**
      * 小标签对应的fragment页面列表
@@ -86,7 +89,6 @@ public class SystemArticleActivity extends AppCompatActivity {
         new TabLayoutMediator(tabLayout, viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
             @Override
             public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                //TODO 为什么要写这行，不写小标签就没有了
                 tab.setText(children.get(position).getName());
             }
         }).attach();

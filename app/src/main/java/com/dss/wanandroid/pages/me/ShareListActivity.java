@@ -19,6 +19,7 @@ import com.dss.wanandroid.net.MeRequest;
 import com.dss.wanandroid.utils.FileUtil;
 import com.dss.wanandroid.utils.MyWebView;
 import com.dss.wanandroid.utils.NoParamPhone;
+import com.dss.wanandroid.utils.OneParamPhone;
 import com.dss.wanandroid.utils.TwoParamsPhone;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
@@ -81,9 +82,9 @@ public class ShareListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //adapter点击单项后执行
-        qaAdapter.setPhone(new QAAdapter.Phone() {
+        qaAdapter.setPhone(new OneParamPhone<Integer>() {
             @Override
-            public void onPhone(int position) {
+            public void onPhone(Integer position) {
                 ArticleData qaData = qaList.get(position);
                 String url = qaData.getLink();
                 Intent intent = new Intent(ShareListActivity.this, MyWebView.class);
@@ -92,9 +93,9 @@ public class ShareListActivity extends AppCompatActivity {
             }
         });
         //分享的文章单项 长按删除
-        qaAdapter.setLongClickPhone(new QAAdapter.Phone() {
+        qaAdapter.setLongClickPhone(new OneParamPhone<Integer>() {
             @Override
-            public void onPhone(final int position) {
+            public void onPhone(final Integer position) {
                 AlertDialog dialog = new AlertDialog.Builder(ShareListActivity.this)
                         .setMessage("是否删除此分享？")
                         .setNegativeButton("取消", new DialogInterface.OnClickListener() {

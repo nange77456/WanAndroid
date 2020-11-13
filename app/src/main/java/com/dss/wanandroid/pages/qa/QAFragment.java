@@ -18,6 +18,7 @@ import com.dss.wanandroid.adapter.QAAdapter;
 import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.net.QARequest;
 import com.dss.wanandroid.utils.MyWebView;
+import com.dss.wanandroid.utils.OneParamPhone;
 import com.dss.wanandroid.utils.TwoParamsPhone;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
@@ -67,9 +68,9 @@ public class QAFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         //adapter点击单项后执行
-        qaAdapter.setPhone(new QAAdapter.Phone() {
+        qaAdapter.setPhone(new OneParamPhone<Integer>()  {
             @Override
-            public void onPhone(int position) {
+            public void onPhone(Integer position) {
                 ArticleData qaData = qaList.get(position);
                 String url = qaData.getLink();
                 Intent intent = new Intent(getActivity(), MyWebView.class);

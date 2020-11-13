@@ -12,6 +12,7 @@ import com.dss.wanandroid.R;
 import com.dss.wanandroid.entity.FavoriteData;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
+import com.sackcentury.shinebuttonlib.ShineButton;
 
 import java.util.List;
 
@@ -30,8 +31,11 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
      */
     private Phone itemViewPhone;
 
-    private Phone likeButtonPhone;
+//    private Phone likeButtonPhone;
 
+    /**
+     * 在收藏页取消收藏的回调接口
+     */
     private Phone dislikeButtonPhone;
 
     /**
@@ -49,9 +53,9 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
         this.itemViewPhone = itemViewPhone;
     }
 
-    public void setLikeButtonPhone(Phone likeButtonPhone) {
-        this.likeButtonPhone = likeButtonPhone;
-    }
+//    public void setLikeButtonPhone(Phone likeButtonPhone) {
+//        this.likeButtonPhone = likeButtonPhone;
+//    }
 
     public void setDislikeButtonPhone(Phone dislikeButtonPhone) {
         this.dislikeButtonPhone = dislikeButtonPhone;
@@ -66,7 +70,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
         TextView title;
         TextView desc;
         TextView author;
-        LikeButton likeButton;
+        ShineButton likeButton;
         View view;
 
         public ViewHolder(@NonNull View itemView) {
@@ -97,17 +101,15 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
             }
         });
         //收藏图标的点击事件
-        holder.likeButton.setOnLikeListener(new OnLikeListener() {
+        holder.likeButton.setOnCheckStateChangeListener(new ShineButton.OnCheckedChangeListener() {
             @Override
-            public void liked(LikeButton likeButton) {
-
-            }
-
-            @Override
-            public void unLiked(LikeButton likeButton) {
-                int position = holder.getAdapterPosition();
-                favoriteList.get(position).setLikeState(false);
-                dislikeButtonPhone.onPhone(position);
+            public void onCheckedChanged(View view, boolean checked) {
+                if(checked){
+                }else{
+                    int position = holder.getAdapterPosition();
+                    favoriteList.get(position).setLikeState(false);
+                    dislikeButtonPhone.onPhone(position);
+                }
             }
         });
 
@@ -121,7 +123,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
         holder.chapter.setText(favoriteData.getChapterName());
         holder.title.setText(favoriteData.getTitle());
         holder.desc.setText(favoriteData.getDesc());
-        holder.likeButton.setLiked(favoriteData.isLikeState());
+        holder.likeButton.setChecked(favoriteData.isLikeState());
     }
 
     @Override

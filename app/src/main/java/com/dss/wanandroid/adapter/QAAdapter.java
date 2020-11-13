@@ -9,8 +9,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.entity.ArticleData;
+import com.dss.wanandroid.utils.OneParamPhone;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
+import com.sackcentury.shinebuttonlib.ShineButton;
 
 import java.util.List;
 
@@ -32,18 +34,19 @@ public class QAAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
     }
 
 
-    private Phone phone;
-    private Phone longClickPhone;
+    /**
+     * 单项点击回调接口
+     */
+    private OneParamPhone<Integer> phone;
+    /**
+     * 单项长按回调接口
+     */
+    private OneParamPhone<Integer> longClickPhone;
 
-    public interface Phone{
-        //点击子项时触发的回调
-        void onPhone(int position);
-    }
-
-    public void setPhone(Phone phone) {
+    public void setPhone(OneParamPhone<Integer> phone) {
         this.phone = phone;
     }
-    public void setLongClickPhone(Phone phone){this.longClickPhone = phone;}
+    public void setLongClickPhone(OneParamPhone<Integer> phone){this.longClickPhone = phone;}
 
 
     @NonNull
@@ -75,18 +78,17 @@ public class QAAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
             }
         });
 
-        holder.likeButton.setOnLikeListener(new OnLikeListener() {
+        //红心点击事件
+        holder.likeButton.setOnCheckStateChangeListener(new ShineButton.OnCheckedChangeListener() {
             @Override
-            public void liked(LikeButton likeButton) {
+            public void onCheckedChanged(View view, boolean checked) {
                 int position = holder.getAdapterPosition();
-                qaDataList.get(position).setLikeState(true);
-
-            }
-
-            @Override
-            public void unLiked(LikeButton likeButton) {
-                int position = holder.getAdapterPosition();
-                qaDataList.get(position).setLikeState(false);
+                if(checked){
+                    qaDataList.get(position).setLikeState(true);
+                    //TODO  再写回调对吧
+                }else{
+                    qaDataList.get(position).setLikeState(false);
+                }
             }
         });
 
@@ -107,7 +109,11 @@ public class QAAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
     public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
         ArticleData item = qaDataList.get(position);
         holder.chapter.setText(item.getSuperChapterName()+"/"+item.getChapterName());
-        holder.authorOrShareUser.setText(item.getAuthor());
+        if(item.getAuthor().equals("")){
+            holder.authorOrShareUser.setText(item.getShareUser());
+        }else{
+            holder.authorOrShareUser.setText(item.getAuthor());
+        }
         holder.time.setText(item.getNiceDate());
         holder.title.setText(item.getTitle());
 
@@ -115,6 +121,6 @@ public class QAAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
         holder.desc.setText(item.getDesc());
 
         //设置红心是否点亮
-        holder.likeButton.setLiked(item.isLikeState());
+        holder.likeButton.setChecked(item.isLikeState());
     }
 }

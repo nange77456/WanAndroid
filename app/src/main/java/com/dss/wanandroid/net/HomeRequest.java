@@ -4,9 +4,12 @@ import android.util.Log;
 
 import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.entity.BannerData;
+import com.dss.wanandroid.entity.SystemData;
 import com.dss.wanandroid.utils.NoParamPhone;
 import com.dss.wanandroid.utils.OneParamPhone;
+import com.dss.wanandroid.utils.TwoParamsPhone;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.jetbrains.annotations.NotNull;
@@ -191,6 +194,118 @@ public class HomeRequest {
                 //回调方法标识网络请求结束
                 if(phone!=null){
                     phone.onPhone();
+                }
+            }
+        });
+    }
+
+
+    /**
+     * 获取广场文章列表
+     * @param pageId
+     * @param phone 返回文章列表数据给广场页  回调接口
+     */
+    public void getArticleDataSquare(int pageId, final TwoParamsPhone<Integer, List<ArticleData>> phone){
+        Request request = new Request.Builder()
+                .url(NetUtil.baseUrl+"/user_article/list/"+pageId+"/json")
+                .get()
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String jsonData = response.body().string();
+                try {
+                    JSONObject data = new JSONObject(jsonData).getJSONObject("data");
+                    int pageCount = data.getInt("pageCount");
+                    JSONArray datas = data.getJSONArray("datas");
+                    List<ArticleData> articleDataList = new Gson().fromJson(datas.toString()
+                            ,new TypeToken<List<ArticleData>>(){}.getType());
+                    if(phone!=null){
+                        phone.onPhone(pageCount,articleDataList);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * 获取公众号的名字和编号列表
+     * @param phone
+     */
+    public void getOfficialAccountsGroup(final OneParamPhone<List<SystemData.Child>> phone){
+        Request request = new Request.Builder()
+                .url(NetUtil.baseUrl+"/wxarticle/chapters/json")
+                .get()
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String jsonData = response.body().string();
+                try {
+                    JSONArray data = new JSONObject(jsonData).getJSONArray("data");
+                    List<SystemData.Child> officialAccountsList = new Gson().fromJson(data.toString()
+                            ,new TypeToken<List<SystemData.Child>>(){}.getType());
+
+                    if(phone!=null){
+                        phone.onPhone(officialAccountsList);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * 获取id为accountId的公众号下的文章列表
+     * @param accountId
+     * @param pageId
+     * @param phone
+     */
+    public void getOfficialAccountsArticles(int accountId, int pageId, final TwoParamsPhone<Integer,List<ArticleData>> phone){
+        Request request = new Request.Builder()
+                .url(NetUtil.baseUrl+"/wxarticle/list/"+accountId+"/"+pageId+"/json")
+                .get()
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String jsonData = response.body().string();
+                try {
+                    JSONObject data = new JSONObject(jsonData).getJSONObject("data");
+                    int pageCount = data.getInt("pageCount");
+                    JSONArray datas = data.getJSONArray("datas");
+
+                    List<ArticleData> articleDataList = new Gson().fromJson(datas.toString()
+                            ,new TypeToken<List<ArticleData>>(){}.getType());
+
+                    if(phone!=null){
+                        phone.onPhone(pageCount,articleDataList);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
         });
