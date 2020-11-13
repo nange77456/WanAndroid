@@ -13,7 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".pages.home.OfficialAccountsActivity"></activity>
+        <activity android:name=".pages.home.ProjectsActivity"></activity>
+        <activity android:name=".pages.home.OfficialAccountsActivity" />
         <activity android:name=".pages.home.SquareActivity" />
         <activity android:name=".pages.home.ShareActivity" />
         <activity android:name=".pages.category.SystemArticleActivity" />

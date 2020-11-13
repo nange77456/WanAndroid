@@ -49,6 +49,19 @@ public class ArticleData {
      */
     private int id;
 
+    /**
+     * 项目页用到的图片链接
+     */
+    private String envelopePic;
+
+    public String getEnvelopePic() {
+        return envelopePic;
+    }
+
+    public void setEnvelopePic(String envelopePic) {
+        this.envelopePic = envelopePic;
+    }
+
     //用Html.fromHtml()方法去除文字里面的前端字符如 &mdsn
 
     public String getAuthor() {

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.adapter.ViewPagerAdapter;
 import com.dss.wanandroid.entity.SystemData;
+import com.dss.wanandroid.entity.TabData;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -22,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 体系页
+ * 体系页，大标签对应的所有小标签和标签下的文章页，tabLayout+ViewPager2实现前端
  */
 public class SystemArticleActivity extends AppCompatActivity {
     /**
@@ -60,14 +61,14 @@ public class SystemArticleActivity extends AppCompatActivity {
         //设置toolbar标题
         pageTitle.setText(data.getName());
         //设置滚动tab栏
-        final List<SystemData.Child> children = data.getChildren();
+        final List<TabData> children = data.getChildren();
         for(int i=0; i<children.size(); i++){
-            SystemData.Child child = children.get(i);
+            TabData child = children.get(i);
             String name = child.getName();
             //新建Tab子项
             tabLayout.addTab(tabLayout.newTab().setText(name));
             //新建fragment，网络请求&显示列表视图
-            fragmentList.add(new SystemArticleFragment(child.getId()));
+            fragmentList.add(new SystemArticlesOfTabFragment(child.getId()));
 
         }
 

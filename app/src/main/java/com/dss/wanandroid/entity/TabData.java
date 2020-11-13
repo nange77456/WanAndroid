@@ -1,20 +1,24 @@
 package com.dss.wanandroid.entity;
 
+import android.text.Html;
+
+import java.io.Serializable;
+
 /**
- * 公众号页，公众号名字和编号
+ * TabLayout子项，子标签类
  */
-public class OfficialAccountsData {
+public class TabData implements Serializable {
     /**
-     * 公众号名
+     * 子标签名
      */
-    private String name;
+    String name;
     /**
-     * 后序网络请求用的id
+     * 子标签分类id，用于查询知识体系下的文章
      */
-    private int id;
+    int id;
 
     public String getName() {
-        return name;
+        return Html.fromHtml(name).toString();
     }
 
     public void setName(String name) {

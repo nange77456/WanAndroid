@@ -10,8 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.entity.FavoriteData;
-import com.like.LikeButton;
-import com.like.OnLikeListener;
 import com.sackcentury.shinebuttonlib.ShineButton;
 
 import java.util.List;
@@ -75,7 +73,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            chapter = itemView.findViewById(R.id.chapter1);
+            chapter = itemView.findViewById(R.id.chapter);
             time = itemView.findViewById(R.id.time);
             title = itemView.findViewById(R.id.title);
             desc = itemView.findViewById(R.id.desc);

@@ -13,6 +13,9 @@ import com.dss.wanandroid.utils.OneParamPhone;
 
 import java.util.List;
 
+/**
+ * 体系页-体系下的文章，文章列表的适配器
+ */
 public class SystemArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
     private List<ArticleData> list;
 

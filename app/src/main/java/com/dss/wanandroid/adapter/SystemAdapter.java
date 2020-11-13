@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.entity.SystemData;
+import com.dss.wanandroid.entity.TabData;
 import com.dss.wanandroid.utils.OneParamPhone;
 import com.dss.wanandroid.utils.TwoParamsPhone;
 import com.google.android.material.chip.Chip;
@@ -17,6 +18,9 @@ import com.google.android.material.chip.ChipGroup;
 
 import java.util.List;
 
+/**
+ * 体系页，分类标签列表，适配器
+ */
 public class SystemAdapter extends RecyclerView.Adapter<SystemAdapter.ViewHolder> {
     List<SystemData> categoryList;
 
@@ -72,7 +76,7 @@ public class SystemAdapter extends RecyclerView.Adapter<SystemAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         SystemData data = categoryList.get(position);
         holder.category.setText(data.getName());
-        final List<SystemData.Child> children = data.getChildren();
+        final List<TabData> children = data.getChildren();
         //子标签动态生成前先清除这个holder之前有的数据，否则子标签会越来越多
         holder.chipGroup.removeAllViews();
         //子标签动态生成

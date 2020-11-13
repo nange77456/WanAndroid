@@ -26,7 +26,10 @@ import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SystemArticleFragment extends Fragment {
+/**
+ * 体系页跳转后，某个小标签对应文章列表，页面的一部分
+ */
+public class SystemArticlesOfTabFragment extends Fragment {
     /**
      * 小标签对应文章列表
      */
@@ -49,19 +52,24 @@ public class SystemArticleFragment extends Fragment {
      * 刷新加载布局
      */
     private RefreshLayout refreshLayout;
+    /**
+     * 单个标签下的文章网络请求总页数
+     */
+    private int pageCount = 0;
 
     /**
      * 构造fragment时传入网络请求需要的参数，子标签id
      * @param childId
      */
-    public SystemArticleFragment(int childId){
+    public SystemArticlesOfTabFragment(int childId){
         this.childId = childId;
     }
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_system_articles,container,false);
+        View view = inflater.inflate(R.layout.fragment_system_articles_of_tab,container,false);
         refreshLayout = view.findViewById(R.id.refreshLayout);
         RecyclerView recyclerView = view.findViewById(R.id.systemArticleRecycler);
 
@@ -83,7 +91,12 @@ public class SystemArticleFragment extends Fragment {
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                setSystemArticlesList(++pageId,false);
+                pageId++;
+                if(pageId<pageCount){
+                    setSystemArticlesList(pageId,false);
+                }else{
+                    refreshLayout.finishLoadMoreWithNoMoreData();
+                }
             }
         });
 
@@ -110,7 +123,8 @@ public class SystemArticleFragment extends Fragment {
         CategoryRequest request = new CategoryRequest();
         request.getArticlesOfSystem(pageId, childId, new TwoParamsPhone<Integer, List<ArticleData>>() {
             @Override
-            public void onPhone(Integer integer, List<ArticleData> systemArticleDataList) {
+            public void onPhone(Integer pageNum, List<ArticleData> systemArticleDataList) {
+                pageCount = pageNum;
                 //刷新的时候需要清除数据
                 if(needClearData){
                     list.clear();

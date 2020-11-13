@@ -17,19 +17,15 @@ public class SystemData implements Serializable {
     /**
      * 体系分类子标签列表
      */
-    private List<Child> children;
+    private List<TabData> children;
 
     /**
      * 内部类，子标签
      */
-    public static class Child implements Serializable{
-        /**
-         * 子标签名
-         */
+    /*public static class Child implements Serializable{
+
         String name;
-        /**
-         * 子标签分类id，用于查询知识体系下的文章
-         */
+
         int id;
 
         public String getName() {
@@ -47,7 +43,7 @@ public class SystemData implements Serializable {
         public void setId(int id) {
             this.id = id;
         }
-    }
+    }*/
 
     public String getName() {
         return Html.fromHtml(name).toString();
@@ -57,11 +53,11 @@ public class SystemData implements Serializable {
         this.name = name;
     }
 
-    public List<Child> getChildren() {
+    public List<TabData> getChildren() {
         return children;
     }
 
-    public void setChildren(List<Child> children) {
+    public void setChildren(List<TabData> children) {
         this.children = children;
     }
 }

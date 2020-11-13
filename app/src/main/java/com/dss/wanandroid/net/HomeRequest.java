@@ -5,9 +5,11 @@ import android.util.Log;
 import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.entity.BannerData;
 import com.dss.wanandroid.entity.SystemData;
+import com.dss.wanandroid.entity.TabData;
 import com.dss.wanandroid.utils.NoParamPhone;
 import com.dss.wanandroid.utils.OneParamPhone;
 import com.dss.wanandroid.utils.TwoParamsPhone;
+import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -237,10 +239,10 @@ public class HomeRequest {
     }
 
     /**
-     * 获取公众号的名字和编号列表
+     * 获取公众号的分类标签
      * @param phone
      */
-    public void getOfficialAccountsGroup(final OneParamPhone<List<SystemData.Child>> phone){
+    public void getOfficialAccountsTabs(final OneParamPhone<List<TabData>> phone){
         Request request = new Request.Builder()
                 .url(NetUtil.baseUrl+"/wxarticle/chapters/json")
                 .get()
@@ -257,8 +259,8 @@ public class HomeRequest {
                 String jsonData = response.body().string();
                 try {
                     JSONArray data = new JSONObject(jsonData).getJSONArray("data");
-                    List<SystemData.Child> officialAccountsList = new Gson().fromJson(data.toString()
-                            ,new TypeToken<List<SystemData.Child>>(){}.getType());
+                    List<TabData> officialAccountsList = new Gson().fromJson(data.toString()
+                            ,new TypeToken<List<TabData>>(){}.getType());
 
                     if(phone!=null){
                         phone.onPhone(officialAccountsList);
@@ -273,11 +275,8 @@ public class HomeRequest {
 
     /**
      * 获取id为accountId的公众号下的文章列表
-     * @param accountId
-     * @param pageId
-     * @param phone
      */
-    public void getOfficialAccountsArticles(int accountId, int pageId, final TwoParamsPhone<Integer,List<ArticleData>> phone){
+    /*public void getOfficialAccountsArticles(int accountId, int pageId, final TwoParamsPhone<Integer,List<ArticleData>> phone){
         Request request = new Request.Builder()
                 .url(NetUtil.baseUrl+"/wxarticle/list/"+accountId+"/"+pageId+"/json")
                 .get()
@@ -309,7 +308,41 @@ public class HomeRequest {
                 }
             }
         });
-    }
+    }*/
+//TODO 为什么上面的函数没用到
 
+    /**
+     * 获取项目的分类标签
+     * @param phone
+     */
+    public void getProjectsTabs(final OneParamPhone<List<TabData>> phone){
+        Request request = new Request.Builder()
+                .url(NetUtil.baseUrl+"/project/tree/json")
+                .get()
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String jsonData = response.body().string();
+                try {
+                    JSONArray data = new JSONObject(jsonData).getJSONArray("data");
+                    List<TabData> projectsTabs = new Gson().fromJson(data.toString()
+                            ,new TypeToken<List<TabData>>(){}.getType());
+                    if(phone!=null){
+                        phone.onPhone(projectsTabs);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
 }

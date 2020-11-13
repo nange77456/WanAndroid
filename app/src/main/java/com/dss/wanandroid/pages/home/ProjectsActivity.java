@@ -23,88 +23,82 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 首页-公众号点击跳转后的页面
+ * 首页-项目页，重用体系-体系下的文章页的布局
+ * TODO 没有图片
+ * TODO 刚进去标签下没有文章  需要点好几下标签才有内容
  */
-public class OfficialAccountsActivity extends AppCompatActivity {
+public class ProjectsActivity extends AppCompatActivity {
+
     /**
-     * 小标签对应的fragment页面列表
+     * 标签组布局
+     */
+    private TabLayout tabLayout;
+    /**
+     * viewPager2的数据集，就是fragment的list
      */
     private List<Fragment> fragmentList = new LinkedList<>();
     /**
-     * 小标签组
+     * 所有标签，网络请求处拿，tabLayout和viewPager2建立联系时用
      */
-    private List<TabData> accountsGroup;
-    /**
-     * 小标签布局
-     */
-    private TabLayout tabLayout;
+    private List<TabData> projectsTabList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //公众号页，复用 体系-文章列表页 的布局文件
         setContentView(R.layout.activity_system_article);
+
+        //设置toolbar，标题和返回
         Toolbar toolbar = findViewById(R.id.plusToolbar);
         TextView pageTitle = findViewById(R.id.pageTitle);
-        tabLayout = findViewById(R.id.tabLayout);
-        final ViewPager2 viewPager2 = findViewById(R.id.viewPager);
-
-        //设置toolbar的返回按钮点击事件
+        pageTitle.setText(R.string.home_menu2);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        //设置toolbar标题
-        pageTitle.setText(R.string.home_menu3);
 
-        //请求公众号标签数据
-        setTabsOfOfficialAccounts();
+        //设置TabLayout数据，请求tabs组数据，新建tab子项
+        tabLayout = findViewById(R.id.tabLayout);
+        setProjectsTabLayout();
 
-        //给ViewPager2设置适配器
+        //设置viewPager数据（viewPager里面放的是fragment list）
+        ViewPager2 viewPager2 = findViewById(R.id.viewPager);
         viewPager2.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(),getLifecycle(),fragmentList));
-        //设置TabLayout和ViewPager2的对应关系
+
+        //建立TabLayout和ViewPager2的对应关系
         new TabLayoutMediator(tabLayout, viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
             @Override
             public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                tab.setText(accountsGroup.get(position).getName());
+                tab.setText(projectsTabList.get(position).getName());
             }
-        }).attach();      //attach不能少
-
-
-
+        }).attach();
     }
 
 
     /**
-     * 请求公众号标签数据并动态生成Tab标签
+     * 发送网络请求，请求项目的所有标签，同时新建Fragment子页面时请求到对应标签下的文章列表
      */
-    public void setTabsOfOfficialAccounts(){
+    public void setProjectsTabLayout(){
         HomeRequest request = new HomeRequest();
-        request.getOfficialAccountsTabs(new OneParamPhone<List<TabData>>() {
+        request.getProjectsTabs(new OneParamPhone<List<TabData>>() {
             @Override
-            public void onPhone(List<TabData> children) {
-                accountsGroup = children;
-                //设置滚动tab栏
-                for(int i = 0; i< accountsGroup.size(); i++){
-                    TabData child = accountsGroup.get(i);
-                    final String name = child.getName();
-                    //新建Tab子项
+            public void onPhone(List<TabData> tabList) {
+                projectsTabList = tabList;
+                for(int i=0;i<tabList.size();i++){
+                    final TabData data = tabList.get(i);
+                    //新建一个Tab子项，改变UI在主线程
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            tabLayout.addTab(tabLayout.newTab().setText(name));
+                            tabLayout.addTab(tabLayout.newTab().setText(data.getName()));
                         }
                     });
-                    //新建fragment，网络请求&显示列表视图
-                    fragmentList.add(new SystemArticlesOfTabFragment(child.getId()));
-
+                    //新建一个和Tab对应的Fragment，初始化时完成发送网络请求拉取对应标签编号下的文章列表
+                    fragmentList.add(new SystemArticlesOfTabFragment(data.getId()));
                 }
             }
         });
-
     }
-
 
 }

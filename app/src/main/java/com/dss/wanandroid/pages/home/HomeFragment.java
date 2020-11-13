@@ -111,7 +111,7 @@ public class HomeFragment extends Fragment {
         adapter = new HomeAdapter(articleDataList,bannerDataList, activity);
 
         //设置文章列表第一页数据
-        setArticleDataList(0);
+        setArticleDataListWithTop();
         //设置轮播图数据
         setBannerDataList();
         //设置首页RecyclerView
@@ -149,6 +149,8 @@ public class HomeFragment extends Fragment {
                         startActivity(squareIntent);
                         break;
                     case 2:
+                        Intent projectsIntent = new Intent(getContext(),ProjectsActivity.class);
+                        startActivity(projectsIntent);
                         break;
                     case 3:
                         Intent officialAccountsIntent = new Intent(getContext(),OfficialAccountsActivity.class);
@@ -196,10 +198,9 @@ public class HomeFragment extends Fragment {
     }
 
     /**
-     * 调用网络请求方法请求首页文章数据并通知adapter改变
-     * @param pageId
+     * 调用网络请求方法请求首页文章数据并通知adapter改变，首页含置顶
      */
-    public void setArticleDataList(final int pageId){
+    public void setArticleDataListWithTop(){
         final HomeRequest request = new HomeRequest();
         request.getArticleDataTop(new OneParamPhone<List<ArticleData>>() {
             @Override
@@ -207,27 +208,52 @@ public class HomeFragment extends Fragment {
                 for(ArticleData data:articleDataTop){
                     data.setSuperChapterName("置顶/"+data.getChapterName());
                 }
-                //TODO 重复加载问题
                 articleDataList.addAll(articleDataTop);
 
                 request.getArticleData(new OneParamPhone<List<ArticleData>>() {
                     @Override
                     public void onPhone(List<ArticleData> articleData) {
                         articleDataList.addAll(articleData);
-                    }
-                },pageId);
 
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyDataSetChanged();
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+                        refreshLayout.finishLoadMore();
                     }
-                });
+                },0);
 
-                refreshLayout.finishLoadMore();
             }
         });
     }
+
+    /**
+     * 调用网络请求方法请求首页文章数据并通知adapter改变，不含置顶
+     * @param pageId
+     */
+    public void setArticleDataList(final int pageId){
+        final HomeRequest request = new HomeRequest();
+        request.getArticleData(new OneParamPhone<List<ArticleData>>() {
+            @Override
+            public void onPhone(List<ArticleData> articleData) {
+                articleDataList.addAll(articleData);
+                //更新UI应该在网络请求结束时，老bug，两个线程的执行顺序
+                if(getActivity()!=null){
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.notifyDataSetChanged();
+                            refreshLayout.finishLoadMore();
+                        }
+                    });
+                }
+            }
+        },pageId);
+
+    }
+
 
     /**
      * 网络请求设置bannerDataList并通知adapter改变

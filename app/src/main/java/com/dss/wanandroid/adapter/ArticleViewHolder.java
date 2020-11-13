@@ -7,8 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dss.wanandroid.R;
-import com.like.LikeButton;
-import com.sackcentury.shinebuttonlib.ShineAnimator;
 import com.sackcentury.shinebuttonlib.ShineButton;
 
 /**
@@ -27,7 +25,7 @@ public class ArticleViewHolder extends RecyclerView.ViewHolder{
     public ArticleViewHolder(@NonNull View itemView) {
         super(itemView);
         this.itemView = itemView;
-        chapter = itemView.findViewById(R.id.chapter1);
+        chapter = itemView.findViewById(R.id.chapter);
         time = itemView.findViewById(R.id.time);
         desc = itemView.findViewById(R.id.desc);
         authorOrShareUser = itemView.findViewById(R.id.authorOrShareUser);
