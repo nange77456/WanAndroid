@@ -1,6 +1,5 @@
 package com.dss.wanandroid.pages.home;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,26 +20,21 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.dss.wanandroid.adapter.HomeAdapter;
 import com.dss.wanandroid.entity.ArticleData;
-import com.dss.wanandroid.entity.GuideData;
 import com.dss.wanandroid.pages.me.EntryActivity;
 import com.dss.wanandroid.utils.FileUtil;
 import com.dss.wanandroid.utils.MyWebView;
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.entity.BannerData;
 import com.dss.wanandroid.adapter.BannerViewHolder;
-import com.dss.wanandroid.adapter.BannerAdapter;
 import com.dss.wanandroid.net.HomeRequest;
 import com.dss.wanandroid.utils.OneParamPhone;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.zhpan.bannerview.BannerViewPager;
-import com.zhpan.indicator.enums.IndicatorStyle;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -49,6 +43,9 @@ import java.util.List;
  * 首页页面
  */
 public class HomeFragment extends Fragment {
+    /**
+     * 首页-分享页，登录返回
+     */
     final int LOGIN_REQUEST = 1;
     /**
      * 首页文章列表
@@ -177,7 +174,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //设置这一页的menu有效（Fragment）
+        //设置这一页的menu有效（Fragment需要，activity不需要）
         setHasOptionsMenu(true);
     }
 
@@ -190,8 +187,9 @@ public class HomeFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
         switch (itemId){
-            case R.id.home_search:
-                //TODO 跳转
+            case R.id.search:
+                Intent searchIntent = new Intent(getContext(),SearchActivity.class);
+                startActivity(searchIntent);
                 break;
         }
         return true;

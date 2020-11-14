@@ -10,8 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.utils.OneParamPhone;
-import com.like.LikeButton;
-import com.like.OnLikeListener;
 import com.sackcentury.shinebuttonlib.ShineButton;
 
 import java.util.List;

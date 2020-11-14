@@ -19,31 +19,6 @@ public class SystemData implements Serializable {
      */
     private List<TabData> children;
 
-    /**
-     * 内部类，子标签
-     */
-    /*public static class Child implements Serializable{
-
-        String name;
-
-        int id;
-
-        public String getName() {
-            return Html.fromHtml(name).toString();
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-    }*/
 
     public String getName() {
         return Html.fromHtml(name).toString();

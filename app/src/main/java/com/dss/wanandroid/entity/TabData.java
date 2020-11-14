@@ -5,7 +5,8 @@ import android.text.Html;
 import java.io.Serializable;
 
 /**
- * TabLayout子项，子标签类
+ * TabLayout子项，ChipGroup子项，子标签类，只有name和id
+ * 实现Serializable类，以便intent传对象
  */
 public class TabData implements Serializable {
     /**

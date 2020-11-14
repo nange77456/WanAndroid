@@ -270,7 +270,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         //用Html类静态方法fromHtml处理含前端标签的文本
         holder3.desc.setText(item3.getDesc());
         //设置红心是否点亮
-//        holder3.likeButton.setLiked(item3.isLikeState());
+        holder3.likeButton.setChecked(item3.isLikeState());
 
     }
 }

@@ -273,43 +273,6 @@ public class HomeRequest {
         });
     }
 
-    /**
-     * 获取id为accountId的公众号下的文章列表
-     */
-    /*public void getOfficialAccountsArticles(int accountId, int pageId, final TwoParamsPhone<Integer,List<ArticleData>> phone){
-        Request request = new Request.Builder()
-                .url(NetUtil.baseUrl+"/wxarticle/list/"+accountId+"/"+pageId+"/json")
-                .get()
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String jsonData = response.body().string();
-                try {
-                    JSONObject data = new JSONObject(jsonData).getJSONObject("data");
-                    int pageCount = data.getInt("pageCount");
-                    JSONArray datas = data.getJSONArray("datas");
-
-                    List<ArticleData> articleDataList = new Gson().fromJson(datas.toString()
-                            ,new TypeToken<List<ArticleData>>(){}.getType());
-
-                    if(phone!=null){
-                        phone.onPhone(pageCount,articleDataList);
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }*/
-//TODO 为什么上面的函数没用到
 
     /**
      * 获取项目的分类标签
@@ -338,6 +301,85 @@ public class HomeRequest {
                         phone.onPhone(projectsTabs);
                     }
 
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * 获取搜索热词
+     * @param phone
+     */
+    public void getHotKeyTabs(final OneParamPhone<List<TabData>> phone){
+        Request request = new Request.Builder()
+                .url(NetUtil.baseUrl+"/hotkey/json")
+                .get()
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String jsonData = response.body().string();
+
+                try {
+                    JSONArray array = new JSONObject(jsonData).getJSONArray("data");
+                    List<TabData> hotKeyList = new Gson().fromJson(array.toString()
+                            ,new TypeToken<List<TabData>>(){}.getType());
+
+                    if(phone!=null){
+                        phone.onPhone(hotKeyList);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * 获取搜索结果
+     * @param key
+     * @param pageId
+     * @param phone
+     */
+    public void getSearchResultList(String key, int pageId, final TwoParamsPhone<List<ArticleData>,Integer> phone){
+        RequestBody body = new FormBody.Builder()
+                .add("k",key)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(NetUtil.baseUrl+"/article/query/"+pageId+"/json")
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String jsonData = response.body().string();
+
+                try {
+                    JSONObject data = new JSONObject(jsonData).getJSONObject("data");
+                    int pageCount = data.getInt("pageCount");
+                    JSONArray array = data.getJSONArray("datas");
+
+                    List<ArticleData> articleDataList = new Gson().fromJson(array.toString()
+                            ,new TypeToken<List<ArticleData>>(){}.getType());
+
+                    if(phone!=null){
+                        phone.onPhone(articleDataList,pageCount);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

@@ -9,6 +9,7 @@
     <color name="colorDark">#870000</color>
     <color name="colorMiddle">#bf360c</color>
     <color name="colorIndicatorSelected">#FF5252</color>
+    <color name="colorDarkPlus">#7C0000</color>
     <!--    文字列表颜色-->
     <color name="colorTextTitle">#000000</color>
     <color name="colorTextPlain">#323232</color>
