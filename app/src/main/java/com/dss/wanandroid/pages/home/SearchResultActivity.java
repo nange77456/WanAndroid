@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.dss.wanandroid.adapter.QAAdapter;
 import com.dss.wanandroid.custom.view.EditTextPlus;
 import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.net.HomeRequest;
+import com.dss.wanandroid.utils.FileUtil;
 import com.dss.wanandroid.utils.MyWebView;
 import com.dss.wanandroid.utils.NoParamPhone;
 import com.dss.wanandroid.utils.OneParamPhone;
@@ -26,6 +28,7 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -95,6 +98,7 @@ public class SearchResultActivity extends AppCompatActivity {
         //从首页-搜索页获取用户输入
         Intent searchIntent = getIntent();
         key = searchIntent.getStringExtra("key");
+        FileUtil.setSearchList(key);
         //请求搜索结果首页数据
         getSearchResult(key,0);
 
@@ -103,7 +107,6 @@ public class SearchResultActivity extends AppCompatActivity {
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                searchResultList.clear();
                 getSearchResult(key,0);
                 pageId = 0;
             }
@@ -112,7 +115,8 @@ public class SearchResultActivity extends AppCompatActivity {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 if(pageId<pageCount){
-                    getSearchResult(key,pageId++);
+                    pageId++;
+                    getSearchResult(key,pageId);
                 }else{
                     refreshLayout.finishLoadMoreWithNoMoreData();
                 }
@@ -140,6 +144,7 @@ public class SearchResultActivity extends AppCompatActivity {
             @Override
             public void onPhone() {
                 key = inputEditText.getInput();
+                FileUtil.setSearchList(key);
                 getSearchResult(key,0);
             }
         });
@@ -158,6 +163,7 @@ public class SearchResultActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.search:
                 key = inputEditText.getInput();
+                FileUtil.setSearchList(key);
                 getSearchResult(key,0);
                 break;
         }
@@ -170,13 +176,21 @@ public class SearchResultActivity extends AppCompatActivity {
      * @param key 搜索词
      * @param pageId 搜索结果网络请求页码
      */
-    public void getSearchResult(String key,int pageId){
+    public void getSearchResult(String key, final int pageId){
         HomeRequest request = new HomeRequest();
         request.getSearchResultList(key, pageId, new TwoParamsPhone<List<ArticleData>, Integer>() {
             @Override
             public void onPhone(List<ArticleData> articleDataList, Integer pageNum) {
                 //搜索结果每次都是新的，要clear
-                searchResultList.clear();
+                if(pageId==0){
+                    searchResultList.clear();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            recyclerView.scrollToPosition(0);
+                        }
+                    });
+                }
                 searchResultList.addAll(articleDataList);
                 pageCount = pageNum;
                 runOnUiThread(new Runnable() {

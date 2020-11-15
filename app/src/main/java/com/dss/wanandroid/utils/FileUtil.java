@@ -1,14 +1,23 @@
 package com.dss.wanandroid.utils;
 
 import com.dss.wanandroid.MyApplication;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.util.Log;
+
+import org.json.JSONArray;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class FileUtil {
     public static final String AVATAR_FILE_NAME = "avatar";
@@ -24,6 +33,10 @@ public class FileUtil {
      * 用2表示内部存储空间
      */
     public static final int INNER_STORAGE = 2;
+    /**
+     * 首页-搜索页的搜索历史的文件名
+     */
+    public static final String SEARCH_HISTORY = "search_history";
 
     /**
      * 用户登录信息保存到本地文件
@@ -117,5 +130,53 @@ public class FileUtil {
         editor.putBoolean("loginState",false);
         editor.apply();
 
+    }
+
+    /**
+     * 插入搜索词在searchList头部
+     * @param key
+     */
+    public static void setSearchList(String key){
+        SharedPreferences preferences = MyApplication.context.getSharedPreferences(SEARCH_HISTORY,MyApplication.context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        //决定搜索词key是否加入搜索列表
+        LinkedList<String> searchList = getSearchList();
+        if(searchList.contains(key)) {
+            searchList.remove(key);
+        }
+        searchList.addFirst(key);
+        if(searchList.size() > 8){
+            searchList.removeLast();
+        }
+
+        //写入文件
+        String jsonHistory = new Gson().toJson(searchList);
+        editor.putString("history",jsonHistory);
+        editor.apply();
+
+    }
+
+    /**
+     * 从文件中获取搜索历史列表
+     * @return
+     */
+    public static LinkedList<String> getSearchList(){
+        SharedPreferences preferences = MyApplication.context.getSharedPreferences(SEARCH_HISTORY,MyApplication.context.MODE_PRIVATE);
+
+        LinkedList<String> searchList = new Gson().fromJson(preferences.getString("history","[]")
+                ,new TypeToken<LinkedList<String>>(){}.getType());
+
+        return searchList;
+    }
+
+    /**
+     * 删除文件中的历史搜索数据
+     */
+    public static void clearSearchHistory(){
+        SharedPreferences preferences = MyApplication.context.getSharedPreferences(SEARCH_HISTORY,MyApplication.context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.apply();
     }
 }
