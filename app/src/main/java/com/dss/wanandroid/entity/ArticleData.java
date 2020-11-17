@@ -48,6 +48,10 @@ public class ArticleData {
      * 分享文章的id
      */
     private int id;
+    /**
+     * 收藏前的文章id
+     */
+    private int originId;
 
     /**
      * 项目页用到的图片链接
@@ -142,5 +146,13 @@ public class ArticleData {
 
     public void setShareUser(String shareUser) {
         this.shareUser = shareUser;
+    }
+
+    public int getOriginId() {
+        return originId;
+    }
+
+    public void setOriginId(int originId) {
+        this.originId = originId;
     }
 }

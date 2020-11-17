@@ -29,7 +29,6 @@ import java.util.List;
 
 /**
  * 首页-搜索页，含两个ChipGroup和搜索栏
- * TODO 搜索还差：历史搜索和收起软键盘
  */
 public class SearchActivity extends AppCompatActivity {
 

@@ -54,8 +54,6 @@ public class FavoriteActivity extends AppCompatActivity {
 
         //设置toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-        //TODO !! 竟然不setsupportactionbar就可以不隐藏toolbar！
         TextView pageTitle = findViewById(R.id.pageTitle);
         pageTitle.setText(R.string.page_favorite);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

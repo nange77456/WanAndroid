@@ -4,14 +4,12 @@ import android.util.Log;
 
 import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.entity.BannerData;
-import com.dss.wanandroid.entity.SystemData;
+import com.dss.wanandroid.entity.FavoriteData;
 import com.dss.wanandroid.entity.TabData;
 import com.dss.wanandroid.utils.NoParamPhone;
 import com.dss.wanandroid.utils.OneParamPhone;
 import com.dss.wanandroid.utils.TwoParamsPhone;
-import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 
 import okhttp3.Call;
@@ -37,7 +36,7 @@ public class HomeRequest {
     /**
      * 新建okHttp客户端
      */
-    OkHttpClient client = new OkHttpClient();
+    private OkHttpClient client = new OkHttpClient();
 
 
     /**
@@ -119,7 +118,6 @@ public class HomeRequest {
                     JSONArray data = new JSONObject(jsonData).getJSONArray("data");
                     List<ArticleData> list = new Gson().fromJson(data.toString(),new TypeToken<List<ArticleData>>(){}.getType());
                     if(phone!=null){
-//                        Log.e("tag","置顶文章在哪里"+list.size());
                         phone.onPhone(list);
                     }
 
@@ -386,5 +384,93 @@ public class HomeRequest {
             }
         });
     }
+
+    /**
+     * 获取一页的收藏列表
+     * @param username
+     * @param password
+     * @param pageId
+     */
+    public void getFavoriteSetInPage(String username, String password, final int pageId, final TwoParamsPhone<Integer,HashSet<Integer>> phone){
+        //构造get请求
+        Request request = new Request.Builder()
+                .url(NetUtil.baseUrl+"/lg/collect/list/"+pageId+"/json")
+                .addHeader("Cookie","loginUserName="+username)
+                .addHeader("Cookie","loginUserPassword="+password)
+                .get()
+                .build();
+        //异步发送请求
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                //获取json字符串
+                String json = response.body().string();
+
+                try {
+                    //获取json格式数据
+                    JSONObject object = new JSONObject(json).getJSONObject("data");
+                    JSONArray datas = object.getJSONArray("datas");
+                    int pageCount = object.getInt("pageCount");
+
+                    //gson解析json得到list类型数据
+                    Gson gson = new Gson();
+                    List<FavoriteData> favoriteDataList = gson.fromJson(datas.toString(),
+                            new TypeToken<List<FavoriteData>>(){}.getType());
+
+                    //把收藏列表的id缓存到set
+                    HashSet<Integer> favoritSetInPage = new HashSet<>();
+                    for(int i=0;i<favoriteDataList.size();i++){
+                        //注意！放originId而不是Id，originId是文章本来的编号，id是收藏编号
+                        favoritSetInPage.add(favoriteDataList.get(i).getOriginId());
+                    }
+
+                    if(phone!=null){
+                        phone.onPhone(pageCount,favoritSetInPage);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+
+    /**
+     * 拼接全部页的收藏列表
+     * @param username
+     * @param password
+     */
+//    public void getFavoriteSet(final String username, final String password, final NoParamPhone phone){
+//        FavoriteUtil.favoriteSet.clear();
+//        //在第一页请求结束时获得pageCount
+//        getFavoriteSetInPage(username, password, 0, new OneParamPhone<Integer>() {
+//            @Override
+//            public void onPhone(Integer pageCount) {
+//                for(int i=1;i<pageCount;i++){
+//                    getFavoriteSetInPage(username, password, i, new OneParamPhone<Integer>() {
+//                        @Override
+//                        public void onPhone(Integer pageCount) {
+//                            //在所有页请求结束时，用NoParamPhone通知需要使用这个方法的地方
+//                            if(pageNum==pageCount){
+//                                if(phone!=null){
+//                                    phone.onPhone();
+//                                }
+//                            }
+//                        }
+//                    });
+//                }
+//            }
+//        });
+//
+//
+//
+//    }
+
 
 }

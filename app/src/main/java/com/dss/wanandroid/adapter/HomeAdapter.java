@@ -17,6 +17,7 @@ import com.dss.wanandroid.R;
 import com.dss.wanandroid.custom.view.CircleView;
 import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.entity.BannerData;
+import com.dss.wanandroid.utils.FavoriteUtil;
 import com.dss.wanandroid.utils.MyWebView;
 import com.dss.wanandroid.utils.OneParamPhone;
 import com.zhpan.bannerview.BannerViewPager;
@@ -44,6 +45,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
      * 文章列表
      */
     private List<ArticleData> articleDataList;
+
     /**
      * 轮播图列表
      */
@@ -270,6 +272,10 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         //用Html类静态方法fromHtml处理含前端标签的文本
         holder3.desc.setText(item3.getDesc());
         //设置红心是否点亮
+        if(FavoriteUtil.favoriteSet.contains(item3.getId())){
+            item3.setLikeState(true);
+//            Log.e("tag","红心文章："+item3.getId()+","+item3.getTitle());
+        }
         holder3.likeButton.setChecked(item3.isLikeState());
 
     }

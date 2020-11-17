@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * 文件相关静态方法类
+ */
 public class FileUtil {
     public static final String AVATAR_FILE_NAME = "avatar";
     /**
