@@ -120,7 +120,7 @@ public class HomeFragment extends Fragment {
         adapter = new HomeAdapter(articleDataList, bannerDataList, activity);
 
         //设置文章列表第一页数据
-        setArticleDataListWithTop();
+//        setArticleDataListWithTop();
         //设置轮播图数据
         setBannerDataList();
         //设置首页RecyclerView
@@ -180,7 +180,53 @@ public class HomeFragment extends Fragment {
         });
 
         //获取首页红心文章集合
-        setFavoriteSet();
+//        setFavoriteSet();
+
+
+        SingleRequest<List<ArticleData>> articleRequest = new SingleRequest<List<ArticleData>>() {
+            @Override
+            public void aRequest(final OneParamPhone<List<ArticleData>> articleTopPhone) {
+                setArticleDataListWithTop(new OneParamPhone<List<ArticleData>>() {
+                    @Override
+                    public void onPhone(List<ArticleData> articleTopList) {
+                        if(articleTopPhone!=null){
+                            articleTopPhone.onPhone(articleTopList);
+                        }
+                    }
+                });
+            }
+        };
+        SingleRequest<HashSet<Integer>> favoriteRequest = new SingleRequest<HashSet<Integer>>() {
+            @Override
+            public void aRequest(final OneParamPhone<HashSet<Integer>> favoritePhone) {
+                setFavoriteSet(new OneParamPhone<HashSet<Integer>>() {
+                    @Override
+                    public void onPhone(HashSet<Integer> favoriteSet) {
+                        if(favoritePhone!=null){
+                            favoritePhone.onPhone(favoriteSet);
+                        }
+                    }
+                });
+            }
+        };
+        MergedRequestUtil.mergeRequest(articleRequest, favoriteRequest, new TwoParamsPhone<List<ArticleData>, HashSet<Integer>>() {
+            @Override
+            public void onPhone(final List<ArticleData> articleList, final HashSet<Integer> favoriteSet) {
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+//                            articleDataList.addAll(articleList);
+
+                            FavoriteUtil.favoriteSet = favoriteSet;
+
+                            adapter.notifyDataSetChanged();
+                            refreshLayout.finishLoadMore();
+                        }
+                    });
+                }
+            }
+        });
 
         return view;
 
@@ -189,14 +235,16 @@ public class HomeFragment extends Fragment {
     /**
      * 请求所有红心文章，并缓存到FavoriteUtil静态变量中
      */
-    public void setFavoriteSet(){
-        if(FileUtil.isLogin()){
+    public void setFavoriteSet(final OneParamPhone<HashSet<Integer>> favoritePhone) {
+        if (FileUtil.isLogin()) {
             final String username = FileUtil.getUsername();
             final String password = FileUtil.getPassword();
+            //请求第一页的收藏列表，获取pageCount
             request.getFavoriteSetInPage(username, password, 0, new TwoParamsPhone<Integer, HashSet<Integer>>() {
                 @Override
                 public void onPhone(final Integer pageCount, HashSet<Integer> favoriteSetInPage) {
                     List<SingleRequest<HashSet<Integer>>> requestList = new ArrayList<>(pageCount);
+                    //将对0~pageCount页的收藏列表的这些请求，构造成一个requestList
                     for (int i = 0; i < pageCount; i++) {
                         final int cur = i;
                         requestList.add(new SingleRequest<HashSet<Integer>>() {
@@ -205,7 +253,7 @@ public class HomeFragment extends Fragment {
                                 request.getFavoriteSetInPage(username, password, cur, new TwoParamsPhone<Integer, HashSet<Integer>>() {
                                     @Override
                                     public void onPhone(Integer pageCount, HashSet<Integer> favoriteSetInPage) {
-                                        if(phone!=null){
+                                        if (phone != null) {
                                             phone.onPhone(favoriteSetInPage);
                                         }
                                     }
@@ -215,22 +263,23 @@ public class HomeFragment extends Fragment {
                         });
 
                     }
-
+                    //发送所有页请求，并合并请求结果，缓存到FavoriteUtil的favoriteSet集合中
                     MergedRequestUtil.mergeRequest(requestList, new OneParamPhone<List<HashSet<Integer>>>() {
                         @Override
                         public void onPhone(List<HashSet<Integer>> favoriteList) {
-                            Log.e("tag", "收藏列表：" + favoriteList);
-                            for(int i=0;i<favoriteList.size();i++){
+                            for (int i = 0; i < favoriteList.size(); i++) {
                                 FavoriteUtil.favoriteSet.addAll(favoriteList.get(i));
                             }
-                            if (getActivity() != null) {
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Log.e("tag", "notify");
-                                        adapter.notifyDataSetChanged();
-                                    }
-                                });
+//                            if (getActivity() != null) {
+//                                getActivity().runOnUiThread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        adapter.notifyDataSetChanged();
+//                                    }
+//                                });
+//                            }
+                            if(favoritePhone!=null){
+                                favoritePhone.onPhone(FavoriteUtil.favoriteSet);
                             }
                         }
                     });
@@ -238,7 +287,6 @@ public class HomeFragment extends Fragment {
             });
         }
     }
-
 
 
     @Override
@@ -268,7 +316,7 @@ public class HomeFragment extends Fragment {
     /**
      * 调用网络请求方法请求首页文章数据并通知adapter改变，首页含置顶
      */
-    public void setArticleDataListWithTop() {
+    public void setArticleDataListWithTop(final OneParamPhone<List<ArticleData>> articleTopPhone) {
         final HomeRequest request = new HomeRequest();
         request.getArticleDataTop(new OneParamPhone<List<ArticleData>>() {
             @Override
@@ -282,14 +330,16 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onPhone(List<ArticleData> articleData) {
                         articleDataList.addAll(articleData);
-
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                adapter.notifyDataSetChanged();
-                            }
-                        });
-                        refreshLayout.finishLoadMore();
+//                        getActivity().runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                adapter.notifyDataSetChanged();
+//                            }
+//                        });
+//                        refreshLayout.finishLoadMore();
+                        if(articleTopPhone!=null){
+                            articleTopPhone.onPhone(articleDataList);
+                        }
                     }
                 }, 0);
 
@@ -340,6 +390,12 @@ public class HomeFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        //TODO Bug 轮播图和置顶一起出现，非置顶和红心晚1s
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         adapter.setBannerDataListChanged(true);
                         adapter.notifyItemChanged(0);
                         //给轮播图对象刷新数据

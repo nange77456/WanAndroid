@@ -35,7 +35,8 @@ public class MergedRequestUtil {
      * @param <T1> 请求1的返回值类型
      * @param <T2> 请求2的返回值类型
      */
-    public static <T1,T2> void mergeRequest(SingleRequest<T1> request1, SingleRequest<T2> request2, final TwoParamsPhone<T1,T2> mergePhone){
+    public static <T1,T2> void mergeRequest(SingleRequest<T1> request1, SingleRequest<T2> request2
+            , final TwoParamsPhone<T1,T2> mergePhone){
         final DataHelper<Integer> count = new DataHelper<>();   //静态内部类使用的数据，要final，要初始化
         count.setT(0);
 
@@ -83,7 +84,8 @@ public class MergedRequestUtil {
      * @param mergePhone 请求结束回调接口
      * @param <T> 所有请求的返回值类型
      */
-    public static <T> void mergeRequest(final List<SingleRequest<T>> requestList, final OneParamPhone<List<T>> mergePhone){
+    public static <T> void mergeRequest(final List<SingleRequest<T>> requestList
+            , final OneParamPhone<List<T>> mergePhone){
         //计数器，网络请求没有顺序，但是总数一定，用于标记结束
         final DataHelper<Integer> count = new DataHelper<>();
         count.setT(0);
