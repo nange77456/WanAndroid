@@ -16,7 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.adapter.QAAdapter;
 import com.dss.wanandroid.entity.ArticleData;
+import com.dss.wanandroid.net.MergedRequestUtil;
 import com.dss.wanandroid.net.QARequest;
+import com.dss.wanandroid.net.SingleRequest;
 import com.dss.wanandroid.utils.MyWebView;
 import com.dss.wanandroid.utils.OneParamPhone;
 import com.dss.wanandroid.utils.TwoParamsPhone;
@@ -58,7 +60,7 @@ public class QAFragment extends Fragment {
         setRefreshLayout(view);
 
         //设置问答列表数据
-        setQAList(true,1);
+        setQAList(1);
 
         //从view获得recyclerView视图
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
@@ -79,6 +81,7 @@ public class QAFragment extends Fragment {
             }
         });
 
+
         return view;
     }
 
@@ -94,10 +97,9 @@ public class QAFragment extends Fragment {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
-
                 //下拉刷新的时候重新访问第1页的问答数据
                 pageId = 1;
-                setQAList(true,pageId);
+                setQAList(pageId);
             }
         });
         //在上拉加载时调用此方法
@@ -108,7 +110,7 @@ public class QAFragment extends Fragment {
 
                 //上拉加载的时候访问下一页数据
                 pageId++;
-                setQAList(false,pageId);
+                setQAList(pageId);
             }
         });
     }
@@ -116,14 +118,14 @@ public class QAFragment extends Fragment {
     /**
      * 发出网络请求，设置问答列表的RecyclerView
      */
-    public void setQAList(final boolean needClearData, int pageId) {
+    public void setQAList(final int pageId) {
         //发送网络请求，返回qaList
         QARequest qaRequest = new QARequest();
-        qaRequest.getQAData(pageId, new TwoParamsPhone<Integer, List<ArticleData>>() {
+        qaRequest.getQAData(pageId, new OneParamPhone<List<ArticleData>>() {
             @Override
-            public void onPhone(Integer pageId, List<ArticleData> QAList) {
+            public void onPhone(List<ArticleData> QAList) {
                 //只有下拉刷新时需要清空链表数据
-                if(needClearData){
+                if(pageId==1){
                     qaList.clear();
                 }
                 //给qaList填入网络请求得到的数据

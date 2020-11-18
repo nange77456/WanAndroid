@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.entity.ArticleData;
+import com.dss.wanandroid.utils.FavoriteUtil;
 import com.dss.wanandroid.utils.OneParamPhone;
 import com.sackcentury.shinebuttonlib.ShineButton;
 
@@ -119,6 +120,9 @@ public class QAAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
         holder.desc.setText(item.getDesc());
 
         //设置红心是否点亮
+        if(FavoriteUtil.favoriteSet.contains(item.getId())){
+            item.setLikeState(true);
+        }
         holder.likeButton.setChecked(item.isLikeState());
     }
 }

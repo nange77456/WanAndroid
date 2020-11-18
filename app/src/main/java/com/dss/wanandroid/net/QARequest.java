@@ -1,6 +1,7 @@
 package com.dss.wanandroid.net;
 
 import com.dss.wanandroid.entity.ArticleData;
+import com.dss.wanandroid.utils.OneParamPhone;
 import com.dss.wanandroid.utils.TwoParamsPhone;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -31,7 +32,7 @@ public class QARequest {
      * @param pageId 页码
      * @param phone 网络请求结束的回调接口
      */
-    public void getQAData(int pageId, final TwoParamsPhone<Integer,List<ArticleData>> phone){
+    public void getQAData(int pageId, final OneParamPhone<List<ArticleData>> phone){
         //构造get请求
         final Request request = new Request.Builder()
                 .url(NetUtil.baseUrl+"/wenda/list/"+pageId+"/json")
@@ -61,11 +62,8 @@ public class QARequest {
 
                     if(phone!=null){
                         //调用QAData的回调方法
-                        phone.onPhone(pageId,QAList);
-
-
+                        phone.onPhone(QAList);
                     }
-
 
                 } catch (JSONException e) {
                     e.printStackTrace();
