@@ -29,6 +29,7 @@ import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -40,6 +41,7 @@ public class SearchResultActivity extends AppCompatActivity {
      * 搜索结果，文章列表数据
      */
     private List<ArticleData> searchResultList = new LinkedList<>();
+
     /**
      * 搜索结果的网络请求的总页数
      */
@@ -47,7 +49,7 @@ public class SearchResultActivity extends AppCompatActivity {
     /**
      * 搜索出的文章列表的适配器
      */
-    private QAAdapter adapter = new QAAdapter(searchResultList);
+    private QAAdapter adapter = new QAAdapter(searchResultList,new HashSet<Integer>());
     /**
      * 搜索结果文章列表视图
      */

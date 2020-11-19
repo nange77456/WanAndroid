@@ -22,6 +22,7 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class SquareActivity extends AppCompatActivity {
     /**
      * 广场文章列表适配器（问答页适配器，共用）
      */
-    private QAAdapter adapter = new QAAdapter(articles);
+    private QAAdapter adapter = new QAAdapter(articles,new HashSet<Integer>());
 
     /**
      * 文章列表网络请求的参数，页码

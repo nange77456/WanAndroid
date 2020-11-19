@@ -13,6 +13,7 @@ import com.dss.wanandroid.utils.FavoriteUtil;
 import com.dss.wanandroid.utils.OneParamPhone;
 import com.sackcentury.shinebuttonlib.ShineButton;
 
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -23,13 +24,18 @@ public class QAAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
      * 问答列表数据
      */
     private List<ArticleData> qaDataList;
+    /**
+     * 收藏列表，外部传入
+     */
+    private HashSet<Integer> favoriteSet;
 
     /**
      * 构造问答适配器时需传入问答数据
      * @param list
      */
-    public QAAdapter(List<ArticleData> list){
+    public QAAdapter(List<ArticleData> list,HashSet<Integer> favoriteSet){
         qaDataList = list;
+        this.favoriteSet = favoriteSet;
     }
 
 
@@ -120,7 +126,7 @@ public class QAAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
         holder.desc.setText(item.getDesc());
 
         //设置红心是否点亮
-        if(FavoriteUtil.favoriteSet.contains(item.getId())){
+        if(favoriteSet.contains(item.getId())){
             item.setLikeState(true);
         }
         holder.likeButton.setChecked(item.isLikeState());

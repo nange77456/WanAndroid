@@ -2,9 +2,11 @@ package com.dss.wanandroid.pages.qa;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Chronometer;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,6 +21,7 @@ import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.net.MergedRequestUtil;
 import com.dss.wanandroid.net.QARequest;
 import com.dss.wanandroid.net.SingleRequest;
+import com.dss.wanandroid.utils.FavoriteUtil;
 import com.dss.wanandroid.utils.MyWebView;
 import com.dss.wanandroid.utils.OneParamPhone;
 import com.dss.wanandroid.utils.TwoParamsPhone;
@@ -27,6 +30,7 @@ import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class QAFragment extends Fragment {
@@ -37,15 +41,23 @@ public class QAFragment extends Fragment {
     /**
      * qa数据集合
      */
-    final private List<ArticleData> qaList = new ArrayList<>();
+    private List<ArticleData> qaList = new ArrayList<>();
+    /**
+     * 收藏列表
+     */
+    private HashSet<Integer> favoriteSet = new HashSet<>();
     /**
      * qa适配器
      */
-    final private QAAdapter qaAdapter = new QAAdapter(qaList);
+    final private QAAdapter qaAdapter = new QAAdapter(qaList,favoriteSet);
     /**
      * 刷新加载布局
      */
     private RefreshLayout refreshLayout;
+    /**
+     * 问答页网络请求综合
+     */
+    QARequest qaRequest = new QARequest();
 
     @Nullable
     @Override
@@ -58,9 +70,6 @@ public class QAFragment extends Fragment {
 
         //设置下拉刷新，上拉加载
         setRefreshLayout(view);
-
-        //设置问答列表数据
-        setQAList(1);
 
         //从view获得recyclerView视图
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
@@ -78,6 +87,44 @@ public class QAFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), MyWebView.class);
                 intent.putExtra("url",url);
                 startActivity(intent);
+            }
+        });
+
+        //发送并合并问答列表和红心列表请求
+        MergedRequestUtil.mergeRequest(new SingleRequest<List<ArticleData>>() {
+            @Override
+            public void aRequest(final OneParamPhone<List<ArticleData>> articlePhone) {
+                qaRequest.getQAData(1, new OneParamPhone<List<ArticleData>>() {
+                    @Override
+                    public void onPhone(List<ArticleData> returnData) {
+                        articlePhone.onPhone(returnData);
+                    }
+                });
+            }
+        }, new SingleRequest<HashSet<Integer>>() {
+            @Override
+            public void aRequest(final OneParamPhone<HashSet<Integer>> favoritePhone) {
+                FavoriteUtil.getFavoriteSet(new OneParamPhone<HashSet<Integer>>() {
+                    @Override
+                    public void onPhone(HashSet<Integer> returnData) {
+                        favoritePhone.onPhone(returnData);
+                    }
+                },getActivity());
+            }
+        }, new TwoParamsPhone<List<ArticleData>, HashSet<Integer>>() {
+            @Override
+            public void onPhone(List<ArticleData> articleData, HashSet<Integer> favoriteData) {
+                qaList.addAll(articleData);
+                favoriteSet.addAll(favoriteData);
+
+                if(getActivity()!=null){
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            qaAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
             }
         });
 
@@ -120,7 +167,6 @@ public class QAFragment extends Fragment {
      */
     public void setQAList(final int pageId) {
         //发送网络请求，返回qaList
-        QARequest qaRequest = new QARequest();
         qaRequest.getQAData(pageId, new OneParamPhone<List<ArticleData>>() {
             @Override
             public void onPhone(List<ArticleData> QAList) {

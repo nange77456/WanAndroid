@@ -25,6 +25,7 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class ShareListActivity extends AppCompatActivity {
@@ -43,7 +44,7 @@ public class ShareListActivity extends AppCompatActivity {
     /**
      * qa适配器
      */
-    final private QAAdapter qaAdapter = new QAAdapter(qaList);
+    final private QAAdapter qaAdapter = new QAAdapter(qaList,new HashSet<Integer>());
     /**
      * 刷新加载布局
      */

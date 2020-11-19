@@ -23,6 +23,7 @@ import com.dss.wanandroid.utils.OneParamPhone;
 import com.zhpan.bannerview.BannerViewPager;
 import com.zhpan.indicator.enums.IndicatorStyle;
 
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -60,6 +61,10 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
      */
     AppCompatActivity appCompatActivity;
     /**
+     * 收藏列表数据，用构造函数传入
+     */
+    HashSet<Integer> favoriteSet;
+    /**
      * 点击四个按钮的回调方法
      */
     OneParamPhone<Integer> menuGroupPhone;
@@ -81,10 +86,12 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         isBannerDataListChanged = bannerDataListChanged;
     }
 
-    public HomeAdapter(List<ArticleData> articleDataList, List<BannerData> bannerDataList, AppCompatActivity appCompatActivity) {
+    public HomeAdapter(List<ArticleData> articleDataList, List<BannerData> bannerDataList
+            , AppCompatActivity appCompatActivity, HashSet<Integer> favoriteSet) {
         this.articleDataList = articleDataList;
         this.bannerDataList = bannerDataList;
         this.appCompatActivity = appCompatActivity;
+        this.favoriteSet = favoriteSet;
     }
 
     /**
@@ -272,7 +279,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         //用Html类静态方法fromHtml处理含前端标签的文本
         holder3.desc.setText(item3.getDesc());
         //设置红心是否点亮
-        if(FavoriteUtil.favoriteSet.contains(item3.getId())){
+        if(favoriteSet.contains(item3.getId())){
             item3.setLikeState(true);
         }
         holder3.likeButton.setChecked(item3.isLikeState());

@@ -1,5 +1,7 @@
 package com.dss.wanandroid.utils;
 
+import android.app.Activity;
+
 import com.dss.wanandroid.net.HomeRequest;
 import com.dss.wanandroid.net.MergedRequestUtil;
 import com.dss.wanandroid.net.SingleRequest;
@@ -31,7 +33,7 @@ public class FavoriteUtil {
      * 外部类访问收藏列表的唯一入口。
      * @param favoritePhone 收藏列表回调接口
      */
-    public static void getFavoriteSet(final OneParamPhone<HashSet<Integer>> favoritePhone) {
+    public static void getFavoriteSet(final OneParamPhone<HashSet<Integer>> favoritePhone, final Activity activity) {
         //双重检验锁实现单例模式，保证只有一次getFavoriteSet的网络请求
         if (!isCached) {
             //加锁，为了保证只有一个线程可以去发送收藏列表的网络请求
@@ -51,7 +53,13 @@ public class FavoriteUtil {
                             favoritePhone.onPhone(favoriteSet);
                         }
                         //网络请求结束时才释放锁
-                        aLock.unlock();
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                aLock.unlock();
+
+                            }
+                        });
                     }
                 });
 

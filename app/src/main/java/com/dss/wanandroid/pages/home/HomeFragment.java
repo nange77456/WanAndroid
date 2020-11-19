@@ -83,6 +83,10 @@ public class HomeFragment extends Fragment {
      * 刷新布局
      */
     private RefreshLayout refreshLayout;
+    /**
+     * 收藏列表
+     */
+    private HashSet<Integer> favoriteSet = new HashSet<>();
 
 
     /**
@@ -117,7 +121,7 @@ public class HomeFragment extends Fragment {
 
         // AppCompatActivity作用：给adapter-->给bannerViewPager-->获得生命周期
         // 注：要onCreateView加载布局之后才能getActivity（），所以activity和adapter在这里赋值
-        adapter = new HomeAdapter(articleDataList, bannerDataList, activity);
+        adapter = new HomeAdapter(articleDataList, bannerDataList, activity,favoriteSet);
 
         //设置文章列表第一页数据
 //        setArticleDataListWithTop();
@@ -197,14 +201,14 @@ public class HomeFragment extends Fragment {
         SingleRequest<HashSet<Integer>> favoriteRequest = new SingleRequest<HashSet<Integer>>() {
             @Override
             public void aRequest(final OneParamPhone<HashSet<Integer>> favoritePhone) {
-                setFavoriteSet(new OneParamPhone<HashSet<Integer>>() {
+                FavoriteUtil.getFavoriteSet(new OneParamPhone<HashSet<Integer>>() {
                     @Override
                     public void onPhone(HashSet<Integer> favoriteSet) {
                         if(favoritePhone!=null){
                             favoritePhone.onPhone(favoriteSet);
                         }
                     }
-                });
+                },getActivity());
             }
         };
         //发送并合并所有红心文章和首页文章的网络请求
@@ -216,8 +220,7 @@ public class HomeFragment extends Fragment {
                         @Override
                         public void run() {
                             articleDataList.addAll(articleList);
-
-                            FavoriteUtil.favoriteSet = favoriteSet;
+                            HomeFragment.this.favoriteSet.addAll(favoriteSet);
 
                             adapter.notifyDataSetChanged();
                             refreshLayout.finishLoadMore();
