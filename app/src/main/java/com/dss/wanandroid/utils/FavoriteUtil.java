@@ -1,6 +1,11 @@
 package com.dss.wanandroid.utils;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+
+import androidx.annotation.NonNull;
 
 import com.dss.wanandroid.net.HomeRequest;
 import com.dss.wanandroid.net.MergedRequestUtil;
@@ -27,13 +32,22 @@ public class FavoriteUtil {
      * getFavoriteSet方法中用到的锁
      */
     private static ReentrantLock aLock = new ReentrantLock();
+    /**
+     * 切换线程，释放锁
+     */
+    private static Handler handler = new Handler(Looper.myLooper()){
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            aLock.unlock();
+        }
+    };
 
     /**
      * 从缓存读取收藏列表，或者发送网络请求。
      * 外部类访问收藏列表的唯一入口。
      * @param favoritePhone 收藏列表回调接口
      */
-    public static void getFavoriteSet(final OneParamPhone<HashSet<Integer>> favoritePhone, final Activity activity) {
+    public static void getFavoriteSet(final OneParamPhone<HashSet<Integer>> favoritePhone) {
         //双重检验锁实现单例模式，保证只有一次getFavoriteSet的网络请求
         if (!isCached) {
             //加锁，为了保证只有一个线程可以去发送收藏列表的网络请求
@@ -53,13 +67,7 @@ public class FavoriteUtil {
                             favoritePhone.onPhone(favoriteSet);
                         }
                         //网络请求结束时才释放锁
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                aLock.unlock();
-
-                            }
-                        });
+                        handler.sendMessage(new Message());
                     }
                 });
 
@@ -128,6 +136,5 @@ public class FavoriteUtil {
             }
         }
     }
-
 
 }

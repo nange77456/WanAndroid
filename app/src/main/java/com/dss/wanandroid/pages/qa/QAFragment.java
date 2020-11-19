@@ -109,7 +109,7 @@ public class QAFragment extends Fragment {
                     public void onPhone(HashSet<Integer> returnData) {
                         favoritePhone.onPhone(returnData);
                     }
-                },getActivity());
+                });
             }
         }, new TwoParamsPhone<List<ArticleData>, HashSet<Integer>>() {
             @Override

@@ -20,6 +20,8 @@ import com.dss.wanandroid.entity.BannerData;
 import com.dss.wanandroid.utils.FavoriteUtil;
 import com.dss.wanandroid.utils.MyWebView;
 import com.dss.wanandroid.utils.OneParamPhone;
+import com.dss.wanandroid.utils.TwoParamsPhone;
+import com.sackcentury.shinebuttonlib.ShineButton;
 import com.zhpan.bannerview.BannerViewPager;
 import com.zhpan.indicator.enums.IndicatorStyle;
 
@@ -73,9 +75,17 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
      * 文章列表点击后掉用回调接口传递url
      */
     private OneParamPhone<Integer> articlePositionPhone;
+    /**
+     * 红心按钮点击后触发回调
+     */
+    private TwoParamsPhone<Integer,Boolean> likeButtonClickPhone;
 
     public void setArticlePositionPhone(OneParamPhone<Integer> articlePositionPhone) {
         this.articlePositionPhone = articlePositionPhone;
+    }
+
+    public void setLikeButtonClickPhone(TwoParamsPhone<Integer, Boolean> likeButtonClickPhone) {
+        this.likeButtonClickPhone = likeButtonClickPhone;
     }
 
     public void setMenuGroupPhone(OneParamPhone<Integer> menuGroupPhone) {
@@ -214,11 +224,28 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 //用已有的单个文章视图
                 view = layoutInflater.inflate(R.layout.item_article,parent,false);
                 holder = new ArticleViewHolder(view);
+                //设置文章点击事件
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         //回调方法传递文章位置值
-                        articlePositionPhone.onPhone(holder.getAdapterPosition());
+                        if(articlePositionPhone!=null){
+                            //TODO 为什么位置值不要-2
+                            articlePositionPhone.onPhone(holder.getAdapterPosition());
+                        }
+                    }
+                });
+                //设置文章中的红心按钮点击事件
+                ((ArticleViewHolder)holder).likeButton.setOnCheckStateChangeListener(new ShineButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(View view, boolean checked) {
+                        if(likeButtonClickPhone!=null){
+                            //改变红心点亮状态
+                            articleDataList.get(holder.getAdapterPosition()-2).setLikeState(checked);
+                            //点击红心触发回调方法
+                            likeButtonClickPhone.onPhone(holder.getAdapterPosition()-2,checked);
+
+                        }
                     }
                 });
                 break;

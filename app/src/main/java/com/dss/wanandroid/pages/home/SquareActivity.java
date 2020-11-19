@@ -15,6 +15,9 @@ import com.dss.wanandroid.R;
 import com.dss.wanandroid.adapter.QAAdapter;
 import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.net.HomeRequest;
+import com.dss.wanandroid.net.MergedRequestUtil;
+import com.dss.wanandroid.net.SingleRequest;
+import com.dss.wanandroid.utils.FavoriteUtil;
 import com.dss.wanandroid.utils.MyWebView;
 import com.dss.wanandroid.utils.OneParamPhone;
 import com.dss.wanandroid.utils.TwoParamsPhone;
@@ -30,16 +33,23 @@ import java.util.List;
  * 从首页点击广场
  */
 public class SquareActivity extends AppCompatActivity {
-
+    /**
+     * 首页网络请求封装类
+     */
+    private HomeRequest request = new HomeRequest();
     /**
      * 广场文章列表数据
      */
-    private List<ArticleData> articles = new LinkedList<>();
+    private List<ArticleData> articleList = new LinkedList<>();
+    /**
+     * 收藏列表数据
+     */
+    private HashSet<Integer> favoriteSet = new HashSet<>();
 
     /**
      * 广场文章列表适配器（问答页适配器，共用）
      */
-    private QAAdapter adapter = new QAAdapter(articles,new HashSet<Integer>());
+    private QAAdapter adapter = new QAAdapter(articleList,favoriteSet);
 
     /**
      * 文章列表网络请求的参数，页码
@@ -66,15 +76,48 @@ public class SquareActivity extends AppCompatActivity {
             }
         });
 
-        //设置首页数据
-        setArticles(0);
+        //设置广场页第一页数据，发送并合并文章请求和收藏请求
+        MergedRequestUtil.mergeRequest(new SingleRequest<List<ArticleData>>() {
+            @Override
+            public void aRequest(final OneParamPhone<List<ArticleData>> articlePhone) {
+                request.getArticleDataSquare(0, new TwoParamsPhone<Integer, List<ArticleData>>() {
+                    @Override
+                    public void onPhone(Integer pageCount, List<ArticleData> returnData) {
+                        articlePhone.onPhone(returnData);
+                    }
+                });
+            }
+        }, new SingleRequest<HashSet<Integer>>() {
+            @Override
+            public void aRequest(final OneParamPhone<HashSet<Integer>> favoritePhone) {
+                FavoriteUtil.getFavoriteSet(new OneParamPhone<HashSet<Integer>>() {
+                    @Override
+                    public void onPhone(HashSet<Integer> returnData) {
+                        favoritePhone.onPhone(returnData);
+                    }
+                });
+            }
+        }, new TwoParamsPhone<List<ArticleData>, HashSet<Integer>>() {
+            @Override
+            public void onPhone(List<ArticleData> articleData, HashSet<Integer> favoriteData) {
+                favoriteSet.addAll(favoriteData);
+                articleList.addAll(articleData);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        });
 
         //设置刷新加载布局
         refreshLayout = findViewById(R.id.refreshLayout);
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                articles.clear();
+                articleList.clear();
                 setArticles(0);
                 pageId = 0;
             }
@@ -95,7 +138,7 @@ public class SquareActivity extends AppCompatActivity {
         adapter.setPhone(new OneParamPhone<Integer>() {
             @Override
             public void onPhone(Integer position) {
-                ArticleData data = articles.get(position);
+                ArticleData data = articleList.get(position);
                 String url = data.getLink();
                 Intent intent = new Intent(SquareActivity.this, MyWebView.class);
                 intent.putExtra("url",url);
@@ -110,11 +153,10 @@ public class SquareActivity extends AppCompatActivity {
      * @param pageId
      */
     public void setArticles(final int pageId){
-        HomeRequest request = new HomeRequest();
         request.getArticleDataSquare(pageId, new TwoParamsPhone<Integer, List<ArticleData>>() {
             @Override
             public void onPhone(Integer pageCount, List<ArticleData> articleDataList) {
-                articles.addAll(articleDataList);
+                articleList.addAll(articleDataList);
                 //adapter更新UI在主线程
                 runOnUiThread(new Runnable() {
                     @Override

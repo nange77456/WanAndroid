@@ -34,6 +34,7 @@ import com.dss.wanandroid.R;
 import com.dss.wanandroid.entity.BannerData;
 import com.dss.wanandroid.adapter.BannerViewHolder;
 import com.dss.wanandroid.net.HomeRequest;
+import com.dss.wanandroid.utils.NoParamPhone;
 import com.dss.wanandroid.utils.OneParamPhone;
 import com.dss.wanandroid.utils.TwoParamsPhone;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -123,8 +124,6 @@ public class HomeFragment extends Fragment {
         // 注：要onCreateView加载布局之后才能getActivity（），所以activity和adapter在这里赋值
         adapter = new HomeAdapter(articleDataList, bannerDataList, activity,favoriteSet);
 
-        //设置文章列表第一页数据
-//        setArticleDataListWithTop();
         //设置轮播图数据
         setBannerDataList();
         //设置首页RecyclerView
@@ -148,6 +147,35 @@ public class HomeFragment extends Fragment {
                 Intent intent = new Intent(getContext(), MyWebView.class);
                 intent.putExtra("url", article.getLink());
                 startActivity(intent);
+            }
+        });
+
+        //红心按钮点击事件
+        adapter.setLikeButtonClickPhone(new TwoParamsPhone<Integer, Boolean>() {
+            @Override
+            public void onPhone(Integer position, Boolean checked) {
+                if(FileUtil.isLogin()){
+                    if(checked){
+                        request.setFavorite(FileUtil.getUsername(), FileUtil.getPassword()
+                                , articleDataList.get(position).getId(), new NoParamPhone() {
+                            @Override
+                            public void onPhone() {
+
+                            }
+                        });
+                    }else{
+                        request.cancelFavorite(FileUtil.getUsername(), FileUtil.getPassword()
+                                , articleDataList.get(position).getId(), new NoParamPhone() {
+                                    @Override
+                                    public void onPhone() {
+
+                                    }
+                                });
+                    }
+                }else {
+                    Intent intent = new Intent(getContext(), EntryActivity.class);
+                    startActivityForResult(intent, LOGIN_REQUEST);
+                }
             }
         });
 
@@ -183,7 +211,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        //定义获取首页文章（含置顶）的SingleRequest
+        //定义获取首页文章（含置顶）的SingleRequest，第一页
         SingleRequest<List<ArticleData>> articleRequest = new SingleRequest<List<ArticleData>>() {
             @Override
             public void aRequest(final OneParamPhone<List<ArticleData>> articleTopPhone) {
@@ -208,7 +236,7 @@ public class HomeFragment extends Fragment {
                             favoritePhone.onPhone(favoriteSet);
                         }
                     }
-                },getActivity());
+                });
             }
         };
         //发送并合并所有红心文章和首页文章的网络请求
@@ -264,7 +292,6 @@ public class HomeFragment extends Fragment {
      * 调用网络请求方法请求首页文章数据并通知adapter改变，首页含置顶
      */
     public void setArticleDataListWithTop(final OneParamPhone<List<ArticleData>> articleTopPhone) {
-        final HomeRequest request = new HomeRequest();
         request.getArticleDataTop(new OneParamPhone<List<ArticleData>>() {
             @Override
             public void onPhone(final List<ArticleData> articleDataTop) {

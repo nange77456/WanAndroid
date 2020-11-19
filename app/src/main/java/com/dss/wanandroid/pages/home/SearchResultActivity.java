@@ -19,6 +19,9 @@ import com.dss.wanandroid.adapter.QAAdapter;
 import com.dss.wanandroid.custom.view.EditTextPlus;
 import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.net.HomeRequest;
+import com.dss.wanandroid.net.MergedRequestUtil;
+import com.dss.wanandroid.net.SingleRequest;
+import com.dss.wanandroid.utils.FavoriteUtil;
 import com.dss.wanandroid.utils.FileUtil;
 import com.dss.wanandroid.utils.MyWebView;
 import com.dss.wanandroid.utils.NoParamPhone;
@@ -38,9 +41,17 @@ import java.util.List;
  */
 public class SearchResultActivity extends AppCompatActivity {
     /**
+     * 首页网络请求封装类
+     */
+    private HomeRequest request = new HomeRequest();
+    /**
      * 搜索结果，文章列表数据
      */
     private List<ArticleData> searchResultList = new LinkedList<>();
+    /**
+     * 收藏列表
+     */
+    private HashSet<Integer> favoriteSet = new HashSet<>();
 
     /**
      * 搜索结果的网络请求的总页数
@@ -49,7 +60,7 @@ public class SearchResultActivity extends AppCompatActivity {
     /**
      * 搜索出的文章列表的适配器
      */
-    private QAAdapter adapter = new QAAdapter(searchResultList,new HashSet<Integer>());
+    private QAAdapter adapter = new QAAdapter(searchResultList,favoriteSet);
     /**
      * 搜索结果文章列表视图
      */
@@ -101,8 +112,42 @@ public class SearchResultActivity extends AppCompatActivity {
         Intent searchIntent = getIntent();
         key = searchIntent.getStringExtra("key");
         FileUtil.setSearchList(key);
-        //请求搜索结果首页数据
-        getSearchResult(key,0);
+
+        //发送并合并搜索结果第一页请求和收藏列表
+        MergedRequestUtil.mergeRequest(new SingleRequest<List<ArticleData>>() {
+            @Override
+            public void aRequest(final OneParamPhone<List<ArticleData>> articlePhone) {
+                request.getSearchResultList(key, 0, new TwoParamsPhone<List<ArticleData>, Integer>() {
+                    @Override
+                    public void onPhone(List<ArticleData> returnData, Integer pageCount) {  //TODO 为什么不在这里用pageCount，还有停止刷新加载
+                        articlePhone.onPhone(returnData);
+                    }
+                });
+            }
+        }, new SingleRequest<HashSet<Integer>>() {
+            @Override
+            public void aRequest(final OneParamPhone<HashSet<Integer>> favoritePhone) {
+                FavoriteUtil.getFavoriteSet(new OneParamPhone<HashSet<Integer>>() {
+                    @Override
+                    public void onPhone(HashSet<Integer> returnData) {
+                        favoritePhone.onPhone(returnData);
+                    }
+                });
+            }
+        }, new TwoParamsPhone<List<ArticleData>, HashSet<Integer>>() {
+            @Override
+            public void onPhone(List<ArticleData> articleData, HashSet<Integer> favoriteData) {
+                searchResultList.addAll(articleData);
+                favoriteSet.addAll(favoriteData);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        });
 
         //设置刷新加载布局
         refreshLayout = findViewById(R.id.refreshLayout);
@@ -179,7 +224,6 @@ public class SearchResultActivity extends AppCompatActivity {
      * @param pageId 搜索结果网络请求页码
      */
     public void getSearchResult(String key, final int pageId){
-        HomeRequest request = new HomeRequest();
         request.getSearchResultList(key, pageId, new TwoParamsPhone<List<ArticleData>, Integer>() {
             @Override
             public void onPhone(List<ArticleData> articleDataList, Integer pageNum) {

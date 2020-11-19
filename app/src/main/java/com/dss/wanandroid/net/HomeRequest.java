@@ -391,7 +391,8 @@ public class HomeRequest {
      * @param password
      * @param pageId
      */
-    public void getFavoriteSetInPage(String username, String password, final int pageId, final TwoParamsPhone<Integer,HashSet<Integer>> phone){
+    public void getFavoriteSetInPage(String username, String password, final int pageId
+            , final TwoParamsPhone<Integer,HashSet<Integer>> phone){
         //构造get请求
         Request request = new Request.Builder()
                 .url(NetUtil.baseUrl+"/lg/collect/list/"+pageId+"/json")
@@ -442,35 +443,71 @@ public class HomeRequest {
     }
 
     /**
-     * 拼接全部页的收藏列表
+     * 取消收藏的post请求
      * @param username
      * @param password
+     * @param articleId
+     * @param phone
      */
-//    public void getFavoriteSet(final String username, final String password, final NoParamPhone phone){
-//        FavoriteUtil.favoriteSet.clear();
-//        //在第一页请求结束时获得pageCount
-//        getFavoriteSetInPage(username, password, 0, new OneParamPhone<Integer>() {
-//            @Override
-//            public void onPhone(Integer pageCount) {
-//                for(int i=1;i<pageCount;i++){
-//                    getFavoriteSetInPage(username, password, i, new OneParamPhone<Integer>() {
-//                        @Override
-//                        public void onPhone(Integer pageCount) {
-//                            //在所有页请求结束时，用NoParamPhone通知需要使用这个方法的地方
-//                            if(pageNum==pageCount){
-//                                if(phone!=null){
-//                                    phone.onPhone();
-//                                }
-//                            }
-//                        }
-//                    });
-//                }
-//            }
-//        });
-//
-//
-//
-//    }
+    public void cancelFavorite(String username, String password, int articleId, final NoParamPhone phone){
+        RequestBody body = new FormBody.Builder().build();
 
+        Request request = new Request.Builder()
+                .url(NetUtil.baseUrl+"/lg/uncollect_originId/"+articleId+"/json")
+                .addHeader("Cookie","loginUserName="+username)
+                .addHeader("Cookie","loginUserPassword="+password)
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                //请求结束时回调
+                if(phone!=null){
+                    phone.onPhone();
+                }
+            }
+        });
+    }
+
+    /**
+     * 收藏站内文章的post请求
+     * @param username
+     * @param password
+     * @param articleId
+     * @param phone
+     */
+    public void setFavorite(String username, String password, final int articleId, final NoParamPhone phone){
+        RequestBody body = new FormBody.Builder()
+                .build();
+
+        Request request = new Request.Builder()
+                .url(NetUtil.baseUrl+"/lg/collect/"+articleId+"/json")
+                .addHeader("Cookie","loginUserName="+username)
+                .addHeader("Cookie","loginUserPassword="+password)
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.e("tag","failure");
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Log.e("tag","success return: "+articleId);
+                //请求结束时回调
+                if(phone!=null){
+                    phone.onPhone();
+                }
+            }
+        });
+    }
 
 }
