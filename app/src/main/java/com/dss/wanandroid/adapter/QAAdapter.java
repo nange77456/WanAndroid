@@ -11,6 +11,7 @@ import com.dss.wanandroid.R;
 import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.utils.FavoriteUtil;
 import com.dss.wanandroid.utils.OneParamPhone;
+import com.dss.wanandroid.utils.TwoParamsPhone;
 import com.sackcentury.shinebuttonlib.ShineButton;
 
 import java.util.HashSet;
@@ -28,17 +29,14 @@ public class QAAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
      * 收藏列表，外部传入
      */
     private HashSet<Integer> favoriteSet;
-
     /**
-     * 构造问答适配器时需传入问答数据
+     * 构造问答适配器时需传入问答数据，和红心列表
      * @param list
      */
     public QAAdapter(List<ArticleData> list,HashSet<Integer> favoriteSet){
         qaDataList = list;
         this.favoriteSet = favoriteSet;
     }
-
-
     /**
      * 单项点击回调接口
      */
@@ -47,12 +45,20 @@ public class QAAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
      * 单项长按回调接口
      */
     private OneParamPhone<Integer> longClickPhone;
+    /**
+     * 红心按钮点击后触发回调，两个参数：索引值和红心状态
+     */
+    private TwoParamsPhone<Integer,Boolean> likeButtonClickPhone;
+
 
     public void setPhone(OneParamPhone<Integer> phone) {
         this.phone = phone;
     }
     public void setLongClickPhone(OneParamPhone<Integer> phone){this.longClickPhone = phone;}
 
+    public void setLikeButtonClickPhone(TwoParamsPhone<Integer, Boolean> likeButtonClickPhone) {
+        this.likeButtonClickPhone = likeButtonClickPhone;
+    }
 
     @NonNull
     @Override
@@ -82,18 +88,21 @@ public class QAAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
                 return true;
             }
         });
-
         //红心点击事件
         holder.likeButton.setOnCheckStateChangeListener(new ShineButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(View view, boolean checked) {
+                //在文章列表的索引值，是整个recyclerView的索引值-轮播图-按钮组
                 int position = holder.getAdapterPosition();
+                //给文章列表里的likeState赋值
                 if(checked){
-                    qaDataList.get(position).setLikeState(true);
-                    //TODO  再写回调对吧
-                }else{
-                    qaDataList.get(position).setLikeState(false);
+                    favoriteSet.add(qaDataList.get(position).getId());
+                }else {
+                    favoriteSet.remove(qaDataList.get(position).getId());
                 }
+                qaDataList.get(position).setLikeState(checked);
+                //通过回调触发网络请求
+                likeButtonClickPhone.onPhone(position,checked);
             }
         });
 

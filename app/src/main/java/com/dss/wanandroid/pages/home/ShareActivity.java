@@ -31,11 +31,6 @@ public class ShareActivity extends AppCompatActivity {
         //设置toolbar文字
         TextView pageTitle = findViewById(R.id.pageTitle);
         pageTitle.setText(R.string.page_share);
-        //TODO 为什么这里不用隐藏原action bar
-//        setSupportActionBar(toolbar);
-//        if(getSupportActionBar()!=null){
-//            getSupportActionBar().setDisplayShowTitleEnabled(false);
-//        }
         //toolbar的返回按钮
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

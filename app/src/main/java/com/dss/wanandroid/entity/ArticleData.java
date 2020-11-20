@@ -66,8 +66,6 @@ public class ArticleData {
         this.envelopePic = envelopePic;
     }
 
-    //用Html.fromHtml()方法去除文字里面的前端字符如 &mdsn
-
     public String getAuthor() {
         return author;
     }
@@ -116,6 +114,7 @@ public class ArticleData {
         this.title = title;
     }
 
+    //用Html.fromHtml()方法去除文字里面的前端字符如 &mdsn
     public String getDesc() {
         return Html.fromHtml(Html.fromHtml(desc).toString()).toString();
     }

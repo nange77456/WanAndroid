@@ -10,15 +10,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.utils.OneParamPhone;
+import com.dss.wanandroid.utils.TwoParamsPhone;
+import com.sackcentury.shinebuttonlib.ShineButton;
 
+import java.util.HashSet;
 import java.util.List;
 
 /**
  * 体系页-体系下的文章，文章列表的适配器
  */
 public class SystemArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
+    /**
+     * 红心按钮点击后触发回调，两个参数：索引值和红心状态
+     */
+    private TwoParamsPhone<Integer,Boolean> likeButtonClickPhone;
+    /**
+     * 收藏列表
+     */
+    private HashSet<Integer> favoriteSet;
+    /**
+     * 文章列表
+     */
     private List<ArticleData> list;
-
     /**
      * 点击单项后跳转使用的回调方法
      */
@@ -28,8 +41,13 @@ public class SystemArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder
         this.phone = phone;
     }
 
-    public SystemArticleAdapter(List<ArticleData> list) {
+    public void setLikeButtonClickPhone(TwoParamsPhone<Integer, Boolean> likeButtonClickPhone) {
+        this.likeButtonClickPhone = likeButtonClickPhone;
+    }
+
+    public SystemArticleAdapter(List<ArticleData> list, HashSet<Integer> favoriteSet) {
         this.list = list;
+        this.favoriteSet = favoriteSet;
     }
 
     @NonNull
@@ -47,6 +65,22 @@ public class SystemArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder
                 }
             }
         });
+        //红心点击事件
+        holder.likeButton.setOnCheckStateChangeListener(new ShineButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(View view, boolean checked) {
+                int position = holder.getAdapterPosition();
+                //设置内存中的红心状态
+                if(checked){
+                    favoriteSet.add(list.get(position).getId());
+                }else {
+                    favoriteSet.remove(list.get(position).getId());
+                }
+                list.get(position).setLikeState(checked);
+                //点击后发送网络请求的回调
+                likeButtonClickPhone.onPhone(position,checked);
+            }
+        });
         return holder;
     }
 
@@ -62,7 +96,11 @@ public class SystemArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder
             holder.authorOrShareUser.setText(data.getAuthor());
         }
         holder.chapter.setText(data.getChapterName());
-        //TODO 红心
+
+        if(favoriteSet.contains(data.getId())){
+            data.setLikeState(true);
+        }
+        holder.likeButton.setChecked(data.isLikeState());
     }
 
     @Override

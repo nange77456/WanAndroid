@@ -76,7 +76,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
      */
     private OneParamPhone<Integer> articlePositionPhone;
     /**
-     * 红心按钮点击后触发回调
+     * 红心按钮点击后触发回调，两个参数：索引值和红心状态
      */
     private TwoParamsPhone<Integer,Boolean> likeButtonClickPhone;
 
@@ -134,6 +134,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                          */
                         @Override
                         public void onPageClick(int position) {
+                            //懒  在adapter里跳转，不好看
                             Intent intent = new Intent(activity, MyWebView.class);
                             //给intent绑定数据
                             intent.putExtra("url",bannerDataList.get(position).getUrl());
@@ -230,8 +231,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     public void onClick(View v) {
                         //回调方法传递文章位置值
                         if(articlePositionPhone!=null){
-                            //TODO 为什么位置值不要-2
-                            articlePositionPhone.onPhone(holder.getAdapterPosition());
+                            articlePositionPhone.onPhone(holder.getAdapterPosition()-2);
                         }
                     }
                 });
@@ -240,11 +240,9 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     @Override
                     public void onCheckedChanged(View view, boolean checked) {
                         if(likeButtonClickPhone!=null){
-                            //改变红心点亮状态
                             articleDataList.get(holder.getAdapterPosition()-2).setLikeState(checked);
                             //点击红心触发回调方法
                             likeButtonClickPhone.onPhone(holder.getAdapterPosition()-2,checked);
-
                         }
                     }
                 });

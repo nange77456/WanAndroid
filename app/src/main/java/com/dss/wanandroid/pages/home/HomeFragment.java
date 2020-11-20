@@ -54,7 +54,6 @@ public class HomeFragment extends Fragment {
      * 首页网络请求方法集合
      */
     private HomeRequest request = new HomeRequest();
-
     /**
      * 首页-分享页，登录返回
      */
@@ -63,7 +62,6 @@ public class HomeFragment extends Fragment {
      * 首页文章列表
      */
     private List<ArticleData> articleDataList = new LinkedList<>();
-
     /**
      * 首页轮播图
      */
@@ -143,7 +141,7 @@ public class HomeFragment extends Fragment {
         adapter.setArticlePositionPhone(new OneParamPhone<Integer>() {
             @Override
             public void onPhone(Integer position) {
-                ArticleData article = articleDataList.get(position - 1 - 1);
+                ArticleData article = articleDataList.get(position);
                 Intent intent = new Intent(getContext(), MyWebView.class);
                 intent.putExtra("url", article.getLink());
                 startActivity(intent);
@@ -153,31 +151,38 @@ public class HomeFragment extends Fragment {
         //红心按钮点击事件
         adapter.setLikeButtonClickPhone(new TwoParamsPhone<Integer, Boolean>() {
             @Override
-            public void onPhone(Integer position, Boolean checked) {
-                if(FileUtil.isLogin()){
-                    if(checked){
-                        request.setFavorite(FileUtil.getUsername(), FileUtil.getPassword()
-                                , articleDataList.get(position).getId(), new NoParamPhone() {
-                            @Override
-                            public void onPhone() {
-
-                            }
-                        });
-                    }else{
-                        request.cancelFavorite(FileUtil.getUsername(), FileUtil.getPassword()
-                                , articleDataList.get(position).getId(), new NoParamPhone() {
+            public void onPhone(final Integer position, final Boolean checked) {
+                //通过FileUtil发送网络请求
+                FavoriteUtil.requestChangeFavorite(checked, articleDataList.get(position).getId(), new TwoParamsPhone<Boolean, Boolean>() {
+                    @Override
+                    public void onPhone(Boolean loginState, Boolean requestState) {
+                        //如果没登陆，跳转登录
+                        if(!loginState){
+                            //取消点击效果，checked=true
+                            articleDataList.get(position).setLikeState(!checked);
+                            favoriteSet.remove(articleDataList.get(position).getId());
+                            if(getActivity()!=null){
+                                getActivity().runOnUiThread(new Runnable() {
                                     @Override
-                                    public void onPhone() {
-
+                                    public void run() {
+                                        adapter.notifyItemChanged(position+2);
                                     }
                                 });
+                            }
+                            //跳转登录
+                            Intent intent = new Intent(getContext(), EntryActivity.class);
+                            startActivity(intent);
+                        }else {
+                            //如果收藏或取消失败
+                            if(!requestState){
+
+                            }
+                        }
                     }
-                }else {
-                    Intent intent = new Intent(getContext(), EntryActivity.class);
-                    startActivityForResult(intent, LOGIN_REQUEST);
-                }
+                });
             }
         });
+
 
         //按钮组点击事件
         adapter.setMenuGroupPhone(new OneParamPhone<Integer>() {

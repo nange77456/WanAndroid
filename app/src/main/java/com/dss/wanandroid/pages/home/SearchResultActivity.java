@@ -21,6 +21,7 @@ import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.net.HomeRequest;
 import com.dss.wanandroid.net.MergedRequestUtil;
 import com.dss.wanandroid.net.SingleRequest;
+import com.dss.wanandroid.pages.me.EntryActivity;
 import com.dss.wanandroid.utils.FavoriteUtil;
 import com.dss.wanandroid.utils.FileUtil;
 import com.dss.wanandroid.utils.MyWebView;
@@ -52,7 +53,6 @@ public class SearchResultActivity extends AppCompatActivity {
      * 收藏列表
      */
     private HashSet<Integer> favoriteSet = new HashSet<>();
-
     /**
      * 搜索结果的网络请求的总页数
      */
@@ -89,13 +89,12 @@ public class SearchResultActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search_result);
 
         //设置Toolbar
-        Toolbar searchBar = findViewById(R.id.searchBar);
+        final Toolbar searchBar = findViewById(R.id.searchBar);
         ActionBar actionBar = getSupportActionBar();
         setSupportActionBar(searchBar);
         if(actionBar!=null){
             actionBar.setDisplayShowTitleEnabled(false);
         }
-//        EditText searchKey = findViewById(R.id.key);
         searchBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,7 +118,8 @@ public class SearchResultActivity extends AppCompatActivity {
             public void aRequest(final OneParamPhone<List<ArticleData>> articlePhone) {
                 request.getSearchResultList(key, 0, new TwoParamsPhone<List<ArticleData>, Integer>() {
                     @Override
-                    public void onPhone(List<ArticleData> returnData, Integer pageCount) {  //TODO 为什么不在这里用pageCount，还有停止刷新加载
+                    public void onPhone(List<ArticleData> returnData, Integer pageCount2) {
+                        pageCount = pageCount2;
                         articlePhone.onPhone(returnData);
                     }
                 });
@@ -161,8 +161,9 @@ public class SearchResultActivity extends AppCompatActivity {
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                Log.e("tag","pageId和count："+pageId+","+pageCount);
+                pageId++;
                 if(pageId<pageCount){
-                    pageId++;
                     getSearchResult(key,pageId);
                 }else{
                     refreshLayout.finishLoadMoreWithNoMoreData();
@@ -182,6 +183,39 @@ public class SearchResultActivity extends AppCompatActivity {
             }
         });
 
+        //红心按钮点击事件
+        adapter.setLikeButtonClickPhone(new TwoParamsPhone<Integer, Boolean>() {
+            @Override
+            public void onPhone(final Integer position, final Boolean checked) {
+                //通过FavoriteUtil发送网络请求
+                FavoriteUtil.requestChangeFavorite(checked, searchResultList.get(position).getId(), new TwoParamsPhone<Boolean, Boolean>() {
+                    @Override
+                    public void onPhone(Boolean loginState, Boolean requestState) {
+                        //如果没登陆，跳转登录
+                        if(!loginState){
+                            //取消点击效果
+                            searchResultList.get(position).setLikeState(!checked);
+                            favoriteSet.remove(searchResultList.get(position).getId());
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.notifyItemChanged(position);
+                                }
+                            });
+                            //跳转登录
+                            Intent intent = new Intent(SearchResultActivity.this, EntryActivity.class);
+                            startActivity(intent);
+                        }else {
+                            //如果收藏或取消失败
+                            if(!requestState){
+
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
         //获取用户输入的搜索词
         inputEditText = findViewById(R.id.key);
         inputEditText.setInputText(key);
@@ -192,6 +226,9 @@ public class SearchResultActivity extends AppCompatActivity {
             public void onPhone() {
                 key = inputEditText.getInput();
                 FileUtil.setSearchList(key);
+
+                refreshLayout.resetNoMoreData();
+
                 getSearchResult(key,0);
             }
         });
@@ -211,6 +248,8 @@ public class SearchResultActivity extends AppCompatActivity {
             case R.id.search:
                 key = inputEditText.getInput();
                 FileUtil.setSearchList(key);
+                //输入新的搜索词时，删除noMoreData标记
+                refreshLayout.resetNoMoreData();
                 getSearchResult(key,0);
                 break;
         }
@@ -243,11 +282,13 @@ public class SearchResultActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         adapter.notifyDataSetChanged();
+
+                        refreshLayout.finishLoadMore();
+                        refreshLayout.finishRefresh();
                     }
                 });
 
-                refreshLayout.finishLoadMore();
-                refreshLayout.finishRefresh();
+
             }
         });
     }

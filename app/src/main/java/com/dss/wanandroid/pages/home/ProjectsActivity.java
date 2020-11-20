@@ -25,11 +25,8 @@ import java.util.List;
 
 /**
  * 首页-项目页，重用体系-体系下的文章页的布局
- * TODO 没有图片
- * TODO 刚进去标签下没有文章  需要点好几下标签才有内容
  */
 public class ProjectsActivity extends AppCompatActivity {
-
     /**
      * 标签组布局
      */
@@ -42,6 +39,7 @@ public class ProjectsActivity extends AppCompatActivity {
      * 所有标签，网络请求处拿，tabLayout和viewPager2建立联系时用
      */
     private List<TabData> projectsTabList;
+
     private ViewPagerAdapter adapter;
 
     @Override

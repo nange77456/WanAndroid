@@ -1,6 +1,8 @@
 package com.dss.wanandroid.utils;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -10,6 +12,7 @@ import androidx.annotation.NonNull;
 import com.dss.wanandroid.net.HomeRequest;
 import com.dss.wanandroid.net.MergedRequestUtil;
 import com.dss.wanandroid.net.SingleRequest;
+import com.dss.wanandroid.pages.me.EntryActivity;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,7 +20,7 @@ import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * 收藏列表缓存
+ * 收藏工具类(static)，含收藏列表缓存
  */
 public class FavoriteUtil {
     /**
@@ -41,6 +44,11 @@ public class FavoriteUtil {
             aLock.unlock();
         }
     };
+    /**
+     * 首页网络请求封装类
+     */
+    final static HomeRequest request = new HomeRequest();
+
 
     /**
      * 从缓存读取收藏列表，或者发送网络请求。
@@ -88,7 +96,6 @@ public class FavoriteUtil {
         if (FileUtil.isLogin()) {
             final String username = FileUtil.getUsername();
             final String password = FileUtil.getPassword();
-            final HomeRequest request = new HomeRequest();
             //请求第一页的收藏列表，获取pageCount
             request.getFavoriteSetInPage(username, password, 0, new TwoParamsPhone<Integer, HashSet<Integer>>() {
                 @Override
@@ -136,5 +143,48 @@ public class FavoriteUtil {
             }
         }
     }
+
+    /**
+     * 收藏或取消收藏请的网络请求
+     * @param checked 收藏状态
+     * @param articleId 被操作的文章id
+     * @param phone 返回数据，第一个bool表示登录状态，第二个bool表示网络请求结果   TODO  第二个参数目前没用上
+     */
+    public static void requestChangeFavorite(boolean checked, int articleId
+            , final TwoParamsPhone<Boolean,Boolean> phone){
+        if(FileUtil.isLogin()){
+            if(checked){
+                request.setFavorite(FileUtil.getUsername(), FileUtil.getPassword(), articleId, new TwoParamsPhone<Boolean, Integer>() {
+                    @Override
+                    public void onPhone(Boolean requestState,Integer articleId) {
+                        //returnData为true表示请求成功，false表示请求失败
+                        phone.onPhone(true,requestState);
+                        //请求成功需要修改缓存
+                        if(requestState){
+                            favoriteSet.add(articleId);
+                        }
+                    }
+                });
+            }else {
+                request.cancelFavorite(FileUtil.getUsername(), FileUtil.getPassword(), articleId, new TwoParamsPhone<Boolean, Integer>() {
+                    @Override
+                    public void onPhone(Boolean requestState,Integer articleId) {
+                        phone.onPhone(true,requestState);
+                        if(requestState){
+                            favoriteSet.remove(articleId);
+                        }
+                    }
+                });
+            }
+        }else {
+            //第一个false表示没有登陆
+            phone.onPhone(false,false);
+        }
+    }
+
+
+
+
+
 
 }

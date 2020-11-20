@@ -17,6 +17,7 @@ import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.net.HomeRequest;
 import com.dss.wanandroid.net.MergedRequestUtil;
 import com.dss.wanandroid.net.SingleRequest;
+import com.dss.wanandroid.pages.me.EntryActivity;
 import com.dss.wanandroid.utils.FavoriteUtil;
 import com.dss.wanandroid.utils.MyWebView;
 import com.dss.wanandroid.utils.OneParamPhone;
@@ -145,6 +146,39 @@ public class SquareActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        //红心按钮点击事件
+        adapter.setLikeButtonClickPhone(new TwoParamsPhone<Integer, Boolean>() {
+            @Override
+            public void onPhone(final Integer position, final Boolean checked) {
+                //通过FileUtil发送网络请求
+                FavoriteUtil.requestChangeFavorite(checked, articleList.get(position).getId(), new TwoParamsPhone<Boolean, Boolean>() {
+                    @Override
+                    public void onPhone(Boolean loginState, Boolean requestState) {
+                        //如果没登陆，跳转登录
+                        if(!loginState){
+                            //取消点击效果
+                            articleList.get(position).setLikeState(!checked);
+                            favoriteSet.remove(articleList.get(position).getId());
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.notifyItemChanged(position+2);
+                                }
+                            });
+                            //跳转登录
+                            Intent intent = new Intent(SquareActivity.this, EntryActivity.class);
+                            startActivity(intent);
+                        }else {
+                            //如果收藏或取消失败
+                            if(!requestState){
+
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
     }
 
 
@@ -155,23 +189,24 @@ public class SquareActivity extends AppCompatActivity {
     public void setArticles(final int pageId){
         request.getArticleDataSquare(pageId, new TwoParamsPhone<Integer, List<ArticleData>>() {
             @Override
-            public void onPhone(Integer pageCount, List<ArticleData> articleDataList) {
+            public void onPhone(final Integer pageCount, List<ArticleData> articleDataList) {
                 articleList.addAll(articleDataList);
                 //adapter更新UI在主线程
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         adapter.notifyDataSetChanged();
+
+                        //网络请求结束的时候结束刷新和加载
+                        refreshLayout.finishRefresh();
+                        if(pageId < pageCount){
+                            refreshLayout.finishLoadMore();
+                        }else{
+                            refreshLayout.finishLoadMoreWithNoMoreData();
+                        }
                     }
                 });
 
-                //网络请求结束的时候结束刷新和加载
-                refreshLayout.finishRefresh();
-                if(pageId<pageCount){
-                    refreshLayout.finishLoadMore();
-                }else{
-                    refreshLayout.finishLoadMoreWithNoMoreData();
-                }
             }
         });
     }

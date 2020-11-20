@@ -17,6 +17,10 @@ import com.dss.wanandroid.adapter.ProjectAdapter;
 import com.dss.wanandroid.adapter.SystemArticleAdapter;
 import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.net.CategoryRequest;
+import com.dss.wanandroid.net.MergedRequestUtil;
+import com.dss.wanandroid.net.SingleRequest;
+import com.dss.wanandroid.pages.me.EntryActivity;
+import com.dss.wanandroid.utils.FavoriteUtil;
 import com.dss.wanandroid.utils.MyWebView;
 import com.dss.wanandroid.utils.OneParamPhone;
 import com.dss.wanandroid.utils.TwoParamsPhone;
@@ -24,6 +28,7 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,6 +36,14 @@ import java.util.List;
  * 体系页跳转后，某个小标签对应文章列表，页面的一部分
  */
 public class SystemArticlesOfTabFragment extends Fragment {
+    /**
+     * 体系页网络请求封装类
+     */
+    private CategoryRequest request = new CategoryRequest();
+    /**
+     * 收藏列表
+     */
+    private HashSet<Integer> favoriteSet = new HashSet<>();
     /**
      * true: 有图，新建Projects列表
      * false: 无图，新建公众号列表
@@ -40,7 +53,6 @@ public class SystemArticlesOfTabFragment extends Fragment {
      * 小标签对应文章列表
      */
     private List<ArticleData> list = new LinkedList<>();
-
     /**
      * 列表视图的适配器
      */
@@ -72,9 +84,9 @@ public class SystemArticlesOfTabFragment extends Fragment {
         this.childId = childId;
         this.hasPic = hasPic;
         if(hasPic){
-            adapter = new ProjectAdapter(list);
+            adapter = new ProjectAdapter(list,favoriteSet);
         }else {
-            adapter = new SystemArticleAdapter(list);
+            adapter = new SystemArticleAdapter(list,favoriteSet);
         }
     }
 
@@ -86,8 +98,6 @@ public class SystemArticlesOfTabFragment extends Fragment {
         refreshLayout = view.findViewById(R.id.refreshLayout);
         RecyclerView recyclerView = view.findViewById(R.id.systemArticleRecycler);
 
-        //设置文章列表
-        setSystemArticlesList(0,true);
         //设置RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
@@ -113,7 +123,46 @@ public class SystemArticlesOfTabFragment extends Fragment {
             }
         });
 
+        //发送并合并文章列表和红心列表请求
+        MergedRequestUtil.mergeRequest(new SingleRequest<List<ArticleData>>() {
+            @Override
+            public void aRequest(final OneParamPhone<List<ArticleData>> articlePhone) {
+                request.getArticlesOfSystem(0, childId, new TwoParamsPhone<Integer, List<ArticleData>>() {
+                    @Override
+                    public void onPhone(Integer pageNum, List<ArticleData> systemArticleDataList) {
+                        pageCount = pageNum;
+                        articlePhone.onPhone(systemArticleDataList);
+                    }
+                });
+            }
+        }, new SingleRequest<HashSet<Integer>>() {
+            @Override
+            public void aRequest(final OneParamPhone<HashSet<Integer>> favoritePhone) {
+                FavoriteUtil.getFavoriteSet(new OneParamPhone<HashSet<Integer>>() {
+                    @Override
+                    public void onPhone(HashSet<Integer> returnData) {
+                        favoritePhone.onPhone(returnData);
+                    }
+                });
+            }
+        }, new TwoParamsPhone<List<ArticleData>, HashSet<Integer>>() {
+            @Override
+            public void onPhone(List<ArticleData> articleData, HashSet<Integer> favoriteData) {
+                list.addAll(articleData);
+                favoriteSet.addAll(favoriteData);
 
+                if(getActivity()!=null){
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+            }
+        });
+
+        //Recycler子项点击事件
         if(hasPic){
             ((ProjectAdapter)adapter).setPositionPhone(new OneParamPhone<Integer>() {
                 @Override
@@ -121,6 +170,40 @@ public class SystemArticlesOfTabFragment extends Fragment {
                     Intent intent = new Intent(getContext(), MyWebView.class);
                     intent.putExtra("url",list.get(position).getLink());
                     startActivity(intent);
+                }
+            });
+            //红心点击事件
+            ((ProjectAdapter) adapter).setLikeButtonClickPhone(new TwoParamsPhone<Integer, Boolean>() {
+                @Override
+                public void onPhone(final Integer position, final Boolean checked) {
+                    //用了收藏封装类发送收藏的网络请求
+                    FavoriteUtil.requestChangeFavorite(checked, list.get(position).getId(), new TwoParamsPhone<Boolean, Boolean>() {
+                        @Override
+                        public void onPhone(Boolean loginState, Boolean requestState) {
+                            //如果没登陆，跳转登录
+                            if(!loginState){
+                                //取消点击效果
+                                list.get(position).setLikeState(!checked);
+                                favoriteSet.remove(list.get(position).getId());
+                                if(getActivity()!=null){
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            adapter.notifyItemChanged(position);
+                                        }
+                                    });
+                                }
+                                //跳转登录
+                                Intent intent = new Intent(getContext(), EntryActivity.class);
+                                startActivity(intent);
+                            }else {
+                                //如果收藏或取消失败
+                                if(!requestState){
+
+                                }
+                            }
+                        }
+                    });
                 }
             });
         }else{
@@ -133,10 +216,40 @@ public class SystemArticlesOfTabFragment extends Fragment {
                     startActivity(intent);
                 }
             });
+            //红心点击事件
+            ((SystemArticleAdapter) adapter).setLikeButtonClickPhone(new TwoParamsPhone<Integer, Boolean>() {
+                @Override
+                public void onPhone(final Integer position, final Boolean checked) {
+                    //用了收藏封装类发送收藏的网络请求
+                    FavoriteUtil.requestChangeFavorite(checked, list.get(position).getId(), new TwoParamsPhone<Boolean, Boolean>() {
+                        @Override
+                        public void onPhone(Boolean loginState, Boolean requestState) {
+                            //如果没登陆，跳转登录
+                            if(!loginState){
+                                //取消点击效果
+                                list.get(position).setLikeState(!checked);
+                                if(getActivity()!=null){
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            adapter.notifyItemChanged(position);
+                                        }
+                                    });
+                                }
+                                //跳转登录
+                                Intent intent = new Intent(getContext(), EntryActivity.class);
+                                startActivity(intent);
+                            }else {
+                                //如果收藏或取消失败
+                                if(!requestState){
+
+                                }
+                            }
+                        }
+                    });
+                }
+            });
         }
-
-
-
 
         return view;
     }
@@ -147,11 +260,10 @@ public class SystemArticlesOfTabFragment extends Fragment {
      * @param needClearData
      */
     public void setSystemArticlesList(int pageId,final boolean needClearData){
-        CategoryRequest request = new CategoryRequest();
         request.getArticlesOfSystem(pageId, childId, new TwoParamsPhone<Integer, List<ArticleData>>() {
             @Override
             public void onPhone(Integer pageNum, List<ArticleData> systemArticleDataList) {
-                pageCount = pageNum;
+//                pageCount = pageNum;
                 //刷新的时候需要清除数据
                 if(needClearData){
                     list.clear();

@@ -447,9 +447,9 @@ public class HomeRequest {
      * @param username
      * @param password
      * @param articleId
-     * @param phone
+     * @param phone bool参数表示请求成功与否，请求成功后需要传递articleId来维护缓存
      */
-    public void cancelFavorite(String username, String password, int articleId, final NoParamPhone phone){
+    public void cancelFavorite(String username, final String password, final int articleId, final TwoParamsPhone<Boolean,Integer> phone){
         RequestBody body = new FormBody.Builder().build();
 
         Request request = new Request.Builder()
@@ -462,14 +462,18 @@ public class HomeRequest {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
+                if(phone!=null){
+                    //请求失败返回false
+                    phone.onPhone(false,0);
+                }
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 //请求结束时回调
                 if(phone!=null){
-                    phone.onPhone();
+                    //请求成功返回true
+                    phone.onPhone(true,articleId);
                 }
             }
         });
@@ -480,9 +484,9 @@ public class HomeRequest {
      * @param username
      * @param password
      * @param articleId
-     * @param phone
+     * @param phone bool参数表示请求成功与否，请求成功后需要传递articleId来维护缓存
      */
-    public void setFavorite(String username, String password, final int articleId, final NoParamPhone phone){
+    public void setFavorite(String username, final String password, final int articleId, final TwoParamsPhone<Boolean,Integer> phone){
         RequestBody body = new FormBody.Builder()
                 .build();
 
@@ -496,15 +500,19 @@ public class HomeRequest {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Log.e("tag","failure");
+                if(phone!=null){
+                    //请求失败返回false
+                    phone.onPhone(false,0);
+                }
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                Log.e("tag","success return: "+articleId);
+//                Log.e("tag","success return: "+articleId);
                 //请求结束时回调
                 if(phone!=null){
-                    phone.onPhone();
+                    //请求成功返回true
+                    phone.onPhone(true,articleId);
                 }
             }
         });

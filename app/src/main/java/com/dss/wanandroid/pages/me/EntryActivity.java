@@ -4,12 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.adapter.ViewPagerAdapter;
 import com.dss.wanandroid.pages.me.LoginFragment;
 import com.dss.wanandroid.pages.me.RegisterFragment;
+import com.dss.wanandroid.utils.NoParamPhone;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +27,7 @@ public class EntryActivity extends AppCompatActivity {
     public ViewPager2 getViewPager2() {
         return viewPager2;
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,4 +45,6 @@ public class EntryActivity extends AppCompatActivity {
         viewPager2.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(),getLifecycle(),entryFragmentList));
 
     }
+
+
 }

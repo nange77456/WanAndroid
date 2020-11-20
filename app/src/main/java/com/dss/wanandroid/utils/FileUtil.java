@@ -117,7 +117,6 @@ public class FileUtil {
         outputStream.close();
     }
 
-
     /**
      * 退出登录后删除登陆状态
      */

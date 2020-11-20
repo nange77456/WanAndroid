@@ -21,6 +21,7 @@ import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.net.MergedRequestUtil;
 import com.dss.wanandroid.net.QARequest;
 import com.dss.wanandroid.net.SingleRequest;
+import com.dss.wanandroid.pages.me.EntryActivity;
 import com.dss.wanandroid.utils.FavoriteUtil;
 import com.dss.wanandroid.utils.MyWebView;
 import com.dss.wanandroid.utils.OneParamPhone;
@@ -90,6 +91,40 @@ public class QAFragment extends Fragment {
             }
         });
 
+        //红心点击事件，发送收藏请求或取消收藏请求
+        qaAdapter.setLikeButtonClickPhone(new TwoParamsPhone<Integer, Boolean>() {
+            @Override
+            public void onPhone(final Integer position, final Boolean checked) {
+                //用了收藏封装类发送收藏的网络请求
+                FavoriteUtil.requestChangeFavorite(checked, qaList.get(position).getId(), new TwoParamsPhone<Boolean, Boolean>() {
+                    @Override
+                    public void onPhone(Boolean loginState, Boolean requestState) {
+                        //如果没登陆，跳转登录
+                        if(!loginState){
+                            //取消点击效果
+                            qaList.get(position).setLikeState(!checked);
+                            if(getActivity()!=null){
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        qaAdapter.notifyItemChanged(position);
+                                    }
+                                });
+                            }
+                            //跳转登录
+                            Intent intent = new Intent(getContext(), EntryActivity.class);
+                            startActivity(intent);
+                        }else {
+                            //如果收藏或取消失败
+                            if(!requestState){
+
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
         //发送并合并问答列表和红心列表请求
         MergedRequestUtil.mergeRequest(new SingleRequest<List<ArticleData>>() {
             @Override
@@ -154,7 +189,6 @@ public class QAFragment extends Fragment {
             @Override
             public void onLoadMore(RefreshLayout refreshlayout) {
 //                refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
-
                 //上拉加载的时候访问下一页数据
                 pageId++;
                 setQAList(pageId);
@@ -182,10 +216,11 @@ public class QAFragment extends Fragment {
                     public void run() {
                         //通知adapter的数据集改变
                         qaAdapter.notifyDataSetChanged();
+                        //网络请求结束时也结束上拉加载
+                        refreshLayout.finishLoadMore();
                     }
                 });
-                //网络请求结束时也结束上拉加载
-                refreshLayout.finishLoadMore();
+
             }
         });
 

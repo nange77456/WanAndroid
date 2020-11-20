@@ -74,8 +74,6 @@ public class CreditActivity extends AppCompatActivity {
         TextView pageTitle = findViewById(R.id.pageTitle);
         pageTitle.setText(R.string.page_credit);
         //隐藏原来的ActionBar
-        //TODO 为什么这里需要隐藏原来的action bar /// 因为setSupportActionBar(toolbar)之后就要setDisplayShowTitleEnabled(false)
-        //TODO 为什么toolbar不用拉上约束
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);

@@ -178,6 +178,38 @@ public class ShareListActivity extends AppCompatActivity {
                         .show();
             }
         });
+        //红心按钮点击事件
+        adapter.setLikeButtonClickPhone(new TwoParamsPhone<Integer, Boolean>() {
+            @Override
+            public void onPhone(final Integer position, final Boolean checked) {
+                //用了收藏封装类发送收藏的网络请求
+                FavoriteUtil.requestChangeFavorite(checked, shareList.get(position).getId(), new TwoParamsPhone<Boolean, Boolean>() {
+                    @Override
+                    public void onPhone(Boolean loginState, Boolean requestState) {
+                        //如果没登陆，跳转登录
+                        if(!loginState){
+                            //取消点击效果
+                            shareList.get(position).setLikeState(!checked);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.notifyItemChanged(position);
+                                }
+                            });
+                            //跳转登录
+                            Intent intent = new Intent(ShareListActivity.this, EntryActivity.class);
+                            startActivity(intent);
+                        }else {
+                            //如果收藏或取消失败
+                            if(!requestState){
+
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
 
     }
 
