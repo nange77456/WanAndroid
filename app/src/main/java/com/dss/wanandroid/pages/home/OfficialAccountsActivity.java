@@ -38,6 +38,7 @@ public class OfficialAccountsActivity extends AppCompatActivity {
      * 小标签布局
      */
     private TabLayout tabLayout;
+
     private ViewPager2 viewPager2;
 
     @Override

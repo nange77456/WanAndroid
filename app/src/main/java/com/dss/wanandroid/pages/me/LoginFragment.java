@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.dss.wanandroid.R;
@@ -20,8 +21,13 @@ import com.dss.wanandroid.net.MeRequest;
 import com.dss.wanandroid.utils.FileUtil;
 import com.dss.wanandroid.utils.TwoParamsPhone;
 
-
+/**
+ * 我的-点头像跳转到登录页，登录页
+ */
 public class LoginFragment extends Fragment {
+    public static String LOGIN_ACTION = "sunny";
+    public static String LOGIN_STATE = "windy";
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -66,8 +72,16 @@ public class LoginFragment extends Fragment {
                                     Intent intent = new Intent();
                                     intent.putExtra("username",username);
                                     getActivity().setResult(Activity.RESULT_OK,intent);
+                                    //发送登录成功的广播
+                                    if(getContext()!=null){
+                                        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
+                                        Intent loginIntent = new Intent(LOGIN_ACTION);
+                                        loginIntent.putExtra(LOGIN_STATE,true);
+                                        localBroadcastManager.sendBroadcast(loginIntent);
+                                    }
                                     //销毁绑定的activity
                                     getActivity().finish();
+
                                 }else {
                                     Toast.makeText(getContext(),errorMsg,Toast.LENGTH_SHORT).show();
                                 }

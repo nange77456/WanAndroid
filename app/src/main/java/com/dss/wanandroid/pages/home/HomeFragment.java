@@ -1,6 +1,9 @@
 package com.dss.wanandroid.pages.home;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +22,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +31,7 @@ import com.dss.wanandroid.entity.ArticleData;
 import com.dss.wanandroid.net.MergedRequestUtil;
 import com.dss.wanandroid.net.SingleRequest;
 import com.dss.wanandroid.pages.me.EntryActivity;
+import com.dss.wanandroid.pages.me.LoginFragment;
 import com.dss.wanandroid.utils.FavoriteUtil;
 import com.dss.wanandroid.utils.FileUtil;
 import com.dss.wanandroid.utils.MyWebView;
@@ -86,6 +91,43 @@ public class HomeFragment extends Fragment {
      * 收藏列表
      */
     private HashSet<Integer> favoriteSet = new HashSet<>();
+
+    /**
+     * 登录登出的广播接收器
+     */
+    private BroadcastReceiver loginStateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //登录
+            if(intent.getBooleanExtra(LoginFragment.LOGIN_STATE,false)){
+                FavoriteUtil.getFavoriteSet(new OneParamPhone<HashSet<Integer>>() {
+                    @Override
+                    public void onPhone(HashSet<Integer> favoriteData) {
+                        favoriteSet.addAll(favoriteData);
+                        if(getActivity()!=null){
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
+                        }
+                    }
+                });
+            }else{
+                //登出
+                //清空收藏集合的缓存
+                FavoriteUtil.resetFavoriteSet();
+                //清空本页复制的一份收藏集合
+                favoriteSet.clear();
+                adapter.notifyDataSetChanged();
+            }
+        }
+    };
+    /**
+     * 过滤器
+     */
+    private IntentFilter loginStateFilter = new IntentFilter(LoginFragment.LOGIN_ACTION);
 
 
     /**
@@ -263,11 +305,23 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        //注册广播接收器
+        if(getContext()!=null){
+            LocalBroadcastManager.getInstance(getContext()).registerReceiver(loginStateReceiver,loginStateFilter);
+        }
+
         return view;
 
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //在页面销毁的时候给广播接收器取消注册
+        if(getContext()!=null){
+            LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(loginStateReceiver);
+        }
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

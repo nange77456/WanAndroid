@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -56,10 +57,13 @@ public class FavoriteUtil {
      * @param favoritePhone 收藏列表回调接口
      */
     public static void getFavoriteSet(final OneParamPhone<HashSet<Integer>> favoritePhone) {
+        Log.e("tag","start get favoriteset");
+
         //双重检验锁实现单例模式，保证只有一次getFavoriteSet的网络请求
         if (!isCached) {
             //加锁，为了保证只有一个线程可以去发送收藏列表的网络请求
             aLock.lock();
+            Log.e("tag","获取锁："+aLock);
             //如果没缓存
             if (!isCached) {
                 //发送网络请求
@@ -69,13 +73,18 @@ public class FavoriteUtil {
                         //写入缓存，并修改isCached值
                         favoriteSet.clear();
                         favoriteSet.addAll(returnData);
-                        isCached = true;
+                        Log.e("tag","favoriteSet new request: "+returnData);
+                        if(FileUtil.isLogin()){
+                            isCached = true;
+                        }
 
                         if (favoritePhone != null) {
                             favoritePhone.onPhone(favoriteSet);
                         }
                         //网络请求结束时才释放锁
                         handler.sendMessage(new Message());
+                        Log.e("tag","释放锁: "+aLock);
+
                     }
                 });
 
@@ -182,6 +191,13 @@ public class FavoriteUtil {
         }
     }
 
+    /**
+     * 清空缓存
+     */
+    public static void resetFavoriteSet(){
+        favoriteSet.clear();
+        isCached = false;
+    }
 
 
 

@@ -99,6 +99,8 @@ public class SystemArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder
 
         if(favoriteSet.contains(data.getId())){
             data.setLikeState(true);
+        }else {
+            data.setLikeState(false);
         }
         holder.likeButton.setChecked(data.isLikeState());
     }

@@ -5,11 +5,22 @@
     <color name="colorAccent">#03DAC5</color>
 
     <!--    主题色-->
-    <color name="colorLight">#f9683a</color>
-    <color name="colorDark">#870000</color>
-    <color name="colorMiddle">#bf360c</color>
-    <color name="colorIndicatorSelected">#FF5252</color>
+<!--    <color name="colorLight">#f9683a</color>-->
+<!--    <color name="colorDark">#870000</color>-->
+<!--    <color name="colorMiddle">#bf360c</color>-->
+<!--    <color name="colorIndicatorSelected">#FF5252</color>-->
+<!--    <color name="colorDarkPlus">#7C0000</color>-->
+<!--    <color name="colorTabText">#D6AA9B</color>-->
+
+    <color name="colorLight">#b30f01</color>
+<!--    <color name="colorDarkP">#b30f01</color>-->
+    <color name="colorDark">#ff815a</color>
+    <color name="colorMiddle">#ed4e2e</color>
+    <color name="colorIndicatorSelected">#BCFF5252</color>
     <color name="colorDarkPlus">#7C0000</color>
+    <color name="colorTabText">#C3FBD6CA</color>
+    <color name="colorDarkDarker">#E87754</color>
+
     <!--    文字列表颜色-->
     <color name="colorTextTitle">#000000</color>
     <color name="colorTextPlain">#323232</color>
@@ -37,5 +48,6 @@
     <color name="colorLink">#2962ff</color>
     <color name="colorTransparent">#00000000</color>
     <color name="colorChipBackground">@color/colorSplitter</color>
-    <color name="colorTabText">#D6AA9B</color>
+    <color name="colorHeart">#D3ED4E2E</color>
+    <color name="colorViewPagerBg">#F5F5F5</color>
 </resources>

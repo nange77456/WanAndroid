@@ -137,6 +137,8 @@ public class QAAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
         //设置红心是否点亮
         if(favoriteSet.contains(item.getId())){
             item.setLikeState(true);
+        }else {
+            item.setLikeState(false);
         }
         holder.likeButton.setChecked(item.isLikeState());
     }

@@ -1,6 +1,9 @@
 package com.dss.wanandroid.pages.qa;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +26,7 @@ import com.dss.wanandroid.net.MergedRequestUtil;
 import com.dss.wanandroid.net.QARequest;
 import com.dss.wanandroid.net.SingleRequest;
 import com.dss.wanandroid.pages.me.EntryActivity;
+import com.dss.wanandroid.pages.me.LoginFragment;
 import com.dss.wanandroid.utils.FavoriteUtil;
 import com.dss.wanandroid.utils.MyWebView;
 import com.dss.wanandroid.utils.OneParamPhone;
@@ -58,7 +63,42 @@ public class QAFragment extends Fragment {
     /**
      * 问答页网络请求综合
      */
-    QARequest qaRequest = new QARequest();
+    private QARequest qaRequest = new QARequest();
+
+    /**
+     * 登录登出的广播接收器
+     */
+    private BroadcastReceiver loginStateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //登录
+            if(intent.getBooleanExtra(LoginFragment.LOGIN_STATE,false)){
+                FavoriteUtil.getFavoriteSet(new OneParamPhone<HashSet<Integer>>() {
+                    @Override
+                    public void onPhone(HashSet<Integer> favoriteData) {
+                        favoriteSet.addAll(favoriteData);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                qaAdapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+                });
+            }else{
+                //登出
+                //清空收藏集合的缓存
+                FavoriteUtil.resetFavoriteSet();
+                //清空本页复制的一份收藏集合
+                favoriteSet.clear();
+                qaAdapter.notifyDataSetChanged();
+            }
+        }
+    };
+    /**
+     * 过滤器
+     */
+    private IntentFilter loginStateFilter = new IntentFilter(LoginFragment.LOGIN_ACTION);
 
     @Nullable
     @Override
@@ -163,8 +203,23 @@ public class QAFragment extends Fragment {
             }
         });
 
+        //注册登录登出广播接收器
+        if(getContext()!=null){
+            LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
+            localBroadcastManager.registerReceiver(loginStateReceiver,loginStateFilter);
+        }
 
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //取消注册登录登出广播接收器
+        if(getContext()!=null){
+            LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
+            localBroadcastManager.unregisterReceiver(loginStateReceiver);
+        }
     }
 
     /**

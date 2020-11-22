@@ -9,7 +9,7 @@
     <dimen name="recordTitleSize">16sp</dimen>
     <dimen name="menuIconSize">24dp</dimen>
     <dimen name="toolbarHeight">40dp</dimen>
-    <dimen name="homeMenuButtonSize">50dp</dimen>
+    <dimen name="homeMenuButtonSize">56dp</dimen>
     <dimen name="homeMenuButtonTextSize">20sp</dimen>
     <dimen name="inputLayoutHeight">45dp</dimen>
 </resources>

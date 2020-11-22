@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorLoginBackgroundGrey"
+    android:background="#FBEBD4"
     tools:context=".pages.me.DoubleDoubleActivity">
 
     <com.liji.circleimageview.CircleImageView

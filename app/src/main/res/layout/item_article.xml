@@ -45,7 +45,7 @@
         android:paddingLeft="3dp"
         android:paddingRight="3dp"
         android:text="分类一/分类二"
-        android:textColor="@color/colorLight"
+        android:textColor="@color/colorMiddle"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

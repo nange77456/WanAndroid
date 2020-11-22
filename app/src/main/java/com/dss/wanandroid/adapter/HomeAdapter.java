@@ -306,6 +306,8 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         //设置红心是否点亮
         if(favoriteSet.contains(item3.getId())){
             item3.setLikeState(true);
+        }else {
+            item3.setLikeState(false);
         }
         holder3.likeButton.setChecked(item3.isLikeState());
 

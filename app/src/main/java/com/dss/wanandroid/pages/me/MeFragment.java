@@ -2,9 +2,11 @@ package com.dss.wanandroid.pages.me;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,12 +26,15 @@ import com.bumptech.glide.Glide;
 import com.dss.wanandroid.R;
 import com.dss.wanandroid.adapter.MeAdapter;
 import com.dss.wanandroid.entity.MeData;
+import com.dss.wanandroid.utils.FavoriteUtil;
 import com.dss.wanandroid.utils.FileUtil;
+import com.dss.wanandroid.utils.OneParamPhone;
 import com.liji.circleimageview.CircleImageView;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -71,7 +77,24 @@ public class MeFragment extends Fragment {
     /**
      * 我的页设置列表适配器
      */
-    MeAdapter meAdapter = new MeAdapter(settingList);
+    private MeAdapter meAdapter = new MeAdapter(settingList);
+
+    /**
+     * 登录登出的广播接收器
+     */
+    private BroadcastReceiver loginStateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //登录
+            if(intent.getBooleanExtra(LoginFragment.LOGIN_STATE,false)){
+                usernameView.setText(FileUtil.getUsername());
+            }
+        }
+    };
+    /**
+     * 过滤器
+     */
+    private IntentFilter loginStateFilter = new IntentFilter(LoginFragment.LOGIN_ACTION);
 
     @Nullable
     @Override
@@ -140,6 +163,7 @@ public class MeFragment extends Fragment {
                         jumpToAuthor();
                         break;
                     case 4:
+                        break;
                     case 5:
                         logout();
                         break;
@@ -147,10 +171,22 @@ public class MeFragment extends Fragment {
             }
         });
 
+        //注册广播接收器
+        if(getContext()!=null){
+            LocalBroadcastManager.getInstance(getContext()).registerReceiver(loginStateReceiver,loginStateFilter);
+        }
 
         return view;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //在页面销毁的时候给广播接收器取消注册
+        if(getContext()!=null){
+            LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(loginStateReceiver);
+        }
+    }
 
     /**
      * intent的返回结果
@@ -222,6 +258,13 @@ public class MeFragment extends Fragment {
                             usernameView.setText("请登录");
                             //Toast提示
                             Toast.makeText(getContext(), "退出登陆成功", Toast.LENGTH_SHORT).show();
+                            //发送该退出登录的广播
+                            if(getContext()!=null){
+                                LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
+                                Intent loginIntent = new Intent(LoginFragment.LOGIN_ACTION);
+                                loginIntent.putExtra(LoginFragment.LOGIN_STATE,false);
+                                localBroadcastManager.sendBroadcast(loginIntent);
+                            }
                         }
 
                     }

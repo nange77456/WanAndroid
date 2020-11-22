@@ -135,6 +135,8 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         //从缓存获取红心状态
         if(favoriteSet.contains(data.getId())){
            data.setLikeState(true);
+        }else {
+            data.setLikeState(false);
         }
         holder.likeButton.setChecked(data.isLikeState());
 
