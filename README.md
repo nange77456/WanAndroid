@@ -8,7 +8,7 @@
 
 ### 导航页展示
 
-<img src="http://img.inaction.fun/static/ss/77162.png" alt="image-20201123154946902" style="zoom:15%;" />	<img src="http://img.inaction.fun/static/ss/89361.png" alt="image-20201123155039163" style="zoom:15%;" />	<img src="http://img.inaction.fun/static/ss/81244.png" alt="image-20201123155119834" style="zoom:15%;" />	<img src="http://img.inaction.fun/static/ss/68793.png" alt="image-20201123155239947" style="zoom:15%;" />
+<img src="http://img.inaction.fun/static/ss/77162.png" alt="image-20201123154946902" style="zoom:15%;" width="230px" />	<img src="http://img.inaction.fun/static/ss/89361.png" alt="image-20201123155039163" style="zoom:15%;" width="230px"/>	<img src="http://img.inaction.fun/static/ss/81244.png" alt="image-20201123155119834" style="zoom:15%;" width="230px" />	<img src="http://img.inaction.fun/static/ss/68793.png" alt="image-20201123155239947" style="zoom:15%;" width="230px"/>
 
 ## 系统设计
 
@@ -16,7 +16,7 @@
 
 设计版，项目初期设计的功能模块。
 
-![image-20201123155802270](http://img.inaction.fun/static/ss/14685.png)
+<img src="http://img.inaction.fun/static/ss/14685.png" alt="玩安卓-功能" width="700px" />
 
 ### 系统结构图
 
@@ -37,7 +37,7 @@ graph LR
 
 又丑又少，意思一下。
 
-<img src="http://img.inaction.fun/static/ss/38279.png" alt="玩安卓-首页" style="zoom: 40%;" />	<img src="http://img.inaction.fun/static/ss/58983.png" alt="玩安卓页面-我的" style="zoom: 40%;" />
+<img src="http://img.inaction.fun/static/ss/38279.png" alt="玩安卓-首页" style="zoom: 40%;" width="220px" />	<img src="http://img.inaction.fun/static/ss/58983.png" alt="玩安卓页面-我的" style="zoom: 40%;"  width="200px"/>
 
 ## 系统实现
 
@@ -96,13 +96,13 @@ viewPager.addOnPageChangeListener(...);
 
 ​	CIrcleView具有阴影和点击态，没有关联的布局文件，采用最原始的画笔绘制方式，效果如图：
 
-<img src="http://img.inaction.fun/static/ss/60645.png" alt="image-20201123172817246" style="zoom:45%;" />
+<img src="http://img.inaction.fun/static/ss/60645.png" alt="image-20201123172817246" style="zoom:45%;" width="60px" align="middle"/>
 
 2、带取消按钮的搜索框 EditTextPlus
 
 ​	有关联的xml，由 EditText 和 ImageView 组成，可以监听用户输入以及删除用户输入，效果如图：
 
-<img src="http://img.inaction.fun/static/ss/47638.png" alt="image-20201123173323767" />
+<img src="http://img.inaction.fun/static/ss/47638.png" alt="image-20201123173323767" width="250px" align="middle"/>
 
 ### 登录和登出
 
@@ -201,7 +201,7 @@ public static void fileCopy(Uri uri, int storageType, String fileName) throws IO
 
 ​	用TabLayout+ViewPager，ViewPager里新建Fragment来实现分类文章浏览，如图：
 
-<img src="http://img.inaction.fun/static/ss/11406.png" alt="image-20201123175433730" style="zoom:25%;" />
+<img src="http://img.inaction.fun/static/ss/77613.png" alt="image-20201123193621764" style="zoom:80%;" width="300px"/>
 
 
 
@@ -319,6 +319,9 @@ IO读写不熟，多写几遍。示例代码在上面“系统实现”的“登
 
 ### 说明
 
-1. 下载GitHub项目首页的app-debug.apk到手机上就可以使用本APP。
-2. 感谢玩安卓网站提供的安卓学习资料，本项目所使用的后端接口均来自：[玩Android 开放API](https://wanandroid.com/blog/show/2)。
+1. 感谢玩安卓网站提供的安卓学习资料，本项目所使用的后端接口均来自：[玩Android 开放API](https://wanandroid.com/blog/show/2)。
+
+2. 下载GitHub项目首页的app-debug.apk到手机上就可以使用本APP。
+
+   <img src="http://img.inaction.fun/static/ss/92965.png" alt="2" style="zoom: 50%;" width="300px"/>
 
