@@ -8,7 +8,7 @@
 
 ### 导航页展示
 
-<img src="http://img.inaction.fun/static/ss/77162.png" alt="image-20201123154946902" style="zoom:15%;" width="230px" />	<img src="http://img.inaction.fun/static/ss/89361.png" alt="image-20201123155039163" style="zoom:15%;" width="230px"/>	<img src="http://img.inaction.fun/static/ss/81244.png" alt="image-20201123155119834" style="zoom:15%;" width="230px" />	<img src="http://img.inaction.fun/static/ss/68793.png" alt="image-20201123155239947" style="zoom:15%;" width="230px"/>
+<img src="http://img.inaction.fun/static/ss/77162.png" alt="image-20201123154946902" style="zoom:15%;" width="210px" />	<img src="http://img.inaction.fun/static/ss/89361.png" alt="image-20201123155039163" style="zoom:15%;" width="210px"/>	<img src="http://img.inaction.fun/static/ss/81244.png" alt="image-20201123155119834" style="zoom:15%;" width="210px" />	<img src="http://img.inaction.fun/static/ss/68793.png" alt="image-20201123155239947" style="zoom:15%;" width="210px"/>
 
 ## 系统设计
 
