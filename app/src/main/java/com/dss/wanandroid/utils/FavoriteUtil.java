@@ -37,18 +37,13 @@ public class FavoriteUtil {
      */
     private static ReentrantLock aLock = new ReentrantLock();
     /**
-     * 切换线程，释放锁
-     */
-    private static Handler handler = new Handler(Looper.myLooper()){
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            aLock.unlock();
-        }
-    };
-    /**
      * 首页网络请求封装类
      */
     final static HomeRequest request = new HomeRequest();
+    /**
+     * 标记网络请求的开始和结束
+     */
+    private static volatile boolean flag = false;
 
 
     /**
@@ -57,45 +52,50 @@ public class FavoriteUtil {
      * @param favoritePhone 收藏列表回调接口
      */
     public static void getFavoriteSet(final OneParamPhone<HashSet<Integer>> favoritePhone) {
-        Log.e("tag","start get favoriteset");
-
-        //双重检验锁实现单例模式，保证只有一次getFavoriteSet的网络请求
-        if (!isCached) {
-            //加锁，为了保证只有一个线程可以去发送收藏列表的网络请求
-            aLock.lock();
-            Log.e("tag","获取锁："+aLock);
-            //如果没缓存
-            if (!isCached) {
-                //发送网络请求
-                requestFavoriteSet(new OneParamPhone<HashSet<Integer>>() {
-                    @Override
-                    public void onPhone(HashSet<Integer> returnData) {
-                        //写入缓存，并修改isCached值
-                        favoriteSet.clear();
-                        favoriteSet.addAll(returnData);
-                        Log.e("tag","favoriteSet new request: "+returnData);
-                        if(FileUtil.isLogin()){
-                            isCached = true;
+        //new thread为了让每次进入函数都是新线程，否则都是主线程可以重新获得锁，加锁就没意义
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //双重检验锁实现单例模式，保证只有一次getFavoriteSet的网络请求
+                if (!isCached) {
+                    //加锁，为了保证只有一个线程可以去发送收藏列表的网络请求
+                    aLock.lock();
+                    Log.e("tag","获取锁");
+                    //如果没缓存
+                    if (!isCached) {
+                        flag = false;
+                        //发送网络请求
+                        Log.e("tag","发送网络请求");
+                        requestFavoriteSet(new OneParamPhone<HashSet<Integer>>() {
+                            @Override
+                            public void onPhone(HashSet<Integer> returnData) {
+                                //写入缓存，并修改isCached值
+                                favoriteSet.clear();
+                                favoriteSet.addAll(returnData);
+                                if(FileUtil.isLogin()){
+                                    isCached = true;
+                                }
+                                //网络请求结束时才释放锁
+//                                Log.e("tag","网络请求结束, ,,,");
+                                flag = true;
+                            }
+                        });
+                        //！！阻塞网络请求外面的线程。 等flag=true，也就是网络请求结束
+                        while(!flag){
+                            //阻塞
                         }
-
-                        if (favoritePhone != null) {
-                            favoritePhone.onPhone(favoriteSet);
-                        }
-                        //网络请求结束时才释放锁
-                        handler.sendMessage(new Message());
-                        Log.e("tag","释放锁: "+aLock);
-
                     }
-                });
-
+                    aLock.unlock();
+//                    Log.e("tag","释放锁");
+                }
+                Log.e("tag","返回数据");
+                //如果有缓存
+                if (favoritePhone != null) {
+                    favoritePhone.onPhone(favoriteSet);
+                }
             }
+        }).start();
 
-        } else {
-            //如果有缓存
-            if (favoritePhone != null) {
-                favoritePhone.onPhone(favoriteSet);
-            }
-        }
     }
 
     /**
@@ -154,7 +154,7 @@ public class FavoriteUtil {
     }
 
     /**
-     * 收藏或取消收藏请的网络请求
+     * 收藏或取消收藏的网络请求
      * @param checked 收藏状态
      * @param articleId 被操作的文章id
      * @param phone 返回数据，第一个bool表示登录状态，第二个bool表示网络请求结果   TODO  第二个参数目前没用上
