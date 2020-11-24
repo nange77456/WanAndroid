@@ -315,7 +315,7 @@ IO读写不熟，多写几遍。示例代码在上面“系统实现”的“登
 
 1. 感谢玩安卓网站提供的安卓学习资料，本项目所使用的后端接口均来自：[玩Android 开放API](https://wanandroid.com/blog/show/2)。
 
-2. 下载GitHub项目首页的app-debug.apk到手机上就可以使用本APP。
+2. 打开手机浏览器扫描下方二维码，就可以立即体验*玩安卓22*了。
 
    <img src="http://img.inaction.fun/static/ss/71358.png" alt="2" style="zoom: 50%;" width="160px"/>
 
