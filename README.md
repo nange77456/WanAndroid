@@ -289,17 +289,6 @@ public void getArticleData(final OneParamPhone<List<ArticleData>> phone,int page
    	从缓存中取数据；
    ```
 
-   > 分别在两个线程lock和unlock行不通，这里用Handler来释放锁。
-   >
-   > ```java
-   > //切换线程，释放锁
-   > private static Handler handler = new Handler(Looper.myLooper()){
-   >     @Override
-   >     public void handleMessage(@NonNull Message msg) {
-   >         aLock.unlock();
-   >     }
-   > };
-   > ```
 
 #### 图片缓存
 
@@ -328,5 +317,5 @@ IO读写不熟，多写几遍。示例代码在上面“系统实现”的“登
 
 2. 下载GitHub项目首页的app-debug.apk到手机上就可以使用本APP。
 
-   <img src="http://img.inaction.fun/static/ss/92965.png" alt="2" style="zoom: 50%;" width="300px"/>
+   <img src="http://img.inaction.fun/static/ss/71358.png" alt="2" style="zoom: 50%;" width="160px"/>
 
